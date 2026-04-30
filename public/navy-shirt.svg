@@ -1,0 +1,5 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="400" fill="#111"/>
+  <path d="M130 80 L170 50 H230 L270 80 L320 130 L280 180 L255 155 V330 H145 V155 L120 180 L80 130 Z" fill="#1e2f4f"/>
+  <text x="200" y="220" text-anchor="middle" fill="white" font-size="28" font-family="Arial" font-weight="bold">PLATYPUS</text>
+</svg>

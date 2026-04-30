@@ -1,0 +1,46 @@
+"use client";
+
+import { useState } from "react";
+import { products } from "../data/products";
+import { useCart } from "../store/cart";
+import CartAnimation from "../components/CartAnimation";
+import Checkout from "../components/Checkout";
+
+export default function Home() {
+  const addToCart = useCart((state) => state.addToCart);
+  const [showAnimation, setShowAnimation] = useState(false);
+
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    setShowAnimation(true);
+  };
+
+  return (
+    <main className="min-h-screen bg-black text-white p-10">
+      <h1 className="text-5xl font-black">PLATYPUS Shirt Shop</h1>
+
+      <div className="mt-10 grid gap-6">
+        {products.map((p) => (
+          <div key={p.id} className="border border-neutral-700 p-5 rounded-xl">
+            <h2 className="text-2xl font-bold">{p.name}</h2>
+            <p className="text-neutral-400">
+              {p.color} · {p.print}
+            </p>
+            <p className="mt-2 text-xl">{p.price} €</p>
+
+            <button
+              onClick={() => handleAddToCart(p)}
+              className="mt-4 bg-white text-black px-4 py-2 rounded-lg font-bold"
+            >
+              In den Warenkorb
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <CartAnimation show={showAnimation} />
+      <Checkout />
+    </main>
+  );
+}
+
