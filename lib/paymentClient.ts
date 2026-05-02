@@ -15,3 +15,9 @@ export async function createPaymentSession(order: any) {
 
   return response.json();
 }
+
+export function redirectToPayment(session: any) {
+  if (session?.redirectUrl && session.redirectUrl !== "/") {
+    window.location.href = session.redirectUrl;
+  }
+}

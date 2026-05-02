@@ -9,7 +9,7 @@ import BankTransferInfo from "./BankTransferInfo";
 import OrderSuccess from "./OrderSuccess";
 import { bankAccount } from "../data/bank";
 import { trackCheckoutStarted, trackPurchase } from "../lib/analytics";
-import { createPaymentSession } from "../lib/paymentClient";
+import { createPaymentSession, redirectToPayment } from "../lib/paymentClient";
 import { validateStock } from "../lib/stockValidation";
 
 function itemKey(item: any) {
@@ -118,6 +118,8 @@ export default function Checkout() {
       setSuccessOrder(finalOrder);
       clearCart();
       setOpen(false);
+
+      redirectToPayment(paymentSession);
     } catch (error) {
       alert("Payment konnte nicht vorbereitet werden.");
       console.error(error);
