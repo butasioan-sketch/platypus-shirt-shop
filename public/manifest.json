@@ -1,11 +1,11 @@
 {
-  "name": "Platypus Shirt Shop",
-  "short_name": "Platypus",
-  "description": "T-Shirt Customizer für Schwarz und Weiß",
+  "name": "PLATYPUS Shirt Shop",
+  "short_name": "PLATYPUS",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f6f3ed",
-  "theme_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "/icon.svg",

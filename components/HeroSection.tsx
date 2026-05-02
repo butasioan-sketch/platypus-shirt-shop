@@ -1,5 +1,7 @@
 import TrustBar from "./TrustBar";
 import ShirtMaterialInfo from "./product/ShirtMaterialInfo";
+import ConversionBar from "./ConversionBar";
+import UrgencyBar from "./UrgencyBar";
 
 export default function HeroSection() {
   return (
@@ -16,6 +18,8 @@ export default function HeroSection() {
         Schwarz und Weiß. 360° Vorschau. App-ähnlicher Checkout. Optimiert für deine eigene Print-Produktion.
       </p>
 
+      <UrgencyBar />
+      <ConversionBar />
       <ShirtMaterialInfo />
       <TrustBar />
     </div>
