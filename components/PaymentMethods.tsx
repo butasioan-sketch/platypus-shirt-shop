@@ -19,9 +19,7 @@ export default function PaymentMethods({
             key={method.id}
             onClick={() => onSelect(method.id)}
             className={`rounded-xl px-3 py-3 text-center text-sm font-black transition ${method.style} ${
-              selected === method.id
-                ? "ring-4 ring-black/20 scale-[0.98]"
-                : "hover:scale-[0.99]"
+              selected === method.id ? "ring-4 ring-black/20 scale-[0.98]" : "hover:scale-[0.99]"
             }`}
           >
             {method.label}
@@ -29,12 +27,9 @@ export default function PaymentMethods({
         ))}
       </div>
 
-      <div className="mt-4 rounded-xl bg-white border border-neutral-200 p-3">
-        <p className="text-xs font-black">Provider-Struktur</p>
-        <p className="text-xs text-neutral-500 mt-1">
-          Auswahl wird in der Bestellung gespeichert. Live-Anbindung folgt über Payment API.
-        </p>
-      </div>
+      <p className="mt-4 text-xs text-neutral-500">
+        Sichere Zahlung über aktivierte Zahlungsanbieter.
+      </p>
     </div>
   );
 }
