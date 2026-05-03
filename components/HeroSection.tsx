@@ -18,6 +18,7 @@ export default function HeroSection() {
         Schwarz und Weiß. 360° Vorschau. App-ähnlicher Checkout. Optimiert für deine eigene Print-Produktion.
       </p>
 
+      <HeroActions />
       <UrgencyBar />
       <ConversionBar />
       <ShirtMaterialInfo />

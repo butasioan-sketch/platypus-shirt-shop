@@ -16,7 +16,7 @@ export default function Home() {
       <section className="px-5 sm:px-10 pt-8 sm:pt-12">
         <HeroSection />
 
-        <div className="mt-8 grid gap-8 lg:grid-cols-2">
+        <div id="produkte" className="mt-8 grid gap-8 lg:grid-cols-2">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
