@@ -5,12 +5,14 @@ import { useCart } from "../store/cart";
 import { useOrders } from "../store/orders";
 import { useInventory } from "../store/inventory";
 import PaymentMethods from "./PaymentMethods";
+import ShippingOptions from "./ShippingOptions";
 import BankTransferInfo from "./BankTransferInfo";
 import OrderSuccess from "./OrderSuccess";
 import { bankAccount } from "../data/bank";
 import { trackCheckoutStarted, trackPurchase } from "../lib/analytics";
 import { createPaymentSession, redirectToPayment } from "../lib/paymentClient";
 import { validateStock } from "../lib/stockValidation";
+import { shippingMethods, freeShippingFrom } from "../data/shipping";
 
 function itemKey(item: any) {
   return `${item.id}-${item.size}-${item.fit || "Regular"}`;
@@ -30,6 +32,7 @@ export default function Checkout() {
 
   const [open, setOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("paypal");
+  const [shippingMethod, setShippingMethod] = useState("dhl-small");
   const [successOrder, setSuccessOrder] = useState<any>(null);
   const [loading, setLoading] = useState(false);
 
@@ -49,7 +52,8 @@ export default function Checkout() {
   );
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const shipping = subtotal >= 70 ? 0 : 4.99;
+  const selectedShipping = shippingMethods.find((s) => s.id === shippingMethod) || shippingMethods[0];
+  const shipping = subtotal >= freeShippingFrom ? 0 : selectedShipping.price;
   const total = subtotal + shipping;
   const count = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -190,6 +194,8 @@ export default function Checkout() {
             </div>
 
             <textarea placeholder="Notiz zur Bestellung" className="w-full mb-4 p-3 rounded-xl bg-neutral-50 border border-neutral-300 min-h-24" value={customer.notes} onChange={(e) => setCustomer({ ...customer, notes: e.target.value })} />
+
+            <ShippingOptions subtotal={subtotal} selected={shippingMethod} onSelect={setShippingMethod} />
 
             <PaymentMethods selected={paymentMethod} onSelect={setPaymentMethod} />
 
