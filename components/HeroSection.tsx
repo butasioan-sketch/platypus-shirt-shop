@@ -4,6 +4,7 @@ import ConversionBar from "./ConversionBar";
 import UrgencyBar from "./UrgencyBar";
 import FirstSaleChecklist from "./FirstSaleChecklist";
 import HeroActions from "./HeroActions";
+import CustomerTrustBlock from "./CustomerTrustBlock";
 
 export default function HeroSection() {
   return (
@@ -25,6 +26,7 @@ export default function HeroSection() {
       <ConversionBar />
       <ShirtMaterialInfo />
       <TrustBar />
+      <CustomerTrustBlock />
       <FirstSaleChecklist />
     </div>
   );
