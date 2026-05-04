@@ -6,6 +6,7 @@ import FirstSaleChecklist from "./FirstSaleChecklist";
 import HeroActions from "./HeroActions";
 import CustomerTrustBlock from "./CustomerTrustBlock";
 import ReviewBlock from "./ReviewBlock";
+import BuyConfidenceBlock from "./BuyConfidenceBlock";
 
 export default function HeroSection() {
   return (
@@ -29,6 +30,7 @@ export default function HeroSection() {
       <TrustBar />
       <CustomerTrustBlock />
       <ReviewBlock />
+      <BuyConfidenceBlock />
       <FirstSaleChecklist />
     </div>
   );
