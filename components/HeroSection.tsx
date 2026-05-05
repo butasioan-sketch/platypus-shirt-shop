@@ -4,6 +4,7 @@ import ConversionBar from "./ConversionBar";
 import UrgencyBar from "./UrgencyBar";
 import FirstSaleChecklist from "./FirstSaleChecklist";
 import HeroActions from "./HeroActions";
+import MobileSpeedNav from "./MobileSpeedNav";
 import CustomerTrustBlock from "./CustomerTrustBlock";
 import ReviewBlock from "./ReviewBlock";
 import BuyConfidenceBlock from "./BuyConfidenceBlock";
@@ -35,6 +36,7 @@ export default function HeroSection() {
       </p>
 
       <HeroActions />
+      <MobileSpeedNav />
       <UrgencyBar />
       <ConversionBar />
       <ShirtMaterialInfo />
