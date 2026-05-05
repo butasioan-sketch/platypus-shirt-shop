@@ -14,6 +14,7 @@ import SocialShareBlock from "./SocialShareBlock";
 import SalesMissionBlock from "./SalesMissionBlock";
 import ProductComparisonBlock from "./ProductComparisonBlock";
 import FirstOrderBanner from "./FirstOrderBanner";
+import OrderDeadlineBlock from "./OrderDeadlineBlock";
 import ExitIntentOffer from "./ExitIntentOffer";
 import ProductQualityBanner from "./ProductQualityBanner";
 import ProductGuaranteeBlock from "./ProductGuaranteeBlock";
@@ -50,6 +51,7 @@ export default function HeroSection() {
       <SalesMissionBlock />
       <ProductComparisonBlock />
       <FirstOrderBanner />
+      <OrderDeadlineBlock />
       <ExitIntentOffer />
       <FirstSaleChecklist />
     </div>
