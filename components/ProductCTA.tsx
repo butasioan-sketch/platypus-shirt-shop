@@ -1,5 +1,7 @@
 "use client";
 
+import DirectCheckoutButton from "./DirectCheckoutButton";
+
 export default function ProductCTA({ price }: { price: number }) {
   return (
     <div className="mt-6 rounded-2xl bg-black text-white p-6 shadow-xl">
@@ -14,6 +16,8 @@ export default function ProductCTA({ price }: { price: number }) {
       <button className="mt-4 w-full bg-white text-black py-4 rounded-2xl font-black text-lg">
         Jetzt kaufen
       </button>
+
+      <DirectCheckoutButton />
 
       <p className="mt-3 text-xs text-white/70">
         ✔ Versand in 1–3 Tagen  
