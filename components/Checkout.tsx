@@ -9,6 +9,7 @@ import ShippingOptions from "./ShippingOptions";
 import BankTransferInfo from "./BankTransferInfo";
 import OrderSuccess from "./OrderSuccess";
 import CheckoutProgress from "./CheckoutProgress";
+import CheckoutTrustLine from "./CheckoutTrustLine";
 import { bankAccount } from "../data/bank";
 import { trackCheckoutStarted, trackPurchase } from "../lib/analytics";
 import { createPaymentSession, redirectToPayment } from "../lib/paymentClient";
@@ -155,6 +156,8 @@ export default function Checkout() {
             </div>
 
             <CheckoutProgress />
+
+            <CheckoutTrustLine />
 
             {items.map((item) => (
               <div key={itemKey(item)} className="mb-4 border-b border-neutral-200 pb-4">
