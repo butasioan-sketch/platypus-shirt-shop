@@ -10,6 +10,7 @@ import BuyConfidenceBlock from "./BuyConfidenceBlock";
 import LaunchOffer from "./LaunchOffer";
 import FAQBlock from "./FAQBlock";
 import NewsletterBlock from "./NewsletterBlock";
+import ProductQualityBanner from "./ProductQualityBanner";
 
 export default function HeroSection() {
   return (
@@ -36,6 +37,7 @@ export default function HeroSection() {
       <BuyConfidenceBlock />
       <LaunchOffer />
       <FAQBlock />
+      <ProductQualityBanner />
       <NewsletterBlock />
       <FirstSaleChecklist />
     </div>
