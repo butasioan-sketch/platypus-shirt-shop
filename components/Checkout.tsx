@@ -8,6 +8,7 @@ import PaymentMethods from "./PaymentMethods";
 import ShippingOptions from "./ShippingOptions";
 import BankTransferInfo from "./BankTransferInfo";
 import OrderSuccess from "./OrderSuccess";
+import CheckoutProgress from "./CheckoutProgress";
 import { bankAccount } from "../data/bank";
 import { trackCheckoutStarted, trackPurchase } from "../lib/analytics";
 import { createPaymentSession, redirectToPayment } from "../lib/paymentClient";
@@ -152,6 +153,8 @@ export default function Checkout() {
               <h2 className="text-2xl font-black">Checkout</h2>
               <button onClick={() => setOpen(false)} className="text-3xl font-black">×</button>
             </div>
+
+            <CheckoutProgress />
 
             {items.map((item) => (
               <div key={itemKey(item)} className="mb-4 border-b border-neutral-200 pb-4">
