@@ -10,6 +10,7 @@ import BuyConfidenceBlock from "./BuyConfidenceBlock";
 import LaunchOffer from "./LaunchOffer";
 import FAQBlock from "./FAQBlock";
 import NewsletterBlock from "./NewsletterBlock";
+import SocialShareBlock from "./SocialShareBlock";
 import ExitIntentOffer from "./ExitIntentOffer";
 import ProductQualityBanner from "./ProductQualityBanner";
 import ProductGuaranteeBlock from "./ProductGuaranteeBlock";
@@ -42,6 +43,7 @@ export default function HeroSection() {
       <ProductQualityBanner />
       <ProductGuaranteeBlock />
       <NewsletterBlock />
+      <SocialShareBlock />
       <ExitIntentOffer />
       <FirstSaleChecklist />
     </div>
