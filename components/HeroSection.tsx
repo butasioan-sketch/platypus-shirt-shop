@@ -13,6 +13,7 @@ import FAQBlock from "./FAQBlock";
 import NewsletterBlock from "./NewsletterBlock";
 import SocialShareBlock from "./SocialShareBlock";
 import LegalNoticeBanner from "./LegalNoticeBanner";
+import OfficialLaunchMode from "./OfficialLaunchMode";
 import SalesMissionBlock from "./SalesMissionBlock";
 import ProductComparisonBlock from "./ProductComparisonBlock";
 import FirstOrderBanner from "./FirstOrderBanner";
@@ -52,6 +53,7 @@ export default function HeroSection() {
       <ProductGuaranteeBlock />
       <NewsletterBlock />
       <SocialShareBlock />
+      <OfficialLaunchMode />
       <LegalNoticeBanner />
       <SalesMissionBlock />
       <ProductComparisonBlock />
