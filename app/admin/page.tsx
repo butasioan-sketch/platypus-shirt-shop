@@ -11,6 +11,7 @@ import OrderSearchFilter from "../../components/admin/OrderSearchFilter";
 import OrderTimeline from "../../components/admin/OrderTimeline";
 import AdminQuickLinks from "../../components/admin/AdminQuickLinks";
 import StockWarnings from "../../components/StockWarnings";
+import AdminStatsOverview from "../../components/admin/AdminStatsOverview";
 
 export default function AdminPage() {
   const { orders, updateStatus } = useOrders();
@@ -50,6 +51,7 @@ export default function AdminPage() {
       </div>
 
       <AdminQuickLinks />
+      <AdminStatsOverview />
       <StockWarnings />
 
       <ExportOrdersButton orders={orders} />
