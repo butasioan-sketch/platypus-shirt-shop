@@ -12,6 +12,7 @@ import OrderTimeline from "../../components/admin/OrderTimeline";
 import AdminQuickLinks from "../../components/admin/AdminQuickLinks";
 import StockWarnings from "../../components/StockWarnings";
 import AdminStatsOverview from "../../components/admin/AdminStatsOverview";
+import LaunchChecklistAdmin from "../../components/LaunchChecklistAdmin";
 
 export default function AdminPage() {
   const { orders, updateStatus } = useOrders();
@@ -52,6 +53,7 @@ export default function AdminPage() {
 
       <AdminQuickLinks />
       <AdminStatsOverview />
+      <LaunchChecklistAdmin />
       <StockWarnings />
 
       <ExportOrdersButton orders={orders} />
