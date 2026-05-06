@@ -15,6 +15,7 @@ import AdminStatsOverview from "../../components/admin/AdminStatsOverview";
 import LaunchChecklistAdmin from "../../components/LaunchChecklistAdmin";
 import ShopStatusBar from "../../components/ShopStatusBar";
 import TodayActionPlan from "../../components/admin/TodayActionPlan";
+import NextSalesActions from "../../components/admin/NextSalesActions";
 
 export default function AdminPage() {
   const { orders, updateStatus } = useOrders();
@@ -58,6 +59,7 @@ export default function AdminPage() {
       <LaunchChecklistAdmin />
       <ShopStatusBar />
       <TodayActionPlan />
+      <NextSalesActions />
       <StockWarnings />
 
       <ExportOrdersButton orders={orders} />
