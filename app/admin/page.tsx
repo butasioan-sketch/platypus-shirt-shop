@@ -18,6 +18,7 @@ import TodayActionPlan from "../../components/admin/TodayActionPlan";
 import NextSalesActions from "../../components/admin/NextSalesActions";
 import AdminRevenueGoal from "../../components/admin/AdminRevenueGoal";
 import FirstCustomerPlan from "../../components/admin/FirstCustomerPlan";
+import LaunchScore from "../../components/admin/LaunchScore";
 
 export default function AdminPage() {
   const { orders, updateStatus } = useOrders();
@@ -64,6 +65,7 @@ export default function AdminPage() {
       <NextSalesActions />
       <AdminRevenueGoal />
       <FirstCustomerPlan />
+      <LaunchScore />
       <StockWarnings />
 
       <ExportOrdersButton orders={orders} />
