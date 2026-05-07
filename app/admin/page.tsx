@@ -20,6 +20,7 @@ import AdminRevenueGoal from "../../components/admin/AdminRevenueGoal";
 import FirstCustomerPlan from "../../components/admin/FirstCustomerPlan";
 import LaunchScore from "../../components/admin/LaunchScore";
 import MarketingLinksPanel from "../../components/admin/MarketingLinksPanel";
+import ShareMessageGenerator from "../../components/admin/ShareMessageGenerator";
 
 export default function AdminPage() {
   const { orders, updateStatus } = useOrders();
@@ -68,6 +69,7 @@ export default function AdminPage() {
       <FirstCustomerPlan />
       <LaunchScore />
       <MarketingLinksPanel />
+      <ShareMessageGenerator />
       <StockWarnings />
 
       <ExportOrdersButton orders={orders} />
