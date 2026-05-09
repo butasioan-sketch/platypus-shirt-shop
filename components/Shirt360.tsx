@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import Shirt360Controls from "./Shirt360Controls";
 
 export default function Shirt360({
   src,
@@ -134,12 +135,11 @@ export default function Shirt360({
         </div>
       </div>
 
-      <button
-        onClick={() => setAutoRotate(!autoRotate)}
-        className="mx-auto mt-3 block rounded-full border border-neutral-300 bg-white px-4 py-2 text-xs font-bold shadow-sm active:scale-[0.98]"
-      >
-        {autoRotate ? "Rotation pausieren" : "Rotation starten"}
-      </button>
+      <Shirt360Controls
+        autoRotate={autoRotate}
+        setAutoRotate={setAutoRotate}
+        resetRotation={() => setRotation(activeSide === "front" ? 0 : 180)}
+      />
     </div>
   );
 }

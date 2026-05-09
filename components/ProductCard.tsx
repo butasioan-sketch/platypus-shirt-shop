@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import Shirt360 from "./Shirt360";
+import ShirtStudioFrame from "./ShirtStudioFrame";
 import ProductBadge from "./ProductBadge";
 import SizeGuide from "./SizeGuide";
 import QuantityControl from "./QuantityControl";
@@ -47,8 +48,10 @@ export default function ProductCard({ product }: { product: any }) {
     <div className="bg-white rounded-[2rem] border border-neutral-200 shadow-xl overflow-hidden">
       <AddToCartToast show={toast} text={`${quantity}x ${product.name} hinzugefügt`} />
 
-      <div className="bg-[radial-gradient(circle_at_50%_35%,#ffffff,#eeeeee_55%,#dddddd)] border-b border-neutral-200">
-        <Shirt360 src={product.image} alt={product.name} activeSide={activeSide} />
+      <div className="border-b border-neutral-200">
+        <ShirtStudioFrame>
+          <Shirt360 src={product.image} alt={product.name} activeSide={activeSide} />
+        </ShirtStudioFrame>
       </div>
 
       <div className="p-6">
