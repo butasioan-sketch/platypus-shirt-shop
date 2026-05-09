@@ -1,3 +1,5 @@
+import ShirtViewerTips from "./ShirtViewerTips";
+
 export default function ShirtStudioFrame({
   children,
 }: {
@@ -14,6 +16,7 @@ export default function ShirtStudioFrame({
       </div>
 
       {children}
+      <ShirtViewerTips />
     </div>
   );
 }
