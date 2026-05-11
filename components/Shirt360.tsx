@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Shirt360Controls from "./Shirt360Controls";
+import ShirtFabricOverlay from "./ShirtFabricOverlay";
 
 export default function Shirt360({
   src,
@@ -102,6 +103,7 @@ export default function Shirt360({
             <div className="absolute left-[24%] top-[17%] h-[64%] w-[8%] rounded-full bg-white/18 blur-md" />
             <div className="absolute right-[23%] top-[17%] h-[64%] w-[8%] rounded-full bg-black/12 blur-md" />
             <div className="absolute left-[40%] top-[17%] h-[60%] w-[20%] rounded-full bg-white/8 blur-xl" />
+            <ShirtFabricOverlay />
           </div>
 
           <div
@@ -123,6 +125,7 @@ export default function Shirt360({
             <div className="absolute left-[25%] top-[17%] h-[64%] w-[8%] rounded-full bg-white/14 blur-md" />
             <div className="absolute right-[24%] top-[17%] h-[64%] w-[8%] rounded-full bg-black/14 blur-md" />
             <div className="absolute left-[40%] top-[17%] h-[60%] w-[20%] rounded-full bg-white/6 blur-xl" />
+            <ShirtFabricOverlay />
           </div>
         </div>
 
