@@ -16,7 +16,7 @@ export default function BrandLogo({
     <Link href="/" className="inline-flex items-center gap-3">
       <div className={`relative overflow-hidden rounded-full bg-black ${dimensions[size]}`}>
         <Image
-          src="/brand/platypus-logo.png"
+          src="/brand/logo.jpeg"
           alt="PLATYPUS Logo"
           fill
           priority

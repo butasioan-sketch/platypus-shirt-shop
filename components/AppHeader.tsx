@@ -1,5 +1,6 @@
-import BrandLogo from "./BrandLogo";
 "use client";
+
+import BrandLogo from "./BrandLogo";
 
 import Link from "next/link";
 import { useCart } from "../store/cart";
