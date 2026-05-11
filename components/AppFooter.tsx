@@ -1,3 +1,4 @@
+import BrandLogo from "./BrandLogo";
 import Link from "next/link";
 import SocialLinks from "./SocialLinks";
 

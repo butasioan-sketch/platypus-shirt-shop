@@ -1,4 +1,5 @@
 import TrustBar from "./TrustBar";
+import BrandLogo from "./BrandLogo";
 import ShirtMaterialInfo from "./product/ShirtMaterialInfo";
 import ConversionBar from "./ConversionBar";
 import UrgencyBar from "./UrgencyBar";
@@ -28,7 +29,9 @@ import ProductPhotoGuide from "./ProductPhotoGuide";
 export default function HeroSection() {
   return (
     <div className="bg-white rounded-[2rem] border border-neutral-200 shadow-xl p-6 sm:p-10">
-      <p className="text-neutral-500 font-black uppercase tracking-widest text-xs">
+      <BrandLogo size="large" />
+
+      <p className="mt-6 text-neutral-500 font-black uppercase tracking-widest text-xs">
         Professional Product Customizer
       </p>
 

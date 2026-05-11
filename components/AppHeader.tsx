@@ -1,3 +1,4 @@
+import BrandLogo from "./BrandLogo";
 "use client";
 
 import Link from "next/link";
