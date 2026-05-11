@@ -133,6 +133,8 @@ export default function Shirt360({
           {sideLabel}
         </div>
 
+        <ShirtRotationMeter rotation={rotation} />
+
         <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-4 py-2 text-xs font-black shadow-sm">
           Ziehen zum Drehen
         </div>
