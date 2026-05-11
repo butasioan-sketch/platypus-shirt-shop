@@ -26,6 +26,7 @@ import ProductGuaranteeBlock from "./ProductGuaranteeBlock";
 import ProductImageQualityChecklist from "./ProductImageQualityChecklist";
 import ProductPhotoGuide from "./ProductPhotoGuide";
 import BrandBanner from "./BrandBanner";
+import BrandMission from "./BrandMission";
 
 export default function HeroSection() {
   return (
@@ -60,6 +61,7 @@ export default function HeroSection() {
       <ProductImageQualityChecklist />
       <ProductPhotoGuide />
       <BrandBanner />
+      <BrandMission />
       <NewsletterBlock />
       <SocialShareBlock />
       <OfficialLaunchMode />
