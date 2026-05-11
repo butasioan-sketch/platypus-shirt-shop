@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import Shirt360Controls from "./Shirt360Controls";
 import ShirtFabricOverlay from "./ShirtFabricOverlay";
+import ShirtRotationMeter from "./ShirtRotationMeter";
 
 export default function Shirt360({
   src,
