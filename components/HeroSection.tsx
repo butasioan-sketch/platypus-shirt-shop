@@ -23,6 +23,7 @@ import ExitIntentOffer from "./ExitIntentOffer";
 import ProductQualityBanner from "./ProductQualityBanner";
 import ProductGuaranteeBlock from "./ProductGuaranteeBlock";
 import ProductImageQualityChecklist from "./ProductImageQualityChecklist";
+import ProductPhotoGuide from "./ProductPhotoGuide";
 
 export default function HeroSection() {
   return (
@@ -53,6 +54,7 @@ export default function HeroSection() {
       <ProductQualityBanner />
       <ProductGuaranteeBlock />
       <ProductImageQualityChecklist />
+      <ProductPhotoGuide />
       <NewsletterBlock />
       <SocialShareBlock />
       <OfficialLaunchMode />
