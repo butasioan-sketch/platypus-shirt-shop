@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import Shirt360Controls from "./Shirt360Controls";
 import ShirtFabricOverlay from "./ShirtFabricOverlay";
 import ShirtRotationMeter from "./ShirtRotationMeter";
+import ShirtSpinIndicator from "./ShirtSpinIndicator";
 
 export default function Shirt360({
   src,
