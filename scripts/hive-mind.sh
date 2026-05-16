@@ -1,0 +1,86 @@
+#!/bin/bash
+
+while true; do
+  clear
+
+  echo "========================================================="
+  echo "                   PLATYPUS HIVE MIND"
+  echo "========================================================="
+  echo ""
+  echo "1  - Core AI"
+  echo "2  - Transcendence Mode"
+  echo "3  - Ascension Mode"
+  echo "4  - Neural Core"
+  echo "5  - Singularity Mode"
+  echo "6  - Omega Mode"
+  echo "7  - Infinite Builder"
+  echo "8  - God Mode"
+  echo "9  - Empire Mode"
+  echo "10 - World Domination"
+  echo "11 - Build"
+  echo "12 - Deploy"
+  echo "13 - Localhost"
+  echo "14 - Live Shop"
+  echo "15 - Admin"
+  echo "16 - Exit"
+  echo ""
+
+  read -p "Select Option: " option
+
+  case $option in
+    1)
+      ./scripts/core-ai.sh
+      ;;
+    2)
+      ./scripts/transcendence-mode.sh
+      ;;
+    3)
+      ./scripts/ascension-mode.sh
+      ;;
+    4)
+      ./scripts/neural-core.sh
+      ;;
+    5)
+      ./scripts/singularity-mode.sh
+      ;;
+    6)
+      ./scripts/omega-mode.sh
+      ;;
+    7)
+      ./scripts/infinite-builder.sh
+      ;;
+    8)
+      ./scripts/god-mode.sh
+      ;;
+    9)
+      ./scripts/empire-mode.sh
+      ;;
+    10)
+      ./scripts/world-domination.sh
+      ;;
+    11)
+      npm run build
+      ;;
+    12)
+      ./scripts-deploy.sh
+      ;;
+    13)
+      xdg-open http://localhost:3000
+      ;;
+    14)
+      xdg-open https://platypus-shirt-shop.vercel.app
+      ;;
+    15)
+      xdg-open https://platypus-shirt-shop.vercel.app/admin
+      ;;
+    16)
+      exit 0
+      ;;
+    *)
+      echo "Invalid option"
+      ;;
+  esac
+
+  echo ""
+  read -p "Press ENTER to continue..."
+done
