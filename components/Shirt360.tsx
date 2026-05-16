@@ -6,6 +6,7 @@ import Shirt360Controls from "./Shirt360Controls";
 import ShirtFabricOverlay from "./ShirtFabricOverlay";
 import ShirtRotationMeter from "./ShirtRotationMeter";
 import ShirtViewerBadge from "./ShirtViewerBadge";
+import ShirtViewerHelp from "./ShirtViewerHelp";
 import ShirtSpinIndicator from "./ShirtSpinIndicator";
 
 export default function Shirt360({
@@ -138,6 +139,7 @@ export default function Shirt360({
 
         <ShirtRotationMeter rotation={rotation} />
         <ShirtViewerBadge />
+        <ShirtViewerHelp />
 
         <div className="absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full bg-white/90 px-4 py-2 text-xs font-black shadow-sm">
           Ziehen zum Drehen
