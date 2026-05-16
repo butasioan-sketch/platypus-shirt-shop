@@ -7,6 +7,7 @@ import AppHeader from "../components/AppHeader";
 import MobileBottomBar from "../components/MobileBottomBar";
 import HeroSection from "../components/HeroSection";
 import ProductSectionHeader from "../components/ProductSectionHeader";
+import ProductSectionTrust from "../components/ProductSectionTrust";
 import PaymentResultBanner from "../components/PaymentResultBanner";
 import AppFooter from "../components/AppFooter";
 
@@ -20,6 +21,7 @@ export default function Home() {
         <HeroSection />
 
         <ProductSectionHeader />
+        <ProductSectionTrust />
 
         <div id="produkte" className="mt-8 grid gap-8 lg:grid-cols-2">
           {products.map((product) => (
