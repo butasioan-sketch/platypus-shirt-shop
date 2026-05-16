@@ -7,6 +7,7 @@ import ShirtFabricOverlay from "./ShirtFabricOverlay";
 import ShirtRotationMeter from "./ShirtRotationMeter";
 import ShirtViewerBadge from "./ShirtViewerBadge";
 import ShirtViewerHelp from "./ShirtViewerHelp";
+import ShirtViewerStatus from "./ShirtViewerStatus";
 import ShirtSpinIndicator from "./ShirtSpinIndicator";
 
 export default function Shirt360({
