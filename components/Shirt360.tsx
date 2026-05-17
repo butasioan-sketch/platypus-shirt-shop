@@ -8,6 +8,7 @@ import ShirtRotationMeter from "./ShirtRotationMeter";
 import ShirtViewerBadge from "./ShirtViewerBadge";
 import ShirtViewerHelp from "./ShirtViewerHelp";
 import ShirtViewerStatus from "./ShirtViewerStatus";
+import ShirtViewerFullscreenButton from "./ShirtViewerFullscreenButton";
 import ShirtSpinIndicator from "./ShirtSpinIndicator";
 
 export default function Shirt360({
@@ -65,7 +66,7 @@ export default function Shirt360({
   const sideLabel = normalized > 90 && normalized < 270 ? "Rückseite" : "Vorderseite";
 
   return (
-    <div className="relative select-none">
+    <div data-shirt-viewer className="relative select-none">
       <div
         className="relative h-[430px] sm:h-[570px] flex items-center justify-center overflow-hidden touch-none cursor-grab active:cursor-grabbing"
         style={{ perspective: "1900px" }}
