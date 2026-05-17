@@ -9,6 +9,7 @@ import ShirtViewerBadge from "./ShirtViewerBadge";
 import ShirtViewerHelp from "./ShirtViewerHelp";
 import ShirtViewerStatus from "./ShirtViewerStatus";
 import ShirtViewerFullscreenButton from "./ShirtViewerFullscreenButton";
+import ShirtViewerSnapshotButton from "./ShirtViewerSnapshotButton";
 import ShirtSpinIndicator from "./ShirtSpinIndicator";
 
 export default function Shirt360({
