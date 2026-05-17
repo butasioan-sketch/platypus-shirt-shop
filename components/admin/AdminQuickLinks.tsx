@@ -6,6 +6,7 @@ export default function AdminQuickLinks() {
     { href: "/admin/tests", label: "Waschtests" },
     { href: "/admin/inventory", label: "Lager" },
     { href: "/admin/newsletter", label: "Newsletter" },
+    { href: "/admin/viewer-notes", label: "Viewer Notes" },
   ];
 
   return (
