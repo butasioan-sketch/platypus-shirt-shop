@@ -9,8 +9,7 @@ import HeroSection from "../components/HeroSection";
 import ProductSectionHeader from "../components/ProductSectionHeader";
 import ProductSectionTrust from "../components/ProductSectionTrust";
 import PaymentResultBanner from "../components/PaymentResultBanner";
-import CheckoutSuccessGuide from "../components/CheckoutSuccessGuide";
-import CheckoutCancelGuide from "../components/CheckoutCancelGuide";
+import CheckoutResultGuides from "../components/CheckoutResultGuides";
 import AppFooter from "../components/AppFooter";
 
 export default function Home() {
@@ -20,8 +19,7 @@ export default function Home() {
 
       <section className="px-5 sm:px-10 pt-8 sm:pt-12">
         <PaymentResultBanner />
-        <CheckoutSuccessGuide />
-        <CheckoutCancelGuide />
+        <CheckoutResultGuides />
         <HeroSection />
 
         <ProductSectionHeader />
