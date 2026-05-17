@@ -2,6 +2,7 @@ import ShirtViewerTips from "./ShirtViewerTips";
 import ShirtViewerQualityPanel from "./ShirtViewerQualityPanel";
 import ShirtViewerMobileHint from "./ShirtViewerMobileHint";
 import ShirtViewerLegend from "./ShirtViewerLegend";
+import ShirtViewerPremiumFrame from "./ShirtViewerPremiumFrame";
 
 export default function ShirtStudioFrame({
   children,
@@ -18,6 +19,7 @@ export default function ShirtStudioFrame({
         Drag / Touch
       </div>
 
+      <ShirtViewerPremiumFrame />
       {children}
       <ShirtViewerTips />
       <ShirtViewerQualityPanel />
