@@ -9,7 +9,7 @@ type CheckoutItem = {
   quantity: number;
 };
 
-function createDemoCheckout(body: any, method: any, status = "demo_checkout_created") {
+function demoCheckout(body: any, method: any, status: string) {
   return NextResponse.json({
     ok: true,
     provider: method.provider,
@@ -25,29 +25,29 @@ function createDemoCheckout(body: any, method: any, status = "demo_checkout_crea
   });
 }
 
+function looksLikeStripeSecret(value: string | undefined) {
+  return Boolean(value && (value.startsWith("sk_test_") || value.startsWith("sk_live_")));
+}
+
 export async function GET() {
   return NextResponse.json({
     ok: true,
     endpoint: "create-checkout",
     method: "POST",
     status: "ready",
+    stripeKeyConfigured: looksLikeStripeSecret(process.env.STRIPE_SECRET_KEY),
   });
 }
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-
     const paymentMethod = body.paymentMethod || "card";
     const method = getPaymentMethod(paymentMethod);
 
     if (!method) {
       return NextResponse.json(
-        {
-          ok: false,
-          error: "Payment method not supported",
-          paymentMethod,
-        },
+        { ok: false, error: "Payment method not supported", paymentMethod },
         { status: 400 }
       );
     }
@@ -56,26 +56,22 @@ export async function POST(request: Request) {
 
     if (items.length === 0) {
       return NextResponse.json(
-        {
-          ok: false,
-          error: "No checkout items provided",
-        },
+        { ok: false, error: "No checkout items provided" },
         { status: 400 }
       );
     }
 
     if (method.provider !== "stripe") {
-      return createDemoCheckout(body, method, "non_stripe_demo_checkout_created");
+      return demoCheckout(body, method, "non_stripe_demo_checkout_created");
     }
 
-    if (!process.env.STRIPE_SECRET_KEY) {
-      return createDemoCheckout(body, method, "stripe_missing_secret_key_demo");
+    if (!looksLikeStripeSecret(process.env.STRIPE_SECRET_KEY)) {
+      return demoCheckout(body, method, "stripe_secret_key_invalid_or_missing_demo");
     }
 
     const StripeModule = await import("stripe");
     const Stripe = StripeModule.default;
-
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://platypus-shirt-shop.vercel.app";
 
     const session = await stripe.checkout.sessions.create({
