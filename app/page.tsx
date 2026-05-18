@@ -11,6 +11,7 @@ import ProductSectionTrust from "../components/ProductSectionTrust";
 import PaymentResultBanner from "../components/PaymentResultBanner";
 import CheckoutResultGuides from "../components/CheckoutResultGuides";
 import CheckoutTestModeBanner from "../components/CheckoutTestModeBanner";
+import CheckoutStripeSuccessActions from "../components/CheckoutStripeSuccessActions";
 import AppFooter from "../components/AppFooter";
 
 export default function Home() {
@@ -22,6 +23,7 @@ export default function Home() {
         <PaymentResultBanner />
         <CheckoutResultGuides />
         <CheckoutTestModeBanner />
+        <CheckoutStripeSuccessActions />
         <HeroSection />
 
         <ProductSectionHeader />
