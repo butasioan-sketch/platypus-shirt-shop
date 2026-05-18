@@ -10,6 +10,7 @@ import ProductSectionHeader from "../components/ProductSectionHeader";
 import ProductSectionTrust from "../components/ProductSectionTrust";
 import PaymentResultBanner from "../components/PaymentResultBanner";
 import CheckoutResultGuides from "../components/CheckoutResultGuides";
+import CheckoutTestModeBanner from "../components/CheckoutTestModeBanner";
 import AppFooter from "../components/AppFooter";
 
 export default function Home() {
@@ -20,6 +21,7 @@ export default function Home() {
       <section className="px-5 sm:px-10 pt-8 sm:pt-12">
         <PaymentResultBanner />
         <CheckoutResultGuides />
+        <CheckoutTestModeBanner />
         <HeroSection />
 
         <ProductSectionHeader />
