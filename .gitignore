@@ -39,3 +39,14 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Order System (lokal)
+orders.db
+orders.db-journal
+orders_export_*.csv
+orders_*.json
+backups/
+
+# Temporäre Dateien
+*.log
+.DS_Store
