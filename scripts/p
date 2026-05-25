@@ -1,0 +1,20 @@
+#!/bin/bash
+
+case "$1" in
+    o|orders) ./scripts/orders-menu.sh ;;
+    d|dashboard) ./scripts/dashboard.sh ;;
+    s|status) ./scripts/project.sh check ;;
+    start) ./scripts/daily-start.sh ;;
+    cheat) ./scripts/cheatsheet.sh ;;
+    save) ./scripts/git/save-work.sh ;;
+    *) 
+        echo "p = PLATYPUS Quick Commands"
+        echo ""
+        echo "  p o     → Orders Menu"
+        echo "  p d     → Dashboard"
+        echo "  p s     → Project Status"
+        echo "  p start → Daily Start"
+        echo "  p cheat → Cheatsheet"
+        echo "  p save  → Commit + Push"
+        ;;
+esac
