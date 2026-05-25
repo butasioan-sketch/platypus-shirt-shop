@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { execSync } from 'child_process';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-02-24.acacia',
@@ -25,17 +26,21 @@ export async function POST(request: NextRequest) {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
 
-    console.log('=== Payment Successful ===');
-    console.log('Session ID:', session.id);
-    console.log('Customer Email:', session.customer_email);
-    console.log('Amount Total:', session.amount_total);
-    console.log('Currency:', session.currency);
+    const email = session.customer_email || 'unknown@email.com';
+    const amount = session.amount_total || 0;
+    const currency = session.currency || 'eur';
 
-    // TODO: Hier später Order in orders.db oder Datenbank speichern
-    // Beispiel-Daten die wir haben:
-    // - session.customer_email
-    // - session.amount_total
-    // - session.id (als Referenz)
+    console.log('Payment successful! Creating order...');
+
+    try {
+      // Ruft das Bash-Script auf, um die Order anzulegen
+      execSync(
+        `./scripts/create-order-from-payment.sh "${email}" ${amount} "${currency.toUpperCase()}" "${session.id}"`,
+        { stdio: 'inherit' }
+      );
+    } catch (error) {
+      console.error('Failed to create order from webhook:', error);
+    }
   }
 
   return NextResponse.json({ received: true });
