@@ -1,7 +1,0 @@
-PLATYPUS Orders Export - Mo 25. Mai 15:08:11 CEST 2026
-========================================
-
-Order: ORD-20260525142614|Kunde: Test Flow (flow@test.de)|Betrag: 69.90 €|Status: PAID|Items: PLATYPUS Shirt + Sticker|Erstellt: 2026-05-25 12:26:14|---
-Order: ORD-20260525142340|Kunde: Max Test (max@test.de)|Betrag: 59.90 €|Status: PAID|Items: PLATYPUS Shirt L|Erstellt: 2026-05-25 12:23:40|---
-Order: ORD-20260524212420|Kunde: fda (fsdff)|Betrag: 33434.00 €|Status: PAID|Items: 23|Erstellt: 2026-05-24 19:24:20|---
-Order: ORD-20260524205954|Kunde: Max Mustermann (max@test.de)|Betrag: 49.90 €|Status: PAID|Items: Test Shirt|Erstellt: 2026-05-24 18:59:54|---
