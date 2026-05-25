@@ -7,14 +7,22 @@ case "$1" in
     start) ./scripts/daily-start.sh ;;
     cheat) ./scripts/cheatsheet.sh ;;
     save) ./scripts/git/save-work.sh ;;
-    *) 
+    overview) ./scripts/tools-overview.sh ;;
+    size) ./scripts/project-size.sh ;;
+    kill) ./scripts/kill-dev.sh ;;
+    health) ./scripts/health-all.sh ;;
+    *)
         echo "p = PLATYPUS Quick Commands"
         echo ""
-        echo "  p o     → Orders Menu"
-        echo "  p d     → Dashboard"
-        echo "  p s     → Project Status"
-        echo "  p start → Daily Start"
-        echo "  p cheat → Cheatsheet"
-        echo "  p save  → Commit + Push"
+        echo " p o / orders   → Order Menu"
+        echo " p d / dashboard→ Dashboard"
+        echo " p s / status   → Project Status"
+        echo " p start        → Daily Start"
+        echo " p cheat        → Cheatsheet"
+        echo " p save         → Commit + Push"
+        echo " p overview     → Alle Tools"
+        echo " p size         → Projektgröße"
+        echo " p kill         → Dev Server stoppen"
+        echo " p health       → Full Health Check"
         ;;
 esac
