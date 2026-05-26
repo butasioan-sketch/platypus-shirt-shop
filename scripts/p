@@ -1,20 +1,42 @@
 #!/bin/bash
 # ======================================================
 # PLATYPUS Kurzbefehle (p = Projekt)
-# Schnelle Befehle für den Alltag
+# Mit grundlegender Fehlerbehandlung
 # ======================================================
 
+set -e
+
 case "$1" in
-    o|orders) ./scripts/orders-menu.sh ;;
-    d|dashboard) ./scripts/dashboard.sh ;;
-    s|status) ./scripts/project.sh check ;;
-    start) ./scripts/daily-start.sh ;;
-    cheat) ./scripts/cheatsheet.sh ;;
-    save) ./scripts/git/save-work.sh ;;
-    overview) ./scripts/tools-overview.sh ;;
-    size) ./scripts/project-size.sh ;;
-    kill) ./scripts/kill-dev.sh ;;
-    health) ./scripts/health-all.sh ;;
+    o|orders)
+        ./scripts/orders-menu.sh
+        ;;
+    d|dashboard)
+        ./scripts/dashboard.sh
+        ;;
+    s|status)
+        ./scripts/project.sh check
+        ;;
+    start)
+        ./scripts/daily-start.sh
+        ;;
+    cheat)
+        ./scripts/cheatsheet.sh
+        ;;
+    save)
+        ./scripts/git/save-work.sh
+        ;;
+    overview)
+        ./scripts/tools-overview.sh
+        ;;
+    size)
+        ./scripts/project-size.sh
+        ;;
+    kill)
+        ./scripts/kill-dev.sh
+        ;;
+    health)
+        ./scripts/health-all.sh
+        ;;
     *)
         echo "p = PLATYPUS Kurzbefehle"
         echo ""
@@ -24,7 +46,7 @@ case "$1" in
         echo " p start        → Täglicher Start"
         echo " p cheat        → Cheatsheet"
         echo " p save         → Commit + Push"
-        echo " p overview     → Alle Tools anzeigen"
+        echo " p overview     → Alle Tools"
         echo " p size         → Projektgröße"
         echo " p kill         → Dev Server stoppen"
         echo " p health       → Full Health Check"

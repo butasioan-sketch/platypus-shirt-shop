@@ -1,15 +1,22 @@
 #!/bin/bash
 # ======================================================
 # PLATYPUS Projekt-Steuerungsskript
-# Zentrale Befehle für tägliche Arbeit
+# Zentrale Befehle mit Fehlerbehandlung
 # ======================================================
+
+set -e  # Skript bei Fehler sofort beenden
 
 case "$1" in
     status)
         git status --short
         ;;
     orders)
-        ./scripts/orders-menu.sh
+        if [ -x ./scripts/orders-menu.sh ]; then
+            ./scripts/orders-menu.sh
+        else
+            echo "❌ Fehler: orders-menu.sh nicht gefunden oder nicht ausführbar"
+            exit 1
+        fi
         ;;
     dev)
         npm run dev
@@ -30,7 +37,7 @@ case "$1" in
         ;;
     clean)
         rm -rf node_modules .next package-lock.json
-        echo "node_modules und .next entfernt"
+        echo "✅ node_modules und .next entfernt"
         ;;
     check)
         echo "=== Projekt-Check ==="
@@ -43,7 +50,12 @@ case "$1" in
         git log --oneline -10
         ;;
     code)
-        code .
+        if command -v code &> /dev/null; then
+            code .
+        else
+            echo "❌ VS Code nicht gefunden"
+            exit 1
+        fi
         ;;
     urls)
         echo "Live Shop: https://platypus-shirt-shop.vercel.app"
