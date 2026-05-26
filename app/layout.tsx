@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import Link from 'next/link';
 import CartCount from './components/CartCount';
+import Footer from './components/Footer';
 
 export const metadata: Metadata = {
   title: 'PLATYPUS',
@@ -28,6 +29,7 @@ export default function RootLayout({
           </div>
         </nav>
         {children}
+        <Footer />
       </body>
     </html>
   );
