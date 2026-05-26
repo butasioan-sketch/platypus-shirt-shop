@@ -29,7 +29,6 @@ export default function Viewer({ images }: ViewerProps) {
     img.onload = () => setIsLoading(false);
   }, [currentIndex, images]);
 
-  // Keyboard
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') changeFrame(-1);
@@ -98,7 +97,7 @@ export default function Viewer({ images }: ViewerProps) {
         onTouchMove={(e) => handleMove(e.touches[0].clientX)}
         onTouchEnd={() => setIsDragging(false)}
       >
-        {isLoading && <div className="absolute inset-0 flex items-center justify-center z-10"><div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"/></div>}
+        {isLoading && <div className="absolute inset-0 flex items-center justify-center z-10"><div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" /></div>}
 
         <div style={{ transform: `scale(${zoom})`, transition: 'transform 0.1s ease-out', opacity: isLoading ? 0.4 : 1 }}>
           <img src={images[currentIndex]} alt="Shirt" className="w-full h-auto" draggable={false} />
