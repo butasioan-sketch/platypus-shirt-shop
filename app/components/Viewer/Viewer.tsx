@@ -18,7 +18,10 @@ export default function Viewer({ images }: ViewerProps) {
 
   const total = images.length;
 
-  // Preload + Loading State
+  useEffect(() => {
+    images.forEach(src => { const img = new Image(); img.src = src; });
+  }, [images]);
+
   useEffect(() => {
     setIsLoading(true);
     const img = new Image();
@@ -26,9 +29,18 @@ export default function Viewer({ images }: ViewerProps) {
     img.onload = () => setIsLoading(false);
   }, [currentIndex, images]);
 
+  // Keyboard Support
   useEffect(() => {
-    images.forEach(src => { const img = new Image(); img.src = src; });
-  }, [images]);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') changeFrame(-1);
+      if (e.key === 'ArrowRight') changeFrame(1);
+      if (e.key.toLowerCase() === 'r') setAutoRotate(!autoRotate);
+      if (e.key === '+') setZoom(z => Math.min(3, z + 0.2));
+      if (e.key === '-') setZoom(z => Math.max(0.6, z - 0.2));
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [autoRotate]);
 
   const changeFrame = (delta: number) => {
     setCurrentIndex((prev) => (prev + delta + total) % total);
@@ -86,13 +98,9 @@ export default function Viewer({ images }: ViewerProps) {
         onTouchMove={(e) => handleMove(e.touches[0].clientX)}
         onTouchEnd={() => setIsDragging(false)}
       >
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-zinc-950 z-10">
-            <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
-          </div>
-        )}
+        {isLoading && <div className="absolute inset-0 flex items-center justify-center z-10"><div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" /></div>}
 
-        <div style={{ transform: `scale(${zoom})`, transition: 'transform 0.1s ease-out', opacity: isLoading ? 0.3 : 1 }}>
+        <div style={{ transform: `scale(${zoom})`, transition: 'transform 0.1s ease-out', opacity: isLoading ? 0.4 : 1 }}>
           <img src={images[currentIndex]} alt="Shirt" className="w-full h-auto" draggable={false} />
           <div className="absolute inset-0 mix-blend-multiply pointer-events-none" style={{ backgroundColor: color, opacity: 0.7 }} />
         </div>
@@ -100,17 +108,15 @@ export default function Viewer({ images }: ViewerProps) {
 
       <ColorPicker selectedColor={color} onChange={setColor} />
 
-      <div className="flex gap-3 flex-wrap justify-center">
-        <button onClick={() => setAutoRotate(!autoRotate)} className="px-5 py-2.5 bg-zinc-800 rounded-2xl text-sm">
-          {autoRotate ? 'Stop Rotate' : 'Auto Rotate'}
-        </button>
-        <button onClick={() => setZoom(z => Math.max(0.6, z - 0.2))} className="px-4 py-2.5 bg-zinc-800 rounded-2xl">−</button>
-        <button onClick={() => setZoom(1)} className="px-4 py-2.5 bg-zinc-800 rounded-2xl">Reset</button>
-        <button onClick={() => setZoom(z => Math.min(3, z + 0.2))} className="px-4 py-2.5 bg-zinc-800 rounded-2xl">+</button>
-        <button onClick={takeSnapshot} className="px-5 py-2.5 bg-white text-black rounded-2xl text-sm font-medium">
-          Snapshot
-        </button>
+      <div className="flex gap-3 flex-wrap justify-center text-sm">
+        <button onClick={() => setAutoRotate(!autoRotate)} className="px-5 py-2 bg-zinc-800 rounded-2xl">Auto Rotate</button>
+        <button onClick={() => setZoom(z => Math.max(0.6, z - 0.2))} className="px-4 py-2 bg-zinc-800 rounded-2xl">−</button>
+        <button onClick={() => setZoom(1)} className="px-4 py-2 bg-zinc-800 rounded-2xl">Reset</button>
+        <button onClick={() => setZoom(z => Math.min(3, z + 0.2))} className="px-4 py-2 bg-zinc-800 rounded-2xl">+</button>
+        <button onClick={takeSnapshot} className="px-5 py-2 bg-white text-black rounded-2xl font-medium">Snapshot</button>
       </div>
+
+      <div className="text-xs text-zinc-500">← → Drehen • R = Auto-Rotate • +/- Zoom</div>
     </div>
   );
 }
