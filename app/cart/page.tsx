@@ -34,12 +34,23 @@ export default function CartPage() {
     updateCart(newCart);
   };
 
+  const clearCart = () => {
+    updateCart([]);
+  };
+
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white px-6 py-16">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-semibold mb-10 tracking-tight">Warenkorb</h1>
+        <div className="flex justify-between items-center mb-10">
+          <h1 className="text-4xl font-semibold tracking-tight">Warenkorb</h1>
+          {cart.length > 0 && (
+            <button onClick={clearCart} className="text-sm text-red-400 hover:text-red-500">
+              Warenkorb leeren
+            </button>
+          )}
+        </div>
 
         {cart.length === 0 ? (
           <p className="text-zinc-400">Dein Warenkorb ist leer.</p>
