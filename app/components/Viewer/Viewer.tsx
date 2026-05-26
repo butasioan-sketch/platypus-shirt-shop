@@ -15,6 +15,7 @@ export default function Viewer({ images }: ViewerProps) {
   const [autoRotate, setAutoRotate] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
 
   const total = images.length;
 
@@ -24,9 +25,15 @@ export default function Viewer({ images }: ViewerProps) {
 
   useEffect(() => {
     setIsLoading(true);
+    setHasError(false);
+
     const img = new Image();
     img.src = images[currentIndex];
     img.onload = () => setIsLoading(false);
+    img.onerror = () => {
+      setIsLoading(false);
+      setHasError(true);
+    };
   }, [currentIndex, images]);
 
   useEffect(() => {
@@ -84,6 +91,14 @@ export default function Viewer({ images }: ViewerProps) {
       link.click();
     };
   };
+
+  if (hasError) {
+    return (
+      <div className="w-full max-w-[560px] h-[400px] flex items-center justify-center bg-zinc-900 rounded-3xl text-red-400">
+        Bild konnte nicht geladen werden
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center gap-8">
