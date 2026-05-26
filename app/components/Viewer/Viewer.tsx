@@ -14,10 +14,18 @@ export default function Viewer({ images }: ViewerProps) {
   const [startX, setStartX] = useState(0);
   const [autoRotate, setAutoRotate] = useState(false);
   const [zoom, setZoom] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
 
   const total = images.length;
 
-  // Preload images
+  // Preload + Loading State
+  useEffect(() => {
+    setIsLoading(true);
+    const img = new Image();
+    img.src = images[currentIndex];
+    img.onload = () => setIsLoading(false);
+  }, [currentIndex, images]);
+
   useEffect(() => {
     images.forEach(src => { const img = new Image(); img.src = src; });
   }, [images]);
@@ -78,7 +86,13 @@ export default function Viewer({ images }: ViewerProps) {
         onTouchMove={(e) => handleMove(e.touches[0].clientX)}
         onTouchEnd={() => setIsDragging(false)}
       >
-        <div style={{ transform: `scale(${zoom})`, transition: 'transform 0.1s ease-out' }}>
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center bg-zinc-950 z-10">
+            <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
+          </div>
+        )}
+
+        <div style={{ transform: `scale(${zoom})`, transition: 'transform 0.1s ease-out', opacity: isLoading ? 0.3 : 1 }}>
           <img src={images[currentIndex]} alt="Shirt" className="w-full h-auto" draggable={false} />
           <div className="absolute inset-0 mix-blend-multiply pointer-events-none" style={{ backgroundColor: color, opacity: 0.7 }} />
         </div>
