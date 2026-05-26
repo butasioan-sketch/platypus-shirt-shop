@@ -2,19 +2,16 @@
 
 import React, { useState } from 'react';
 import Viewer from '@/app/components/Viewer/Viewer';
-
-const demoImages = [
-  '/shirt-1.png','/shirt-2.png','/shirt-3.png','/shirt-4.png',
-  '/shirt-5.png','/shirt-6.png','/shirt-7.png','/shirt-8.png',
-];
+import { products } from '@/app/lib/products';
 
 export default function ProductPage() {
+  const product = products['platypus-classic'];
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
 
   const addToCart = () => {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-    cart.push({ id: 'platypus-classic', quantity, price: 39 });
+    cart.push({ id: product.id, quantity, price: product.price });
     localStorage.setItem('cart', JSON.stringify(cart));
     window.dispatchEvent(new Event('storage'));
 
@@ -27,14 +24,14 @@ export default function ProductPage() {
       <div className="max-w-5xl mx-auto px-6 py-16">
         <div className="grid md:grid-cols-2 gap-12">
           <div>
-            <Viewer images={demoImages} />
+            <Viewer images={product.images} />
           </div>
 
           <div className="flex flex-col justify-between">
             <div>
               <div className="text-xs tracking-[3px] text-zinc-500 mb-1">PREMIUM</div>
-              <h1 className="text-5xl font-semibold tracking-[-1.5px] mb-3">PLATYPUS Classic</h1>
-              <div className="text-4xl mb-8">€39</div>
+              <h1 className="text-5xl font-semibold tracking-[-1.5px] mb-3">{product.name}</h1>
+              <div className="text-4xl mb-8">€{product.price}</div>
 
               <p className="text-zinc-400 max-w-md">
                 Hochwertiges T-Shirt mit exzellenter Passform.<br />
