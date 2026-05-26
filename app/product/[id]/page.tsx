@@ -1,28 +1,37 @@
-"use client";
+'use client';
 
-import { useParams } from "next/navigation";
-import { products } from "../../../data/products";
-import ProductCard from "../../../components/ProductCard";
+import React from 'react';
+import Viewer from '@/app/components/Viewer/Viewer';
+
+// ======================================================
+// PLATYPUS Product Page (Demo)
+// ======================================================
+
+// Temporäre Demo-Bilder (später durch echte ersetzen)
+const demoImages = [
+  '/shirt-1.png',
+  '/shirt-2.png',
+  '/shirt-3.png',
+  '/shirt-4.png',
+  '/shirt-5.png',
+  '/shirt-6.png',
+  '/shirt-7.png',
+  '/shirt-8.png',
+];
 
 export default function ProductPage() {
-  const params = useParams();
-  const id = Number(params.id);
-
-  const product = products.find((p) => p.id === id);
-
-  if (!product) {
-    return (
-      <main className="min-h-screen flex items-center justify-center">
-        <p className="font-black text-xl">Produkt nicht gefunden</p>
-      </main>
-    );
-  }
-
   return (
-    <main className="min-h-screen bg-[#f6f3ed] p-5 sm:p-10">
+    <div className="min-h-screen bg-zinc-950 text-white py-12 px-6">
       <div className="max-w-4xl mx-auto">
-        <ProductCard product={product} />
+        <h1 className="text-4xl font-bold mb-2">PLATYPUS Shirt</h1>
+        <p className="text-zinc-400 mb-10">Premium Qualität • 360° Ansicht • Farbauswahl</p>
+
+        <Viewer images={demoImages} />
+
+        <div className="mt-12 text-center text-sm text-zinc-500">
+          Ziehen zum Drehen • Farbe auswählen • Auto-Rotate &amp; Zoom verfügbar
+        </div>
       </div>
-    </main>
+    </div>
   );
 }
