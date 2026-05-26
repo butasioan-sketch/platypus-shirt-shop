@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import ColorPicker from './ColorPicker';
 
 interface ViewerProps {
@@ -15,8 +15,15 @@ export default function Viewer({ images }: ViewerProps) {
   const [autoRotate, setAutoRotate] = useState(false);
   const [zoom, setZoom] = useState(1);
 
-  const containerRef = useRef<HTMLDivElement>(null);
   const total = images.length;
+
+  // Preload images for better performance
+  useEffect(() => {
+    images.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, [images]);
 
   const changeFrame = (delta: number) => {
     setCurrentIndex((prev) => (prev + delta + total) % total);
@@ -38,22 +45,18 @@ export default function Viewer({ images }: ViewerProps) {
   };
 
   const takeSnapshot = () => {
-    if (!containerRef.current) return;
-
     const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d', { alpha: true });
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     const img = new Image();
-    img.crossOrigin = "anonymous";
+    img.crossOrigin = 'anonymous';
     img.src = images[currentIndex];
 
     img.onload = () => {
       canvas.width = img.width;
       canvas.height = img.height;
-
       ctx.drawImage(img, 0, 0);
-
       ctx.fillStyle = color;
       ctx.globalAlpha = 0.65;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -69,7 +72,6 @@ export default function Viewer({ images }: ViewerProps) {
   return (
     <div className="flex flex-col items-center gap-8">
       <div
-        ref={containerRef}
         className="relative w-full max-w-[560px] overflow-hidden rounded-3xl bg-zinc-950 select-none"
         onMouseDown={(e) => handleStart(e.clientX)}
         onMouseMove={(e) => handleMove(e.clientX)}
