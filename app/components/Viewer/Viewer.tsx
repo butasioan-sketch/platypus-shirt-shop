@@ -3,10 +3,6 @@
 import React, { useState } from 'react';
 import ColorPicker from './ColorPicker';
 
-// ======================================================
-// PLATYPUS Premium Viewer (mit Zoom)
-// ======================================================
-
 interface ViewerProps {
   images: string[];
 }
@@ -40,10 +36,6 @@ export default function Viewer({ images }: ViewerProps) {
     }
   };
 
-  const zoomIn = () => setZoom((z) => Math.min(z + 0.2, 3));
-  const zoomOut = () => setZoom((z) => Math.max(z - 0.2, 0.6));
-  const resetZoom = () => setZoom(1);
-
   return (
     <div className="flex flex-col items-center gap-8">
       <div
@@ -56,7 +48,7 @@ export default function Viewer({ images }: ViewerProps) {
         onTouchMove={(e) => handleMove(e.touches[0].clientX)}
         onTouchEnd={() => setIsDragging(false)}
       >
-        <div style={{ transform: `scale(${zoom})`, transition: 'transform 0.1s ease' }}>
+        <div style={{ transform: `scale(${zoom})`, transition: 'transform 0.1s' }}>
           <img src={images[currentIndex]} alt="Shirt" className="w-full h-auto" draggable={false} />
           <div className="absolute inset-0 mix-blend-multiply pointer-events-none" style={{ backgroundColor: color, opacity: 0.7 }} />
         </div>
@@ -68,10 +60,10 @@ export default function Viewer({ images }: ViewerProps) {
         <button onClick={() => setAutoRotate(!autoRotate)} className="px-5 py-2.5 bg-zinc-800 rounded-2xl text-sm">
           {autoRotate ? 'Stop Rotate' : 'Auto Rotate'}
         </button>
-        <button onClick={zoomOut} className="px-4 py-2.5 bg-zinc-800 rounded-2xl text-sm">−</button>
-        <button onClick={resetZoom} className="px-4 py-2.5 bg-zinc-800 rounded-2xl text-sm">Reset</button>
-        <button onClick={zoomIn} className="px-4 py-2.5 bg-zinc-800 rounded-2xl text-sm">+</button>
-        <button onClick={() => { /* Snapshot logic here */ }} className="px-5 py-2.5 bg-white text-black rounded-2xl text-sm font-medium">
+        <button onClick={() => setZoom(z => Math.max(0.6, z - 0.2))} className="px-4 py-2.5 bg-zinc-800 rounded-2xl">−</button>
+        <button onClick={() => setZoom(1)} className="px-4 py-2.5 bg-zinc-800 rounded-2xl">Reset</button>
+        <button onClick={() => setZoom(z => Math.min(3, z + 0.2))} className="px-4 py-2.5 bg-zinc-800 rounded-2xl">+</button>
+        <button onClick={() => { /* Snapshot */ }} className="px-5 py-2.5 bg-white text-black rounded-2xl text-sm font-medium">
           Snapshot
         </button>
       </div>
