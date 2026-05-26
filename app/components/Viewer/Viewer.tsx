@@ -29,18 +29,18 @@ export default function Viewer({ images }: ViewerProps) {
     img.onload = () => setIsLoading(false);
   }, [currentIndex, images]);
 
-  // Keyboard Support
+  // Keyboard
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKey = (e: KeyboardEvent) => {
       if (e.key === 'ArrowLeft') changeFrame(-1);
       if (e.key === 'ArrowRight') changeFrame(1);
       if (e.key.toLowerCase() === 'r') setAutoRotate(!autoRotate);
       if (e.key === '+') setZoom(z => Math.min(3, z + 0.2));
       if (e.key === '-') setZoom(z => Math.max(0.6, z - 0.2));
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [autoRotate]);
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, []);
 
   const changeFrame = (delta: number) => {
     setCurrentIndex((prev) => (prev + delta + total) % total);
@@ -98,7 +98,7 @@ export default function Viewer({ images }: ViewerProps) {
         onTouchMove={(e) => handleMove(e.touches[0].clientX)}
         onTouchEnd={() => setIsDragging(false)}
       >
-        {isLoading && <div className="absolute inset-0 flex items-center justify-center z-10"><div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" /></div>}
+        {isLoading && <div className="absolute inset-0 flex items-center justify-center z-10"><div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"/></div>}
 
         <div style={{ transform: `scale(${zoom})`, transition: 'transform 0.1s ease-out', opacity: isLoading ? 0.4 : 1 }}>
           <img src={images[currentIndex]} alt="Shirt" className="w-full h-auto" draggable={false} />
@@ -116,7 +116,7 @@ export default function Viewer({ images }: ViewerProps) {
         <button onClick={takeSnapshot} className="px-5 py-2 bg-white text-black rounded-2xl font-medium">Snapshot</button>
       </div>
 
-      <div className="text-xs text-zinc-500">← → Drehen • R = Auto-Rotate • +/- Zoom</div>
+      <div className="text-xs text-zinc-500">← → Drehen • R = Auto • +/- Zoom</div>
     </div>
   );
 }
