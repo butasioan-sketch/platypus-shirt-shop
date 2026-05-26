@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import ColorPicker from './ColorPicker';
 
 // ======================================================
-// PLATYPUS Premium Viewer (mit Auto-Rotate + Snapshot)
+// PLATYPUS Premium Viewer (mit Fullscreen + Auto-Rotate)
 // ======================================================
 
 interface ViewerProps {
@@ -17,28 +17,25 @@ export default function Viewer({ images }: ViewerProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [autoRotate, setAutoRotate] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
   const total = images.length;
 
-  // Auto Rotation
+  // Auto Rotate
   useEffect(() => {
     if (autoRotate) {
       intervalRef.current = setInterval(() => {
         setCurrentIndex((prev) => (prev + 1) % total);
-      }, 120);
+      }, 100);
     } else if (intervalRef.current) {
       clearInterval(intervalRef.current);
     }
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
+    return () => intervalRef.current && clearInterval(intervalRef.current);
   }, [autoRotate, total]);
 
-  const changeFrame = (delta: number) => {
-    setCurrentIndex((prev) => (prev + delta + total) % total);
-  };
+  const changeFrame = (delta: number) => setCurrentIndex((prev) => (prev + delta + total) % total);
 
   const handleStart = (x: number) => {
     setIsDragging(true);
@@ -55,8 +52,17 @@ export default function Viewer({ images }: ViewerProps) {
     }
   };
 
-  const takeSnapshot = () => {
+  const toggleFullscreen = () => {
     if (!containerRef.current) return;
+    if (!isFullscreen) {
+      containerRef.current.requestFullscreen?.();
+    } else {
+      document.exitFullscreen?.();
+    }
+    setIsFullscreen(!isFullscreen);
+  };
+
+  const takeSnapshot = () => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -75,7 +81,7 @@ export default function Viewer({ images }: ViewerProps) {
       ctx.globalAlpha = 1;
 
       const link = document.createElement('a');
-      link.download = `platypus-${Date.now()}.png`;
+      link.download = `platypus-shirt-${Date.now()}.png`;
       link.href = canvas.toDataURL();
       link.click();
     };
@@ -85,7 +91,7 @@ export default function Viewer({ images }: ViewerProps) {
     <div className="flex flex-col items-center gap-8">
       <div
         ref={containerRef}
-        className="relative w-full max-w-[540px] overflow-hidden rounded-3xl bg-zinc-950 select-none"
+        className="relative w-full max-w-[560px] overflow-hidden rounded-3xl bg-zinc-950 select-none"
         onMouseDown={(e) => handleStart(e.clientX)}
         onMouseMove={(e) => handleMove(e.clientX)}
         onMouseUp={() => setIsDragging(false)}
@@ -96,15 +102,22 @@ export default function Viewer({ images }: ViewerProps) {
       >
         <img src={images[currentIndex]} alt="Shirt" className="w-full h-auto" draggable={false} />
         <div className="absolute inset-0 mix-blend-multiply pointer-events-none" style={{ backgroundColor: color, opacity: 0.7 }} />
+
+        <button 
+          onClick={toggleFullscreen}
+          className="absolute top-4 right-4 px-3 py-1.5 text-xs bg-black/60 rounded-lg text-white"
+        >
+          {isFullscreen ? 'Exit' : 'Fullscreen'}
+        </button>
       </div>
 
       <ColorPicker selectedColor={color} onChange={setColor} />
 
-      <div className="flex gap-4">
-        <button onClick={() => setAutoRotate(!autoRotate)} className="px-5 py-2.5 rounded-2xl bg-zinc-800 hover:bg-zinc-700 text-sm">
-          {autoRotate ? 'Auto-Rotate stoppen' : 'Auto-Rotate starten'}
+      <div className="flex gap-3">
+        <button onClick={() => setAutoRotate(!autoRotate)} className="px-5 py-2.5 bg-zinc-800 rounded-2xl text-sm">
+          {autoRotate ? 'Stop Auto' : 'Auto Rotate'}
         </button>
-        <button onClick={takeSnapshot} className="px-5 py-2.5 rounded-2xl bg-white text-black text-sm font-medium">
+        <button onClick={takeSnapshot} className="px-5 py-2.5 bg-white text-black rounded-2xl text-sm font-medium">
           Snapshot
         </button>
       </div>
