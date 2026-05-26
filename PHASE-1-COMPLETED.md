@@ -2,7 +2,7 @@
 
 **Bash Tooling + Webhook Vorbereitung**
 
-✅ Vollständiges Order Management System (SQLite)
+✅ Vollständiges Order Management System (SQLite + viele Helper)
 ✅ Starke Workflow-Skripte (p, project.sh, daily-start, health checks, etc.)
 ✅ Webhook Route mit automatischer Order-Erstellung
 ✅ Git & Projekt-Steuerung
