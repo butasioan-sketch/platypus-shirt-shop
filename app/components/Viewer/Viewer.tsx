@@ -17,12 +17,9 @@ export default function Viewer({ images }: ViewerProps) {
 
   const total = images.length;
 
-  // Preload images for better performance
+  // Preload images
   useEffect(() => {
-    images.forEach((src) => {
-      const img = new Image();
-      img.src = src;
-    });
+    images.forEach(src => { const img = new Image(); img.src = src; });
   }, [images]);
 
   const changeFrame = (delta: number) => {
@@ -63,8 +60,8 @@ export default function Viewer({ images }: ViewerProps) {
       ctx.globalAlpha = 1;
 
       const link = document.createElement('a');
-      link.download = `platypus-shirt-${Date.now()}.png`;
-      link.href = canvas.toDataURL('image/png');
+      link.download = `platypus-${Date.now()}.png`;
+      link.href = canvas.toDataURL();
       link.click();
     };
   };
