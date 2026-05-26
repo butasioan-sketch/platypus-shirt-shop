@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { products } from '@/app/lib/products';
 
 interface CartItem {
   id: string;
@@ -34,11 +35,13 @@ export default function CartPage() {
     updateCart(newCart);
   };
 
-  const clearCart = () => {
-    updateCart([]);
-  };
+  const clearCart = () => updateCart([]);
 
   const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  const getProductName = (id: string) => {
+    return products[id as keyof typeof products]?.name || 'Produkt';
+  };
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white px-6 py-16">
@@ -60,7 +63,7 @@ export default function CartPage() {
               {cart.map((item, index) => (
                 <div key={index} className="flex justify-between items-center border-b border-zinc-800 pb-5">
                   <div>
-                    <div className="font-medium">PLATYPUS Classic</div>
+                    <div className="font-medium">{getProductName(item.id)}</div>
                     <div className="flex items-center gap-3 mt-1">
                       <button onClick={() => changeQuantity(index, item.quantity - 1)} className="px-2 py-0.5 bg-zinc-800 rounded">-</button>
                       <span className="font-mono">{item.quantity}</span>
