@@ -1,4 +1,8 @@
 #!/bin/bash
+# ======================================================
+# PLATYPUS Kurzbefehle (p = Projekt)
+# Schnelle Befehle für den Alltag
+# ======================================================
 
 case "$1" in
     o|orders) ./scripts/orders-menu.sh ;;
@@ -12,15 +16,15 @@ case "$1" in
     kill) ./scripts/kill-dev.sh ;;
     health) ./scripts/health-all.sh ;;
     *)
-        echo "p = PLATYPUS Quick Commands"
+        echo "p = PLATYPUS Kurzbefehle"
         echo ""
-        echo " p o / orders   → Order Menu"
+        echo " p o / orders   → Order Menü"
         echo " p d / dashboard→ Dashboard"
-        echo " p s / status   → Project Status"
-        echo " p start        → Daily Start"
+        echo " p s / status   → Projekt Status"
+        echo " p start        → Täglicher Start"
         echo " p cheat        → Cheatsheet"
         echo " p save         → Commit + Push"
-        echo " p overview     → Alle Tools"
+        echo " p overview     → Alle Tools anzeigen"
         echo " p size         → Projektgröße"
         echo " p kill         → Dev Server stoppen"
         echo " p health       → Full Health Check"
