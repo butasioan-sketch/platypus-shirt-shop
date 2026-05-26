@@ -16,7 +16,8 @@ export default function ProductPage() {
     const cart = JSON.parse(localStorage.getItem('cart') || '[]');
     cart.push({ id: 'platypus-classic', quantity, price: 39 });
     localStorage.setItem('cart', JSON.stringify(cart));
-    
+    window.dispatchEvent(new Event('storage'));
+
     setAdded(true);
     setTimeout(() => setAdded(false), 1600);
   };
@@ -36,8 +37,8 @@ export default function ProductPage() {
               <div className="text-4xl mb-8">€39</div>
 
               <p className="text-zinc-400 max-w-md">
-                Hochwertiges T-Shirt mit exzellenter Passform. 
-                Echtzeit-Farbwechsel, 360° Ansicht und Premium-Qualität.
+                Hochwertiges T-Shirt mit exzellenter Passform.<br />
+                Echtzeit-Farbwechsel • 360° Ansicht • Premium Qualität.
               </p>
             </div>
 
@@ -45,9 +46,9 @@ export default function ProductPage() {
               <div className="flex items-center gap-4 mb-6 mt-10">
                 <div className="text-sm text-zinc-400">Menge</div>
                 <div className="flex border border-zinc-800 rounded-2xl overflow-hidden">
-                  <button onClick={() => setQuantity(Math.max(1, quantity-1))} className="px-4 py-2 text-xl active:bg-zinc-900">−</button>
+                  <button onClick={() => setQuantity(Math.max(1, quantity - 1))} className="px-4 py-2 text-xl active:bg-zinc-900">−</button>
                   <div className="px-6 flex items-center font-mono border-x border-zinc-800">{quantity}</div>
-                  <button onClick={() => setQuantity(quantity+1)} className="px-4 py-2 text-xl active:bg-zinc-900">+</button>
+                  <button onClick={() => setQuantity(quantity + 1)} className="px-4 py-2 text-xl active:bg-zinc-900">+</button>
                 </div>
               </div>
 
