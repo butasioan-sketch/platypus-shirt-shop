@@ -5,12 +5,13 @@ import { useEffect, useState } from 'react';
 export default function CartCount() {
   const [count, setCount] = useState(0);
 
-  useEffect(() => {
-    const updateCount = () => {
-      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-      setCount(cart.length);
-    };
+  const updateCount = () => {
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    const totalItems = cart.reduce((sum: number, item: any) => sum + item.quantity, 0);
+    setCount(totalItems);
+  };
 
+  useEffect(() => {
     updateCount();
     window.addEventListener('storage', updateCount);
     return () => window.removeEventListener('storage', updateCount);
