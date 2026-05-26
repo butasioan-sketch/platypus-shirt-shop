@@ -1,20 +1,10 @@
-import type { Metadata, Viewport } from "next";
-import TrackingScripts from "../components/TrackingScripts";
-import Preload from "../components/Preload";
-import "./globals.css";
+import type { Metadata } from 'next';
+import './globals.css';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: "PLATYPUS Shirt Shop",
-  description: "Minimalistische Premium Shirts · Schwarz & Weiß",
-  applicationName: "PLATYPUS",
-  manifest: "/manifest.json",
-};
-
-export const viewport: Viewport = {
-  themeColor: "#000000",
-  width: "device-width",
-  initialScale: 1,
-  maximumScale: 1,
+  title: 'PLATYPUS',
+  description: 'Premium Print-on-Demand',
 };
 
 export default function RootLayout({
@@ -24,9 +14,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="de">
-      <body>
-        <Preload />
-        <TrackingScripts />
+      <body className="bg-zinc-950 text-white">
+        <nav className="border-b border-zinc-900">
+          <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+            <Link href="/" className="font-semibold tracking-widest text-xl">PLATYPUS</Link>
+            <div className="flex gap-8 text-sm">
+              <Link href="/product/1" className="hover:text-zinc-400 transition">Shop</Link>
+              <Link href="/cart" className="hover:text-zinc-400 transition">Warenkorb</Link>
+            </div>
+          </div>
+        </nav>
         {children}
       </body>
     </html>
