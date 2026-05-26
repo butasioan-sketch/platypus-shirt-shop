@@ -15,7 +15,6 @@ export default function Viewer({ images }: ViewerProps) {
   const [autoRotate, setAutoRotate] = useState(false);
   const [zoom, setZoom] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
 
   const total = images.length;
 
@@ -25,15 +24,9 @@ export default function Viewer({ images }: ViewerProps) {
 
   useEffect(() => {
     setIsLoading(true);
-    setHasError(false);
-
     const img = new Image();
     img.src = images[currentIndex];
     img.onload = () => setIsLoading(false);
-    img.onerror = () => {
-      setIsLoading(false);
-      setHasError(true);
-    };
   }, [currentIndex, images]);
 
   useEffect(() => {
@@ -47,6 +40,16 @@ export default function Viewer({ images }: ViewerProps) {
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
   }, []);
+
+  // Mouse Wheel Zoom
+  const handleWheel = (e: React.WheelEvent) => {
+    e.preventDefault();
+    if (e.deltaY < 0) {
+      setZoom(z => Math.min(3, z + 0.15));
+    } else {
+      setZoom(z => Math.max(0.6, z - 0.15));
+    }
+  };
 
   const changeFrame = (delta: number) => {
     setCurrentIndex((prev) => (prev + delta + total) % total);
@@ -92,18 +95,11 @@ export default function Viewer({ images }: ViewerProps) {
     };
   };
 
-  if (hasError) {
-    return (
-      <div className="w-full max-w-[560px] h-[400px] flex items-center justify-center bg-zinc-900 rounded-3xl text-red-400">
-        Bild konnte nicht geladen werden
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col items-center gap-8">
       <div
         className="relative w-full max-w-[560px] overflow-hidden rounded-3xl bg-zinc-950 select-none"
+        onWheel={handleWheel}
         onMouseDown={(e) => handleStart(e.clientX)}
         onMouseMove={(e) => handleMove(e.clientX)}
         onMouseUp={() => setIsDragging(false)}
@@ -130,7 +126,7 @@ export default function Viewer({ images }: ViewerProps) {
         <button onClick={takeSnapshot} className="px-5 py-2 bg-white text-black rounded-2xl font-medium">Snapshot</button>
       </div>
 
-      <div className="text-xs text-zinc-500">← → Drehen • R = Auto • +/- Zoom</div>
+      <div className="text-xs text-zinc-500">Mausrad = Zoom • ← → Drehen • R = Auto</div>
     </div>
   );
 }
