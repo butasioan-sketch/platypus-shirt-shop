@@ -1,18 +1,21 @@
 #!/bin/bash
-
 echo "════════════════════════════════════════════════════════════"
-echo "           PLATYPUS Deploy"
+echo " Vercel Git Integration"
 echo "════════════════════════════════════════════════════════════"
 echo ""
-
-echo "📦 Änderungen committen..."
-git add .
-git commit -m "deploy: $(date '+%Y-%m-%d %H:%M')" || echo "Nichts Neues"
-
+echo "Vorteile der Git Integration:"
+echo "  - Automatisches Deploy bei jedem Push"
+echo "  - Preview Deployments bei Pull Requests"
+echo "  - Kein manuelles 'vercel --prod' mehr nötig"
 echo ""
-echo "🚀 Vercel Deploy startet..."
-vercel --prod
-
+echo "So richtest du es ein:"
 echo ""
-echo "✅ Deploy abgeschlossen"
+echo "1. Gehe auf: https://vercel.com/dashboard"
+echo "2. Wähle dein Projekt aus"
+echo "3. Gehe zu 'Settings' → 'Git'"
+echo "4. Verbinde dein GitHub Repository"
+echo ""
+echo "Danach reicht ein normales:"
+echo "  git push"
+echo ""
 echo "════════════════════════════════════════════════════════════"

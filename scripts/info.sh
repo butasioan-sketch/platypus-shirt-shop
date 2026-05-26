@@ -1,18 +1,14 @@
 #!/bin/bash
-
 echo "════════════════════════════════════════════════════════════"
-echo "           PLATYPUS Deploy"
+echo " PLATYPUS Project Info"
 echo "════════════════════════════════════════════════════════════"
 echo ""
-
-echo "📦 Änderungen committen..."
-git add .
-git commit -m "deploy: $(date '+%Y-%m-%d %H:%M')" || echo "Nichts Neues"
-
+echo "Branch: $(git branch --show-current)"
+echo "Letzter Commit: $(git log -1 --oneline)"
 echo ""
-echo "🚀 Vercel Deploy startet..."
-vercel --prod
-
+echo "Wichtige Dateien:"
+[ -f app/components/Viewer/Viewer.tsx ] && echo "  ✅ Viewer"
+[ -f app/cart/page.tsx ] && echo "  ✅ Cart"
+[ -f scripts/deploy.sh ] && echo "  ✅ Deploy Script"
 echo ""
-echo "✅ Deploy abgeschlossen"
 echo "════════════════════════════════════════════════════════════"

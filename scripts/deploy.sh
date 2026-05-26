@@ -1,20 +1,14 @@
 #!/bin/bash
+echo "════════════════════════════════════════════════════════════"
+echo " PLATYPUS Deploy"
+echo "════════════════════════════════════════════════════════════"
 
-echo "=== PLATYPUS Deploy ==="
-echo ""
-
-echo "1. Git Status checken..."
-git status --short
-
-echo ""
-echo "2. Alles committen..."
 git add .
-git commit -m "deploy: $(date '+%Y-%m-%d %H:%M')" || echo "Nichts Neues zu committen"
+git commit -m "deploy: $(date '+%Y-%m-%d %H:%M')" || echo "Keine neuen Änderungen"
 
 echo ""
-echo "3. Pushen..."
-git push
+vercel --prod
 
 echo ""
-echo "✅ Fertig. Vercel sollte jetzt automatisch deployen."
-echo "   Warte 30–60 Sekunden und lade die Seite neu."
+echo "✅ Deploy abgeschlossen"
+echo "════════════════════════════════════════════════════════════"

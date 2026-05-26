@@ -1,18 +1,24 @@
 #!/bin/bash
-
 echo "════════════════════════════════════════════════════════════"
-echo "           PLATYPUS Deploy"
+echo " Vercel CLI Status"
 echo "════════════════════════════════════════════════════════════"
 echo ""
 
-echo "📦 Änderungen committen..."
-git add .
-git commit -m "deploy: $(date '+%Y-%m-%d %H:%M')" || echo "Nichts Neues"
+if command -v vercel &> /dev/null; then
+    echo "✅ Vercel CLI installiert"
+    echo "   Version: $(vercel --version 2>/dev/null)"
+else
+    echo "❌ Vercel CLI nicht gefunden"
+    echo ""
+    read -p "Jetzt installieren? (y/n): " answer
+    if [[ "$answer" == "y" ]]; then
+        npm install -g vercel
+    fi
+fi
 
 echo ""
-echo "🚀 Vercel Deploy startet..."
-vercel --prod
+echo "Login Status:"
+vercel whoami 2>/dev/null || echo "Nicht eingeloggt → vercel login"
 
 echo ""
-echo "✅ Deploy abgeschlossen"
 echo "════════════════════════════════════════════════════════════"

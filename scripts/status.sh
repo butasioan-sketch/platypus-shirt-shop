@@ -1,19 +1,11 @@
 #!/bin/bash
-
-echo "════════════════════════════════════════════════════════════"
-echo "           PLATYPUS - STATUS"
-echo "════════════════════════════════════════════════════════════"
+echo "=== PLATYPUS Status ==="
 echo ""
-
-echo "Orders:     $(sqlite3 orders.db "SELECT COUNT(*) FROM orders;" 2>/dev/null || echo 0)"
-echo "Umsatz:     $(sqlite3 orders.db "SELECT printf('%.2f €', COALESCE(SUM(total_amount),0)) FROM orders;" 2>/dev/null || echo '0 €')"
+echo "Git:"
+git status --short
 echo ""
-
-echo "Wichtige Befehle:"
-echo "  ./scripts/p health     → Full Health Check"
-echo "  ./scripts/p orders     → Order Menu"
-echo "  ./scripts/p start      → Dev Server starten"
-echo "  ./scripts/p save       → Commit + Push"
+echo "Letzter Commit:"
+git log -1 --oneline
 echo ""
-
-echo "════════════════════════════════════════════════════════════"
+echo "Vercel Prozess läuft:"
+ps aux | grep vercel | grep -v grep || echo "Kein Vercel Prozess aktiv"

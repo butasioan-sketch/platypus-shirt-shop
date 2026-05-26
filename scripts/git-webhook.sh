@@ -1,18 +1,23 @@
 #!/bin/bash
-
 echo "════════════════════════════════════════════════════════════"
-echo "           PLATYPUS Deploy"
+echo " Git + Vercel Webhook Verbindung"
 echo "════════════════════════════════════════════════════════════"
 echo ""
-
-echo "📦 Änderungen committen..."
-git add .
-git commit -m "deploy: $(date '+%Y-%m-%d %H:%M')" || echo "Nichts Neues"
-
+echo "Die beste und einfachste Methode:"
 echo ""
-echo "🚀 Vercel Deploy startet..."
-vercel --prod
-
+echo "1. Gehe auf https://vercel.com/dashboard"
+echo "2. Wähle dein Projekt aus"
+echo "3. Gehe zu Settings → Git"
+echo "4. Klicke auf 'Connect Git Repository'"
+echo "5. Wähle dein GitHub Repo aus"
 echo ""
-echo "✅ Deploy abgeschlossen"
+echo "Danach passiert automatisch:"
+echo "  - Jeder Push auf main → Automatisches Deploy"
+echo "  - Pull Requests → Preview Deployments"
+echo ""
+echo "Du brauchst danach nur noch normal:"
+echo "  git add ."
+echo "  git commit -m 'update'"
+echo "  git push"
+echo ""
 echo "════════════════════════════════════════════════════════════"

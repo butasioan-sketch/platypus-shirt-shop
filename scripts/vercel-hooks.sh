@@ -1,18 +1,20 @@
 #!/bin/bash
-
 echo "════════════════════════════════════════════════════════════"
-echo "           PLATYPUS Deploy"
+echo " Vercel Build Hooks (Deploy Hooks)"
 echo "════════════════════════════════════════════════════════════"
 echo ""
-
-echo "📦 Änderungen committen..."
-git add .
-git commit -m "deploy: $(date '+%Y-%m-%d %H:%M')" || echo "Nichts Neues"
-
+echo "Build Hooks erlauben es, einen neuen Deploy per URL auszulösen."
 echo ""
-echo "🚀 Vercel Deploy startet..."
-vercel --prod
-
+echo "So richtest du einen Hook ein:"
 echo ""
-echo "✅ Deploy abgeschlossen"
+echo "1. Gehe auf vercel.com → Dein Projekt"
+echo "2. Settings → Deploy Hooks"
+echo "3. Neuen Hook erstellen (z.B. 'Main Branch')"
+echo "4. Die generierte URL kopieren"
+echo ""
+echo "Hook manuell triggern:"
+echo '  curl -X POST "https://api.vercel.com/v1/integrations/deploy/..."'
+echo ""
+echo "Tipp: Gut für externe Trigger (z.B. von einem anderen System)"
+echo ""
 echo "════════════════════════════════════════════════════════════"

@@ -1,18 +1,10 @@
 #!/bin/bash
-
 echo "════════════════════════════════════════════════════════════"
-echo "           PLATYPUS Deploy"
+echo " PLATYPUS Environment Variables"
 echo "════════════════════════════════════════════════════════════"
 echo ""
-
-echo "📦 Änderungen committen..."
-git add .
-git commit -m "deploy: $(date '+%Y-%m-%d %H:%M')" || echo "Nichts Neues"
-
+echo "  ./scripts/env-add.sh     → Variable hinzufügen"
+echo "  ./scripts/env-list.sh    → Alle Variablen anzeigen"
+echo "  ./scripts/env-pull.sh    → .env.local herunterladen"
 echo ""
-echo "🚀 Vercel Deploy startet..."
-vercel --prod
-
-echo ""
-echo "✅ Deploy abgeschlossen"
 echo "════════════════════════════════════════════════════════════"

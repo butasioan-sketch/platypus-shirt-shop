@@ -1,18 +1,21 @@
 #!/bin/bash
-
 echo "════════════════════════════════════════════════════════════"
-echo "           PLATYPUS Deploy"
+echo " Vercel Project Konfiguration"
 echo "════════════════════════════════════════════════════════════"
 echo ""
 
-echo "📦 Änderungen committen..."
-git add .
-git commit -m "deploy: $(date '+%Y-%m-%d %H:%M')" || echo "Nichts Neues"
+if [ -f .vercel/project.json ]; then
+    echo "✅ Projekt ist verlinkt:"
+    cat .vercel/project.json
+else
+    echo "❌ Keine .vercel/project.json gefunden"
+    echo ""
+    echo "Projekt linken mit:"
+    echo "  vercel link"
+fi
 
 echo ""
-echo "🚀 Vercel Deploy startet..."
-vercel --prod
-
+echo "Aktuelle Vercel Einstellungen:"
+vercel inspect 2>/dev/null | head -20 || echo "Keine Projekt-Infos verfügbar"
 echo ""
-echo "✅ Deploy abgeschlossen"
 echo "════════════════════════════════════════════════════════════"
