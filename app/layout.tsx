@@ -22,8 +22,7 @@ export default function RootLayout({
             <div className="flex items-center gap-8 text-sm">
               <Link href="/product/1" className="hover:text-zinc-400 transition">Shop</Link>
               <Link href="/cart" className="hover:text-zinc-400 transition flex items-center gap-2">
-                Warenkorb
-                <CartCount />
+                Warenkorb <CartCount />
               </Link>
             </div>
           </div>
