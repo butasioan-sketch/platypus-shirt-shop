@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import Link from 'next/link';
+import CartCount from './components/CartCount';
 
 export const metadata: Metadata = {
   title: 'PLATYPUS',
@@ -20,9 +21,9 @@ export default function RootLayout({
             <Link href="/" className="font-semibold tracking-widest text-xl">PLATYPUS</Link>
             <div className="flex items-center gap-8 text-sm">
               <Link href="/product/1" className="hover:text-zinc-400 transition">Shop</Link>
-              <Link href="/cart" className="hover:text-zinc-400 transition flex items-center gap-1">
+              <Link href="/cart" className="hover:text-zinc-400 transition flex items-center gap-2">
                 Warenkorb
-                <span className="text-xs bg-zinc-800 px-1.5 py-0.5 rounded">0</span>
+                <CartCount />
               </Link>
             </div>
           </div>
