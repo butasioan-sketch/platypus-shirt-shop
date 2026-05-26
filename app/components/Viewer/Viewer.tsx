@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ColorPicker from './ColorPicker';
 
 // ======================================================
-// PLATYPUS Premium Viewer (mit Snapshot)
+// PLATYPUS Premium Viewer (mit Auto-Rotate + Snapshot)
 // ======================================================
 
 interface ViewerProps {
@@ -16,9 +16,25 @@ export default function Viewer({ images }: ViewerProps) {
   const [color, setColor] = useState('#ffffff');
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
+  const [autoRotate, setAutoRotate] = useState(false);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const total = images.length;
+
+  // Auto Rotation
+  useEffect(() => {
+    if (autoRotate) {
+      intervalRef.current = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % total);
+      }, 120);
+    } else if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [autoRotate, total]);
 
   const changeFrame = (delta: number) => {
     setCurrentIndex((prev) => (prev + delta + total) % total);
@@ -27,6 +43,7 @@ export default function Viewer({ images }: ViewerProps) {
   const handleStart = (x: number) => {
     setIsDragging(true);
     setStartX(x);
+    setAutoRotate(false);
   };
 
   const handleMove = (x: number) => {
@@ -40,7 +57,6 @@ export default function Viewer({ images }: ViewerProps) {
 
   const takeSnapshot = () => {
     if (!containerRef.current) return;
-
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -53,17 +69,14 @@ export default function Viewer({ images }: ViewerProps) {
       canvas.width = img.width;
       canvas.height = img.height;
       ctx.drawImage(img, 0, 0);
-
-      // Farb-Overlay
       ctx.fillStyle = color;
       ctx.globalAlpha = 0.65;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       ctx.globalAlpha = 1;
 
-      // Download
       const link = document.createElement('a');
-      link.download = `platypus-shirt-${Date.now()}.png`;
-      link.href = canvas.toDataURL('image/png');
+      link.download = `platypus-${Date.now()}.png`;
+      link.href = canvas.toDataURL();
       link.click();
     };
   };
@@ -81,26 +94,20 @@ export default function Viewer({ images }: ViewerProps) {
         onTouchMove={(e) => handleMove(e.touches[0].clientX)}
         onTouchEnd={() => setIsDragging(false)}
       >
-        <img
-          src={images[currentIndex]}
-          alt="Shirt"
-          className="w-full h-auto pointer-events-none"
-          draggable={false}
-        />
-        <div 
-          className="absolute inset-0 mix-blend-multiply pointer-events-none transition-colors" 
-          style={{ backgroundColor: color, opacity: 0.7 }} 
-        />
+        <img src={images[currentIndex]} alt="Shirt" className="w-full h-auto" draggable={false} />
+        <div className="absolute inset-0 mix-blend-multiply pointer-events-none" style={{ backgroundColor: color, opacity: 0.7 }} />
       </div>
 
       <ColorPicker selectedColor={color} onChange={setColor} />
 
-      <button
-        onClick={takeSnapshot}
-        className="px-6 py-3 bg-white text-black rounded-2xl font-medium hover:bg-zinc-200 transition"
-      >
-        Snapshot herunterladen
-      </button>
+      <div className="flex gap-4">
+        <button onClick={() => setAutoRotate(!autoRotate)} className="px-5 py-2.5 rounded-2xl bg-zinc-800 hover:bg-zinc-700 text-sm">
+          {autoRotate ? 'Auto-Rotate stoppen' : 'Auto-Rotate starten'}
+        </button>
+        <button onClick={takeSnapshot} className="px-5 py-2.5 rounded-2xl bg-white text-black text-sm font-medium">
+          Snapshot
+        </button>
+      </div>
     </div>
   );
 }
