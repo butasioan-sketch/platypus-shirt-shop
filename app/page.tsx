@@ -1,44 +1,22 @@
-"use client";
-
-import { products } from "../data/products";
-import Checkout from "../components/Checkout";
-import ProductCard from "../components/ProductCard";
-import AppHeader from "../components/AppHeader";
-import MobileBottomBar from "../components/MobileBottomBar";
-import HeroSection from "../components/HeroSection";
-import ProductSectionHeader from "../components/ProductSectionHeader";
-import ProductSectionTrust from "../components/ProductSectionTrust";
-import PaymentResultBanner from "../components/PaymentResultBanner";
-import CheckoutResultGuides from "../components/CheckoutResultGuides";
-import CheckoutTestModeBanner from "../components/CheckoutTestModeBanner";
-import CheckoutStripeSuccessActions from "../components/CheckoutStripeSuccessActions";
-import AppFooter from "../components/AppFooter";
+import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#f6f3ed] text-neutral-950 pb-28">
-      <AppHeader />
+    <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center px-6">
+      <div className="max-w-2xl text-center">
+        <div className="uppercase tracking-[4px] text-xs text-zinc-500 mb-3">Premium Print-on-Demand</div>
+        <h1 className="text-7xl font-semibold tracking-tighter mb-6">PLATYPUS</h1>
+        <p className="text-xl text-zinc-400 mb-10 max-w-md mx-auto">
+          Exzellente Qualität. Echtzeit-Farbwechsel.<br />360° Erlebnis.
+        </p>
 
-      <section className="px-5 sm:px-10 pt-8 sm:pt-12">
-        <PaymentResultBanner />
-        <CheckoutResultGuides />
-        <CheckoutTestModeBanner />
-        <CheckoutStripeSuccessActions />
-        <HeroSection />
-
-        <ProductSectionHeader />
-        <ProductSectionTrust />
-
-        <div id="produkte" className="mt-8 grid gap-8 lg:grid-cols-2">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
-      </section>
-
-      <AppFooter />
-      <MobileBottomBar />
-      <Checkout />
-    </main>
+        <Link 
+          href="/product/1" 
+          className="inline-block px-10 py-4 bg-white text-black rounded-3xl font-medium text-lg active:scale-[0.985] transition"
+        >
+          Jetzt entdecken
+        </Link>
+      </div>
+    </div>
   );
 }
