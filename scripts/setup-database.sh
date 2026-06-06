@@ -1,0 +1,20 @@
+#!/bin/bash
+# Richtet Supabase für Order-Persistenz ein
+
+echo "=== Supabase Setup für PLATYPUS ==="
+echo "1. Gehe zu https://supabase.com und erstelle ein neues Projekt"
+echo "2. Kopiere die Project URL und den anon/public key"
+echo "3. Führe in Supabase SQL Editor aus:"
+echo ""
+echo "CREATE TABLE orders ("
+echo "  id SERIAL PRIMARY KEY,"
+echo "  stripe_session_id TEXT UNIQUE,"
+echo "  customer_email TEXT,"
+echo "  amount_total INTEGER,"
+echo "  status TEXT DEFAULT 'pending',"
+echo "  created_at TIMESTAMP DEFAULT NOW()"
+echo ");"
+echo ""
+echo "4. Setze in .env.local:"
+echo "  NEXT_PUBLIC_SUPABASE_URL=deine-url"
+echo "  NEXT_PUBLIC_SUPABASE_ANON_KEY=dein-key"

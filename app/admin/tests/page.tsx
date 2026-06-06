@@ -1,231 +1,180 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { products } from "../../../data/products";
-import { useTests } from "../../../store/tests";
-import TestRatingBadge from "../../../components/admin/TestRatingBadge";
-import TestStats from "../../../components/admin/TestStats";
-import ExportTestsButton from "../../../components/admin/ExportTestsButton";
-import TestPhotoPreview from "../../../components/admin/TestPhotoPreview";
-import ImageUploadField from "../../../components/admin/ImageUploadField";
-import TestChecklist from "../../../components/admin/TestChecklist";
-import QualityRecommendation from "../../../components/admin/QualityRecommendation";
+import { useState } from 'react';
+import Link from 'next/link';
 
-export default function WashTestsPage() {
-  const tests = useTests((state) => state.tests);
-  const addTest = useTests((state) => state.addTest);
-  const removeTest = useTests((state) => state.removeTest);
+interface TestResult {
+  name: string;
+  status: 'idle' | 'running' | 'ok' | 'fail';
+  detail: string;
+}
 
-  const [form, setForm] = useState({
-    productName: products[0].name,
-    color: products[0].color,
-    print: products[0].print,
-    pressTemp: "180°C",
-    pressTime: "60 Sek.",
-    pressure: "Mittel",
-    washCount: 1,
-    washTemp: "30°C",
-    dryer: "Nein",
-    rating: "Gut",
-    shrinkage: "0%",
-    beforePhoto: "",
-    afterPhoto: "",
-    notes: "",
-  });
+const INITIAL: TestResult[] = [
+  { name: 'Homepage erreichbar', status: 'idle', detail: '' },
+  { name: 'Produkt 1 erreichbar', status: 'idle', detail: '' },
+  { name: 'Warenkorb erreichbar', status: 'idle', detail: '' },
+  { name: 'Stripe API erreichbar', status: 'idle', detail: '' },
+  { name: 'Stripe Checkout erstellen', status: 'idle', detail: '' },
+  { name: 'Admin erreichbar', status: 'idle', detail: '' },
+  { name: 'Admin Orders erreichbar', status: 'idle', detail: '' },
+  { name: 'Impressum erreichbar', status: 'idle', detail: '' },
+  { name: 'Datenschutz erreichbar', status: 'idle', detail: '' },
+];
 
-  function saveTest() {
-    addTest({
-      id: crypto.randomUUID(),
-      ...form,
-      createdAt: new Date().toISOString(),
-    } as any);
+export default function AdminTestsPage() {
+  const [tests, setTests] = useState<TestResult[]>(INITIAL);
+  const [running, setRunning] = useState(false);
 
-    setForm({ ...form, notes: "", washCount: form.washCount + 1 });
-  }
+  const update = (i: number, patch: Partial<TestResult>) =>
+    setTests(prev => prev.map((t, idx) => idx === i ? { ...t, ...patch } : t));
+
+  const runAll = async () => {
+    setRunning(true);
+    setTests(INITIAL.map(t => ({ ...t, status: 'idle' })));
+
+    const checks = [
+      async (i: number) => {
+        update(i, { status: 'running' });
+        const r = await fetch('/');
+        update(i, { status: r.ok ? 'ok' : 'fail', detail: `HTTP ${r.status}` });
+      },
+      async (i: number) => {
+        update(i, { status: 'running' });
+        const r = await fetch('/product/1');
+        update(i, { status: r.ok ? 'ok' : 'fail', detail: `HTTP ${r.status}` });
+      },
+      async (i: number) => {
+        update(i, { status: 'running' });
+        const r = await fetch('/cart');
+        update(i, { status: r.ok ? 'ok' : 'fail', detail: `HTTP ${r.status}` });
+      },
+      async (i: number) => {
+        update(i, { status: 'running' });
+        const r = await fetch('/api/payments/create-checkout');
+        const d = await r.json();
+        update(i, { status: r.ok ? 'ok' : 'fail', detail: d.stripeKeyConfigured ? 'Key konfiguriert' : 'Demo Modus' });
+      },
+      async (i: number) => {
+        update(i, { status: 'running' });
+        const r = await fetch('/api/payments/create-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            paymentMethod: 'card',
+            reference: 'ADMIN-TEST',
+            shipping: 4.99,
+            total: 34.98,
+            items: [{ name: 'Test Shirt', size: 'M', price: 29.99, quantity: 1 }],
+          }),
+        });
+        const d = await r.json();
+        const ok = d.status === 'stripe_checkout_created';
+        update(i, { status: ok ? 'ok' : 'fail', detail: d.status || d.error || '' });
+      },
+      async (i: number) => {
+        update(i, { status: 'running' });
+        const r = await fetch('/admin');
+        update(i, { status: r.status === 200 || r.status === 401 ? 'ok' : 'fail', detail: `HTTP ${r.status}` });
+      },
+      async (i: number) => {
+        update(i, { status: 'running' });
+        const r = await fetch('/admin/orders');
+        update(i, { status: r.status === 200 || r.status === 401 ? 'ok' : 'fail', detail: `HTTP ${r.status}` });
+      },
+      async (i: number) => {
+        update(i, { status: 'running' });
+        const r = await fetch('/impressum');
+        update(i, { status: r.ok ? 'ok' : 'fail', detail: `HTTP ${r.status}` });
+      },
+      async (i: number) => {
+        update(i, { status: 'running' });
+        const r = await fetch('/datenschutz');
+        update(i, { status: r.ok ? 'ok' : 'fail', detail: `HTTP ${r.status}` });
+      },
+    ];
+
+    for (let i = 0; i < checks.length; i++) {
+      try { await checks[i](i); } catch (e) {
+        update(i, { status: 'fail', detail: e instanceof Error ? e.message : 'Fehler' });
+      }
+    }
+
+    setRunning(false);
+  };
+
+  const statusColor = (s: TestResult['status']) =>
+    ({ idle: '#333', running: '#facc15', ok: '#4ade80', fail: '#f87171' })[s];
+
+  const statusIcon = (s: TestResult['status']) =>
+    ({ idle: '○', running: '⟳', ok: '✓', fail: '✕' })[s];
+
+  const passed = tests.filter(t => t.status === 'ok').length;
+  const failed = tests.filter(t => t.status === 'fail').length;
 
   return (
-    <main className="min-h-screen bg-[#f6f3ed] text-black p-5 sm:p-10">
-      <Link href="/admin" className="font-black underline">
-        ← Zurück zum Admin
-      </Link>
+    <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
+      <header style={{ padding: '1.25rem 2rem', borderBottom: '1px solid #1a1a1a', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Link href="/admin" style={{ color: '#fff', textDecoration: 'none', fontWeight: 800, letterSpacing: '0.15em' }}>PLATYPUS</Link>
+        <Link href="/admin" style={{ color: '#555', fontSize: '0.8rem', textDecoration: 'none' }}>← Admin</Link>
+      </header>
 
-      <div className="mt-5 bg-white rounded-[2rem] border border-neutral-200 shadow-xl p-6 sm:p-10">
-        <p className="text-neutral-500 font-black uppercase tracking-widest text-xs">
-          Qualitätssicherung
-        </p>
-
-        <h1 className="mt-3 text-4xl sm:text-6xl font-black">
-          Wasch- & Drucktest Protokoll
-        </h1>
-
-        <p className="mt-4 text-neutral-600">
-          Für echte Produktion: Presswerte, Waschgang, Schrumpfung, Haptik und Haltbarkeit dokumentieren.
-        </p>
-      </div>
-
-      <TestStats tests={tests} />
-      <QualityRecommendation tests={tests} />
-      <ExportTestsButton tests={tests} />
-
-      <div className="mt-8 grid gap-6 lg:grid-cols-[420px_1fr]">
-        <div className="space-y-6">
-        <TestChecklist />
-
-        <div className="bg-white rounded-[2rem] border border-neutral-200 shadow-xl p-6">
-          <h2 className="text-2xl font-black mb-5">Neuer Test</h2>
-
-          <select
-            className="w-full mb-3 p-3 rounded-xl border border-neutral-300 bg-neutral-50"
-            value={form.productName}
-            onChange={(e) => {
-              const product = products.find((p) => p.name === e.target.value)!;
-              setForm({
-                ...form,
-                productName: product.name,
-                color: product.color,
-                print: product.print,
-              });
-            }}
-          >
-            {products.map((product) => (
-              <option key={product.id}>{product.name}</option>
-            ))}
-          </select>
-
-          <div className="grid grid-cols-2 gap-3">
-            <input className="p-3 rounded-xl border border-neutral-300 bg-neutral-50" value={form.pressTemp} onChange={(e) => setForm({ ...form, pressTemp: e.target.value })} placeholder="Temperatur" />
-            <input className="p-3 rounded-xl border border-neutral-300 bg-neutral-50" value={form.pressTime} onChange={(e) => setForm({ ...form, pressTime: e.target.value })} placeholder="Presszeit" />
+      <div style={{ maxWidth: '700px', margin: '3rem auto', padding: '0 2rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+          <div>
+            <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.25rem' }}>System Tests</h1>
+            {tests.some(t => t.status !== 'idle') && (
+              <p style={{ color: '#555', fontSize: '0.875rem' }}>
+                {passed} bestanden · {failed} fehlgeschlagen
+              </p>
+            )}
           </div>
-
-          <select className="w-full mt-3 p-3 rounded-xl border border-neutral-300 bg-neutral-50" value={form.pressure} onChange={(e) => setForm({ ...form, pressure: e.target.value })}>
-            <option>Leicht</option>
-            <option>Mittel</option>
-            <option>Stark</option>
-          </select>
-
-          <div className="grid grid-cols-2 gap-3 mt-3">
-            <input type="number" className="p-3 rounded-xl border border-neutral-300 bg-neutral-50" value={form.washCount} onChange={(e) => setForm({ ...form, washCount: Number(e.target.value) })} placeholder="Waschgang" />
-            <input className="p-3 rounded-xl border border-neutral-300 bg-neutral-50" value={form.washTemp} onChange={(e) => setForm({ ...form, washTemp: e.target.value })} placeholder="Waschtemp." />
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 mt-3">
-            <select className="p-3 rounded-xl border border-neutral-300 bg-neutral-50" value={form.dryer} onChange={(e) => setForm({ ...form, dryer: e.target.value })}>
-              <option>Trockner: Nein</option>
-              <option>Trockner: Ja</option>
-            </select>
-
-            <input className="p-3 rounded-xl border border-neutral-300 bg-neutral-50" value={form.shrinkage} onChange={(e) => setForm({ ...form, shrinkage: e.target.value })} placeholder="Schrumpfung" />
-          </div>
-
-          <select
-            className="w-full mt-3 p-3 rounded-xl border border-neutral-300 bg-neutral-50"
-            value={form.rating}
-            onChange={(e) => setForm({ ...form, rating: e.target.value })}
-          >
-            <option>Sehr gut</option>
-            <option>Gut</option>
-            <option>Okay</option>
-            <option>Problem</option>
-            <option>Nicht verkaufen</option>
-          </select>
-
-          <div className="mt-3 grid gap-3">
-            <ImageUploadField
-              label="Vorher Foto hochladen"
-              value={form.beforePhoto}
-              onChange={(value) => setForm({ ...form, beforePhoto: value })}
-            />
-
-            <ImageUploadField
-              label="Nachher Foto hochladen"
-              value={form.afterPhoto}
-              onChange={(value) => setForm({ ...form, afterPhoto: value })}
-            />
-          </div>
-
-          <textarea
-            className="w-full mt-3 mb-4 p-3 rounded-xl border border-neutral-300 bg-neutral-50 min-h-32"
-            value={form.notes}
-            onChange={(e) => setForm({ ...form, notes: e.target.value })}
-            placeholder="Notizen: Farbe, Risse, Schrumpfung, Haptik, Foto vorher/nachher?"
-          />
-
-          <button onClick={saveTest} className="w-full bg-black text-white py-4 rounded-2xl font-black">
-            Test speichern
+          <button onClick={runAll} disabled={running} style={{
+            background: running ? '#1a1a1a' : '#fff',
+            color: running ? '#555' : '#000',
+            border: 'none', padding: '0.75rem 1.5rem',
+            borderRadius: '999px', fontWeight: 700,
+            fontSize: '0.875rem', cursor: running ? 'not-allowed' : 'pointer',
+          }}>
+            {running ? 'Läuft...' : 'Alle testen'}
           </button>
         </div>
-      </div>
 
-        <div className="space-y-4">
-          {tests.length === 0 && (
-            <div className="bg-white rounded-[2rem] border border-neutral-200 shadow-xl p-6">
-              <p className="font-black text-neutral-500">Noch keine Waschtests gespeichert.</p>
-            </div>
-          )}
-
-          {tests.map((test: any) => (
-            <div key={test.id} className="bg-white rounded-[2rem] border border-neutral-200 shadow-xl p-6">
-              <div className="flex justify-between gap-4">
-                <div>
-                  <p className="text-xs font-black text-neutral-500 uppercase">
-                    {new Date(test.createdAt).toLocaleString("de-DE")}
-                  </p>
-
-                  <h2 className="text-2xl font-black mt-1">{test.productName}</h2>
-
-                  <p className="text-neutral-600">
-                    {test.color} · {test.print} · Waschgang {test.washCount}
-                  </p>
-
-                  <div className="mt-3">
-                    <TestRatingBadge rating={test.rating} />
-                  </div>
-                </div>
-
-                <button onClick={() => removeTest(test.id)} className="text-red-600 font-black">
-                  Löschen
-                </button>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          {tests.map((test, i) => (
+            <div key={i} style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: '10px', padding: '1rem 1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <span style={{ color: statusColor(test.status), fontSize: '1rem', minWidth: '16px' }}>
+                  {statusIcon(test.status)}
+                </span>
+                <span style={{ fontSize: '0.875rem' }}>{test.name}</span>
               </div>
-
-              <div className="mt-4 grid sm:grid-cols-5 gap-3">
-                <div className="rounded-2xl bg-neutral-50 border border-neutral-200 p-3">
-                  <p className="text-xs text-neutral-500 font-bold">Presse</p>
-                  <p className="font-black">{test.pressTemp}</p>
-                </div>
-
-                <div className="rounded-2xl bg-neutral-50 border border-neutral-200 p-3">
-                  <p className="text-xs text-neutral-500 font-bold">Zeit</p>
-                  <p className="font-black">{test.pressTime}</p>
-                </div>
-
-                <div className="rounded-2xl bg-neutral-50 border border-neutral-200 p-3">
-                  <p className="text-xs text-neutral-500 font-bold">Druck</p>
-                  <p className="font-black">{test.pressure}</p>
-                </div>
-
-                <div className="rounded-2xl bg-neutral-50 border border-neutral-200 p-3">
-                  <p className="text-xs text-neutral-500 font-bold">Wäsche</p>
-                  <p className="font-black">{test.washTemp}</p>
-                </div>
-
-                <div className="rounded-2xl bg-neutral-50 border border-neutral-200 p-3">
-                  <p className="text-xs text-neutral-500 font-bold">Schrumpfung</p>
-                  <p className="font-black">{test.shrinkage}</p>
-                </div>
-              </div>
-
-              <TestPhotoPreview beforePhoto={test.beforePhoto} afterPhoto={test.afterPhoto} />
-
-              {test.notes && (
-                <p className="mt-4 rounded-2xl bg-neutral-50 border border-neutral-200 p-4 text-sm">
-                  {test.notes}
-                </p>
+              {test.detail && (
+                <span style={{ color: '#555', fontSize: '0.75rem', fontFamily: 'monospace' }}>{test.detail}</span>
               )}
             </div>
           ))}
         </div>
+
+        {failed > 0 && (
+          <div style={{ marginTop: '2rem', background: '#1a0000', border: '1px solid #3a0000', borderRadius: '12px', padding: '1.25rem' }}>
+            <p style={{ color: '#f87171', fontWeight: 700, marginBottom: '0.5rem' }}>
+              {failed} Test{failed > 1 ? 's' : ''} fehlgeschlagen
+            </p>
+            <p style={{ color: '#888', fontSize: '0.8rem' }}>
+              Stripe Fehler → STRIPE_SECRET_KEY in Vercel setzen<br/>
+              404 Fehler → Build neu deployen
+            </p>
+          </div>
+        )}
+
+        {passed === tests.length && tests.every(t => t.status === 'ok') && (
+          <div style={{ marginTop: '2rem', background: '#001a00', border: '1px solid #003a00', borderRadius: '12px', padding: '1.25rem', textAlign: 'center' }}>
+            <p style={{ color: '#4ade80', fontWeight: 700, fontSize: '1.125rem' }}>
+              ✓ Alle Tests bestanden — Shop ist ready
+            </p>
+          </div>
+        )}
       </div>
-    </main>
+    </div>
   );
 }

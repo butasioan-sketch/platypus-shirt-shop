@@ -1,0 +1,10 @@
+#!/bin/bash
+echo "🔍 Öffne http://localhost:3000/admin/orders"
+echo "📌 Drücke F12 → Console → gib folgenden Code ein:"
+echo ""
+echo "  const orders = JSON.parse(localStorage.getItem('platypus_orders') || '[]');"
+echo "  console.log(orders);"
+echo "  console.log('Anzahl Orders:', orders.length);"
+echo ""
+echo "Falls du alle Orders löschen willst:"
+echo "  localStorage.removeItem('platypus_orders');"

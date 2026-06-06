@@ -1,9 +1,8 @@
 export default function Loading() {
   return (
-    <div className="flex items-center justify-center h-screen bg-[#f6f3ed]">
-      <div className="text-center">
-        <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin mx-auto" />
-        <p className="mt-4 font-black text-black">Lade Shop...</p>
+    <div style={{ minHeight: '100vh', background: '#0a0a0a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ color: '#333', fontSize: '0.875rem', letterSpacing: '0.3em', textTransform: 'uppercase' }}>
+        Laden...
       </div>
     </div>
   );

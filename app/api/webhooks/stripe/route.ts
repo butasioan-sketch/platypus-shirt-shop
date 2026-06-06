@@ -1,45 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { execSync } from 'child_process';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-02-24.acacia',
-});
 
 export async function POST(request: NextRequest) {
+  const key = process.env.STRIPE_SECRET_KEY;
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
+  if (!key?.startsWith('sk_')) {
+    return NextResponse.json({ received: true, warning: 'no stripe key' });
+  }
+
+  const stripe = new Stripe(key);
   const body = await request.text();
   const signature = request.headers.get('stripe-signature') || '';
 
-  let event;
+  if (!webhookSecret) {
+    console.warn('STRIPE_WEBHOOK_SECRET fehlt');
+    return NextResponse.json({ received: true, warning: 'no webhook secret' });
+  }
 
+  let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      process.env.STRIPE_WEBHOOK_SECRET || ''
-    );
-  } catch (err: any) {
-    console.error('Webhook signature verification failed:', err.message);
-    return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
+    event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : 'Unknown';
+    return NextResponse.json({ error: msg }, { status: 400 });
   }
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session;
 
-    const email = session.customer_email || 'unknown@email.com';
-    const amount = session.amount_total || 0;
-    const currency = session.currency || 'eur';
-
-    console.log('Payment successful! Creating order...');
-
     try {
-      // Ruft das Bash-Script auf, um die Order anzulegen
-      execSync(
-        `./scripts/create-order-from-payment.sh "${email}" ${amount} "${currency.toUpperCase()}" "${session.id}"`,
-        { stdio: 'inherit' }
-      );
-    } catch (error) {
-      console.error('Failed to create order from webhook:', error);
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://platypus-shirt-shop.vercel.app';
+      await fetch(`${siteUrl}/api/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          stripeSessionId: session.id,
+          customerEmail: session.customer_email,
+          amountTotal: (session.amount_total || 0) / 100,
+          currency: session.currency?.toUpperCase() || 'EUR',
+          locale: session.metadata?.locale || 'de',
+          shippingCountry: session.metadata?.shippingCountry || 'DE',
+          items: [],
+          status: 'paid',
+        }),
+      });
+      console.log('Order erstellt für Session:', session.id);
+    } catch (err) {
+      console.error('Order Erstellung fehlgeschlagen:', err);
     }
   }
 

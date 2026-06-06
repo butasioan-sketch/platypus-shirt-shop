@@ -1,90 +1,54 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { products } from "../../../data/products";
-import { useInventory } from "../../../store/inventory";
-import RestockList from "../../../components/admin/RestockList";
-import ExportInventoryButton from "../../../components/admin/ExportInventoryButton";
+import Link from 'next/link';
+
+const PRODUCTS = [
+  { id: '1', name: 'Essential Weiß', price: 29.99, sizes: ['S', 'M', 'L', 'XL', 'XXL'], status: 'aktiv', color: '#f5f5f5' },
+  { id: '2', name: 'Essential Schwarz', price: 29.99, sizes: ['S', 'M', 'L', 'XL', 'XXL'], status: 'aktiv', color: '#111111' },
+];
 
 export default function InventoryPage() {
-  const stock = useInventory((state) => state.stock);
-  const setStock = useInventory((state) => state.setStock);
-  const setMinStock = useInventory((state) => state.setMinStock);
-
   return (
-    <main className="min-h-screen bg-[#f6f3ed] text-black p-5 sm:p-10">
-      <Link href="/admin" className="font-black underline">
-        ← Zurück zum Admin
-      </Link>
+    <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
+      <header style={{ padding: '1.25rem 2rem', borderBottom: '1px solid #1a1a1a', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Link href="/admin" style={{ color: '#fff', textDecoration: 'none', fontWeight: 800, letterSpacing: '0.15em' }}>PLATYPUS</Link>
+        <Link href="/admin" style={{ color: '#555', fontSize: '0.8rem', textDecoration: 'none' }}>← Admin</Link>
+      </header>
 
-      <div className="mt-5 bg-white rounded-[2rem] border border-neutral-200 shadow-xl p-6 sm:p-10">
-        <p className="text-neutral-500 font-black uppercase tracking-widest text-xs">
-          Lagerverwaltung
-        </p>
+      <div style={{ maxWidth: '800px', margin: '3rem auto', padding: '0 2rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+          <h1 style={{ fontSize: '2rem', fontWeight: 800 }}>Inventory</h1>
+          <span style={{ color: '#555', fontSize: '0.875rem' }}>{PRODUCTS.length} Produkte</span>
+        </div>
 
-        <h1 className="mt-3 text-4xl sm:text-6xl font-black">
-          T-Shirt Bestand
-        </h1>
-
-        <p className="mt-4 text-neutral-600">
-          Bestand nach Farbe und Größe verwalten. Warnung erscheint bei niedrigem Lagerbestand.
-        </p>
-      </div>
-
-      <RestockList />
-      <ExportInventoryButton stock={stock} />
-
-      <div className="mt-8 grid gap-6">
-        {products.map((product) => (
-          <div key={product.id} className="bg-white rounded-[2rem] border border-neutral-200 shadow-xl p-6">
-            <h2 className="text-3xl font-black">{product.name}</h2>
-            <p className="text-neutral-600">{product.color} · {product.print}</p>
-
-            <div className="mt-6 grid gap-3">
-              {stock
-                .filter((item) => item.productId === product.id)
-                .map((item) => {
-                  const low = item.stock <= item.minStock;
-
-                  return (
-                    <div
-                      key={`${item.productId}-${item.size}`}
-                      className={`grid grid-cols-[70px_1fr_1fr] gap-3 items-center rounded-2xl border p-4 ${
-                        low
-                          ? "bg-red-50 border-red-200"
-                          : "bg-neutral-50 border-neutral-200"
-                      }`}
-                    >
-                      <p className="text-xl font-black">{item.size}</p>
-
-                      <input
-                        type="number"
-                        value={item.stock}
-                        onChange={(e) =>
-                          setStock(product.id, item.size, Number(e.target.value))
-                        }
-                        className="w-full rounded-xl border border-neutral-300 bg-white p-3 font-black"
-                      />
-
-                      <input
-                        type="number"
-                        value={item.minStock}
-                        onChange={(e) =>
-                          setMinStock(product.id, item.size, Number(e.target.value))
-                        }
-                        className="w-full rounded-xl border border-neutral-300 bg-white p-3 font-black"
-                      />
-
-                      <p className="col-span-3 text-sm font-black">
-                        {low ? "⚠️ Nachbestellen" : "✅ Bestand ok"}
-                      </p>
-                    </div>
-                  );
-                })}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {PRODUCTS.map((p) => (
+            <div key={p.id} style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: '12px', padding: '1.5rem', display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+              <div style={{ width: '60px', height: '60px', background: p.color, borderRadius: '8px', flexShrink: 0, border: '1px solid #333' }} />
+              <div style={{ flex: 1 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <p style={{ fontWeight: 700 }}>{p.name}</p>
+                  <p style={{ fontWeight: 700 }}>€{p.price}</p>
+                </div>
+                <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
+                  {p.sizes.map(s => (
+                    <span key={s} style={{ background: '#1a1a1a', border: '1px solid #2a2a2a', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', color: '#888' }}>{s}</span>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                  <span style={{ background: '#052e16', color: '#4ade80', padding: '2px 10px', borderRadius: '999px', fontSize: '0.75rem' }}>{p.status}</span>
+                  <Link href={`/product/${p.id}`} style={{ color: '#555', fontSize: '0.75rem', textDecoration: 'none' }}>Produktseite →</Link>
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
+
+        <div style={{ marginTop: '2rem', background: '#111', border: '1px solid #1a1a1a', borderRadius: '12px', padding: '1.5rem' }}>
+          <p style={{ color: '#555', fontSize: '0.8rem', marginBottom: '0.5rem' }}>Print-on-Demand System</p>
+          <p style={{ color: '#888', fontSize: '0.875rem' }}>Produkte werden nach Bestellung individuell produziert. Kein Lagerbestand notwendig.</p>
+        </div>
       </div>
-    </main>
+    </div>
   );
 }

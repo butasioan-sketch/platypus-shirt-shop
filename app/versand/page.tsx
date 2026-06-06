@@ -1,64 +1,33 @@
-import Link from "next/link";
-import { shippingMethods, freeShippingFrom } from "../../data/shipping";
+import Link from 'next/link';
 
 export default function VersandPage() {
   return (
-    <main className="min-h-screen bg-[#f6f3ed] p-5 sm:p-10 text-black">
-      <div className="mx-auto max-w-5xl">
-        <Link href="/" className="font-black underline">
-          ← Zurück zum Shop
-        </Link>
-
-        <div className="mt-5 rounded-[2rem] bg-white border border-neutral-200 shadow-xl p-6 sm:p-10">
-          <p className="text-neutral-500 font-black uppercase tracking-widest text-xs">
-            Versand & Zahlung
-          </p>
-
-          <h1 className="mt-3 text-4xl sm:text-6xl font-black">
-            Versandoptionen für deine T-Shirts
-          </h1>
-
-          <p className="mt-4 text-neutral-600 max-w-2xl">
-            Wähle im Checkout den passenden Versand. Kostenloser Versand ab {freeShippingFrom} €.
-          </p>
+    <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
+      <header style={{ padding: '1.25rem 2rem', borderBottom: '1px solid #1a1a1a', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontSize: '1.25rem', fontWeight: 800, letterSpacing: '0.15em' }}>PLATYPUS</Link>
+        <Link href="/" style={{ color: '#555', fontSize: '0.8rem', textDecoration: 'none' }}>← Zurück</Link>
+      </header>
+      <div style={{ maxWidth: '700px', margin: '3rem auto', padding: '0 2rem' }}>
+        <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '2rem' }}>Versand</h1>
+        <div dangerouslySetInnerHTML={{ __html: `<div style='display:grid;gap:1.5rem'>
+        <div style='background:#111;border:1px solid #1a1a1a;border-radius:12px;padding:1.5rem'>
+          <h2 style='font-size:1.125rem;margin-bottom:0.5rem'>Deutschland</h2>
+          <p style='color:#888;font-size:0.875rem'>€4.99 — 3–5 Werktage nach Produktion</p>
         </div>
-
-        <div className="mt-8 grid gap-5 sm:grid-cols-2">
-          {shippingMethods.map((method) => (
-            <div key={method.id} className="rounded-[2rem] bg-white border border-neutral-200 shadow-xl p-6">
-              <div className="flex justify-between gap-4">
-                <div>
-                  <h2 className="text-2xl font-black">{method.name}</h2>
-                  <p className="mt-1 text-neutral-600">{method.bestFor}</p>
-                </div>
-
-                <p className="text-2xl font-black">{method.price.toFixed(2)} €</p>
-              </div>
-
-              <div className="mt-5 rounded-2xl bg-neutral-50 border border-neutral-200 p-4">
-                <p className="text-sm text-neutral-500 font-bold">Lieferzeit</p>
-                <p className="font-black">{method.time}</p>
-              </div>
-
-              <a
-                href={method.url}
-                target="_blank"
-                className="mt-5 inline-block rounded-2xl bg-black px-5 py-3 font-black text-white"
-              >
-                Anbieter öffnen
-              </a>
-            </div>
-          ))}
+        <div style='background:#111;border:1px solid #1a1a1a;border-radius:12px;padding:1.5rem'>
+          <h2 style='font-size:1.125rem;margin-bottom:0.5rem'>EU</h2>
+          <p style='color:#888;font-size:0.875rem'>€8.99 — 5–10 Werktage</p>
         </div>
-
-        <div className="mt-8 rounded-[2rem] bg-black text-white p-6 sm:p-8 shadow-xl">
-          <h2 className="text-3xl font-black">Zahlungsarten</h2>
-          <p className="mt-3 text-white/70">
-            PayPal, Klarna, Revolut Pay, Apple Pay, Google Pay, Visa / Mastercard,
-            Sofortüberweisung, SEPA Lastschrift und Girokonto / Überweisung sind strukturell vorbereitet.
-          </p>
+        <div style='background:#111;border:1px solid #1a1a1a;border-radius:12px;padding:1.5rem'>
+          <h2 style='font-size:1.125rem;margin-bottom:0.5rem'>Produktion</h2>
+          <p style='color:#888;font-size:0.875rem'>Print-on-Demand: jedes Shirt wird nach Bestellung gedruckt. Produktionszeit: 2–3 Werktage.</p>
         </div>
+        <div style='background:#111;border:1px solid #1a1a1a;border-radius:12px;padding:1.5rem'>
+          <h2 style='font-size:1.125rem;margin-bottom:0.5rem'>Rückgabe</h2>
+          <p style='color:#888;font-size:0.875rem'>14 Tage ab Erhalt. Rücksendekosten trägt der Käufer.</p>
+        </div>
+      </div>` }} />
       </div>
-    </main>
+    </div>
   );
 }

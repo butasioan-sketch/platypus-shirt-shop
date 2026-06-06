@@ -1,16 +1,12 @@
 {
-  "name": "PLATYPUS Shirt Shop",
+  "name": "PLATYPUS Shop",
   "short_name": "PLATYPUS",
+  "description": "Premium Print-on-Demand T-Shirts",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f6f3ed",
-  "theme_color": "#000000",
-  "orientation": "portrait",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
   "icons": [
-    {
-      "src": "/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
-    }
+    { "src": "/favicon.ico", "sizes": "any", "type": "image/x-icon" }
   ]
 }

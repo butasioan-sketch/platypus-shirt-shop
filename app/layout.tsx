@@ -1,35 +1,28 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import Link from 'next/link';
-import CartCount from './components/CartCount';
-import Footer from './components/Footer';
+import { LocaleProvider } from './components/LocaleProvider';
+import ChatWidgetWrapper from './components/ChatWidgetWrapper';
 
 export const metadata: Metadata = {
-  title: 'PLATYPUS',
-  description: 'Premium Print-on-Demand',
+  title: 'PLATYPUS — Premium Print-on-Demand T-Shirts',
+  description: 'Dein eigenes Shirt. 360° Viewer. Stripe Checkout. Produktion auf Bestellung. Versand in DE & RO.',
+  keywords: 'platypus, t-shirt, print on demand, custom shirt, 360 viewer, tricouri, romania',
+  openGraph: {
+    title: 'PLATYPUS — Premium T-Shirts',
+    description: 'Dein Shirt. Cinematic 360° Viewer. Stripe Checkout.',
+    type: 'website',
+    url: 'https://platypus-shirt-shop.vercel.app',
+  },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="de">
-      <body className="bg-zinc-950 text-white">
-        <nav className="border-b border-zinc-900">
-          <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-            <Link href="/" className="font-semibold tracking-widest text-xl">PLATYPUS</Link>
-            <div className="flex items-center gap-8 text-sm">
-              <Link href="/product/1" className="hover:text-zinc-400 transition">Shop</Link>
-              <Link href="/cart" className="hover:text-zinc-400 transition flex items-center gap-2">
-                Warenkorb <CartCount />
-              </Link>
-            </div>
-          </div>
-        </nav>
-        {children}
-        <Footer />
+      <body style={{ margin: 0, padding: 0, background: '#0a0a0a', color: '#fff' }}>
+        <LocaleProvider>
+          {children}
+          <ChatWidgetWrapper />
+        </LocaleProvider>
       </body>
     </html>
   );

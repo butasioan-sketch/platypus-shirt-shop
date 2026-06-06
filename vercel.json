@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/impressum", "destination": "/impressum" },
+    { "source": "/agb", "destination": "/agb" },
+    { "source": "/datenschutz", "destination": "/datenschutz" },
+    { "source": "/versand", "destination": "/versand" },
+    { "source": "/admin/:path*", "destination": "/admin/:path*" }
+  ]
+}

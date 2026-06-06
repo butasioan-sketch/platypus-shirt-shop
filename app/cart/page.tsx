@@ -1,91 +1,127 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { products } from '@/app/lib/products';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 interface CartItem {
   id: string;
-  quantity: number;
+  name: string;
   price: number;
+  size: string;
+  fit?: string;
+  quantity: number;
 }
 
 export default function CartPage() {
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem('cart') || '[]');
-    setCart(saved);
+    try {
+      const cart = JSON.parse(localStorage.getItem('platypus_cart') || '[]');
+      setItems(cart);
+    } catch { setItems([]); }
   }, []);
 
-  const updateCart = (newCart: CartItem[]) => {
-    setCart(newCart);
-    localStorage.setItem('cart', JSON.stringify(newCart));
-    window.dispatchEvent(new Event('storage'));
+  const remove = (index: number) => {
+    const updated = items.filter((_, i) => i !== index);
+    setItems(updated);
+    localStorage.setItem('platypus_cart', JSON.stringify(updated));
   };
 
-  const changeQuantity = (index: number, newQuantity: number) => {
-    if (newQuantity < 1) return;
-    const newCart = [...cart];
-    newCart[index].quantity = newQuantity;
-    updateCart(newCart);
-  };
+  const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
+  const shipping = items.length > 0 ? 4.99 : 0;
+  const total = subtotal + shipping;
 
-  const removeItem = (index: number) => {
-    const newCart = cart.filter((_, i) => i !== index);
-    updateCart(newCart);
-  };
-
-  const clearCart = () => updateCart([]);
-
-  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-  const getProductName = (id: string) => {
-    return products[id as keyof typeof products]?.name || 'Produkt';
+  const checkout = async () => {
+    if (items.length === 0) return;
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/payments/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          paymentMethod: 'card',
+          reference: `CART-${Date.now()}`,
+          shipping,
+          total,
+          items: items.map(i => ({ name: i.name, size: i.size, price: i.price, quantity: i.quantity })),
+        }),
+      });
+      const data = await res.json();
+      if (data.redirectUrl) {
+        localStorage.removeItem('platypus_cart');
+        window.location.href = data.redirectUrl;
+      } else {
+        setError('Checkout Fehler. Bitte erneut versuchen.');
+      }
+    } catch {
+      setError('Verbindungsfehler.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white px-6 py-16">
-      <div className="max-w-2xl mx-auto">
-        <div className="flex justify-between items-center mb-10">
-          <h1 className="text-4xl font-semibold tracking-tight">Warenkorb</h1>
-          {cart.length > 0 && (
-            <button onClick={clearCart} className="text-sm text-red-400 hover:text-red-500">
-              Warenkorb leeren
-            </button>
-          )}
-        </div>
+    <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
+      <header style={{ padding: '1.25rem 2rem', borderBottom: '1px solid #1a1a1a', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Link href="/" style={{ color: '#fff', textDecoration: 'none', fontSize: '1.25rem', fontWeight: 800, letterSpacing: '0.15em' }}>PLATYPUS</Link>
+        <span style={{ color: '#555', fontSize: '0.875rem' }}>Warenkorb</span>
+      </header>
 
-        {cart.length === 0 ? (
-          <p className="text-zinc-400">Dein Warenkorb ist leer.</p>
+      <div style={{ maxWidth: '700px', margin: '3rem auto', padding: '0 2rem' }}>
+        <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '2rem' }}>Warenkorb</h1>
+
+        {items.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '4rem', color: '#555' }}>
+            <p style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Warenkorb ist leer</p>
+            <Link href="/" style={{ color: '#fff', fontSize: '0.875rem' }}>← Zurück zum Shop</Link>
+          </div>
         ) : (
           <>
-            <div className="space-y-6">
-              {cart.map((item, index) => (
-                <div key={index} className="flex justify-between items-center border-b border-zinc-800 pb-5">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
+              {items.map((item, i) => (
+                <div key={i} style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: '12px', padding: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <div className="font-medium">{getProductName(item.id)}</div>
-                    <div className="flex items-center gap-3 mt-1">
-                      <button onClick={() => changeQuantity(index, item.quantity - 1)} className="px-2 py-0.5 bg-zinc-800 rounded">-</button>
-                      <span className="font-mono">{item.quantity}</span>
-                      <button onClick={() => changeQuantity(index, item.quantity + 1)} className="px-2 py-0.5 bg-zinc-800 rounded">+</button>
-                    </div>
+                    <p style={{ fontWeight: 700, marginBottom: '0.25rem' }}>{item.name}</p>
+                    <p style={{ color: '#666', fontSize: '0.8rem' }}>Größe: {item.size} | {item.fit || 'Regular'} | Menge: {item.quantity}</p>
                   </div>
-                  <div className="flex items-center gap-8">
-                    <div>€{(item.price * item.quantity).toFixed(2)}</div>
-                    <button onClick={() => removeItem(index)} className="text-red-400 hover:text-red-500 text-sm">Entfernen</button>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                    <p style={{ fontWeight: 700 }}>€{(item.price * item.quantity).toFixed(2)}</p>
+                    <button onClick={() => remove(i)} style={{ background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontSize: '1.25rem' }}>×</button>
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="mt-8 flex justify-between text-2xl font-medium">
-              <div>Gesamt</div>
-              <div>€{total.toFixed(2)}</div>
+            <div style={{ borderTop: '1px solid #1a1a1a', paddingTop: '1.5rem', marginBottom: '2rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', color: '#888' }}>
+                <span>Zwischensumme</span><span>€{subtotal.toFixed(2)}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', color: '#888' }}>
+                <span>Versand</span><span>€{shipping.toFixed(2)}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 800, fontSize: '1.25rem' }}>
+                <span>Gesamt</span><span>€{total.toFixed(2)}</span>
+              </div>
             </div>
 
-            <button className="mt-8 w-full py-4 bg-white text-black rounded-3xl font-medium text-lg">
-              Zur Kasse
+            {error && <p style={{ color: '#f87171', marginBottom: '1rem', fontSize: '0.875rem' }}>{error}</p>}
+
+            <button onClick={checkout} disabled={loading} style={{
+              width: '100%', background: '#fff', color: '#000', padding: '1.1rem',
+              borderRadius: '12px', fontWeight: 800, fontSize: '1rem',
+              border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.7 : 1, letterSpacing: '0.05em',
+            }}>
+              {loading ? 'Weiterleitung zu Stripe...' : `JETZT BEZAHLEN — €${total.toFixed(2)}`}
             </button>
+
+            <p style={{ textAlign: 'center', color: '#555', fontSize: '0.75rem', marginTop: '1rem' }}>
+              🔒 Sichere Zahlung via Stripe
+            </p>
           </>
         )}
       </div>

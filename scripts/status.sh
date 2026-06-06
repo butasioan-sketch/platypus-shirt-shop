@@ -1,11 +1,12 @@
 #!/bin/bash
-echo "=== PLATYPUS Status ==="
+echo "════════════════════════════════════════════════════════════"
+echo " PLATYPUS Status"
+echo "════════════════════════════════════════════════════════════"
 echo ""
-echo "Git:"
-git status --short
+echo "Branch: $(git branch --show-current)"
+echo "Letzter Commit: $(git log -1 --oneline)"
 echo ""
-echo "Letzter Commit:"
-git log -1 --oneline
+echo "Deploy Scripts:"
+ls -1 scripts/*.sh 2>/dev/null | wc -l | xargs echo "  Anzahl:"
 echo ""
-echo "Vercel Prozess läuft:"
-ps aux | grep vercel | grep -v grep || echo "Kein Vercel Prozess aktiv"
+echo "════════════════════════════════════════════════════════════"

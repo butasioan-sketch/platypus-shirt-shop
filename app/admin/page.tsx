@@ -1,175 +1,108 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-
-import { useOrders } from "../../store/orders";
-import { getPaymentLabel, getPaymentProvider } from "../../lib/paymentLabels";
-import PaymentStatusBadge from "../../components/PaymentStatusBadge";
-import ExportOrdersButton from "../../components/admin/ExportOrdersButton";
-import PrintOrderButton from "../../components/admin/PrintOrderButton";
-import OrderSearchFilter from "../../components/admin/OrderSearchFilter";
-import OrderTimeline from "../../components/admin/OrderTimeline";
-import AdminQuickLinks from "../../components/admin/AdminQuickLinks";
-import StockWarnings from "../../components/StockWarnings";
-import AdminStatsOverview from "../../components/admin/AdminStatsOverview";
-import LaunchChecklistAdmin from "../../components/LaunchChecklistAdmin";
-import ShopStatusBar from "../../components/ShopStatusBar";
-import TodayActionPlan from "../../components/admin/TodayActionPlan";
-import NextSalesActions from "../../components/admin/NextSalesActions";
-import AdminRevenueGoal from "../../components/admin/AdminRevenueGoal";
-import FirstCustomerPlan from "../../components/admin/FirstCustomerPlan";
-import LaunchScore from "../../components/admin/LaunchScore";
-import MarketingLinksPanel from "../../components/admin/MarketingLinksPanel";
-import ShareMessageGenerator from "../../components/admin/ShareMessageGenerator";
-import CustomerFeedbackPanel from "../../components/admin/CustomerFeedbackPanel";
+import Link from 'next/link';
+import { useState, useEffect } from 'react';
 
 export default function AdminPage() {
-  const { orders, updateStatus } = useOrders();
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("all");
+  const [orderCount, setOrderCount] = useState(0);
+  const [stripeStatus, setStripeStatus] = useState<'loading' | 'ok' | 'demo'>('loading');
 
-  const filteredOrders = orders.filter((order: any) => {
-    const query = search.toLowerCase();
+  useEffect(() => {
+    try {
+      const orders = JSON.parse(localStorage.getItem('platypus_orders') || '[]');
+      setOrderCount(orders.length);
+    } catch { setOrderCount(0); }
 
-    const matchesSearch =
-      String(order.reference || order.id).toLowerCase().includes(query) ||
-      String(order.customer?.name || "").toLowerCase().includes(query) ||
-      String(order.customer?.email || "").toLowerCase().includes(query) ||
-      String(order.items?.map((i: any) => i.name).join(" ") || "").toLowerCase().includes(query);
+    fetch('/api/payments/create-checkout')
+      .then(r => r.json())
+      .then(d => setStripeStatus(d.stripeKeyConfigured ? 'ok' : 'demo'))
+      .catch(() => setStripeStatus('demo'));
+  }, []);
 
-    const matchesStatus = status === "all" || order.status === status;
+  const cards = [
+    { label: 'Orders', value: orderCount.toString(), href: '/admin/orders', color: '#4ade80', icon: '📦' },
+    { label: 'Stripe', value: stripeStatus === 'loading' ? '...' : stripeStatus === 'ok' ? 'Aktiv' : 'Demo', href: '/admin/tests', color: stripeStatus === 'ok' ? '#4ade80' : '#facc15', icon: '💳' },
+    { label: 'Inventory', value: '2 Produkte', href: '/admin/inventory', color: '#60a5fa', icon: '👕' },
+    { label: 'Viewer Notes', value: 'Notizen', href: '/admin/viewer-notes', color: '#a78bfa', icon: '📝' },
+  ];
 
-    return matchesSearch && matchesStatus;
-  });
-
-  const openOrders = orders.filter((o: any) => o.status === "offen");
-  const productionOrders = orders.filter((o: any) => o.status === "produktion");
-  const finishedOrders = orders.filter((o: any) => o.status === "fertig");
+  const links = [
+    { label: 'Live Shop', href: 'https://platypus-shirt-shop.vercel.app', ext: true },
+    { label: 'Produkt 1', href: '/product/1', ext: false },
+    { label: 'Produkt 2', href: '/product/2', ext: false },
+    { label: 'Warenkorb', href: '/cart', ext: false },
+    { label: 'Stripe Dashboard', href: 'https://dashboard.stripe.com', ext: true },
+  ];
 
   return (
-    <main className="min-h-screen bg-[#f6f3ed] text-black p-5 sm:p-10">
-      <div className="bg-white rounded-[2rem] border border-neutral-200 shadow-xl p-6 sm:p-10">
-        <p className="text-neutral-500 font-black uppercase tracking-widest text-xs">
-          Admin Bereich
+    <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
+      <header style={{ padding: '1.25rem 2rem', borderBottom: '1px solid #1a1a1a', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <span style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '0.15em' }}>PLATYPUS</span>
+          <span style={{ color: '#444', marginLeft: '1rem', fontSize: '0.875rem' }}>Admin</span>
+        </div>
+        <Link href="/" style={{ color: '#555', fontSize: '0.8rem', textDecoration: 'none' }}>← Shop</Link>
+      </header>
+
+      <div style={{ maxWidth: '900px', margin: '3rem auto', padding: '0 2rem' }}>
+        <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '0.5rem' }}>Dashboard</h1>
+        <p style={{ color: '#555', fontSize: '0.875rem', marginBottom: '2.5rem' }}>
+          {new Date().toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
         </p>
 
-        <h1 className="mt-3 text-4xl sm:text-6xl font-black">
-          Produktions-Dashboard
-        </h1>
-
-        <p className="mt-4 text-neutral-600">\n          Bestellungen, Zahlungsart, Payment-Status, Größe und Produktionsstatus.\n        </p>\n\n        <a href="/admin/tests" className="mt-6 inline-block bg-black text-white px-5 py-3 rounded-2xl font-black">\n          Waschtests öffnen\n        </a>
-      </div>
-
-      <AdminQuickLinks />
-      <AdminStatsOverview />
-      <LaunchChecklistAdmin />
-      <ShopStatusBar />
-      <TodayActionPlan />
-      <NextSalesActions />
-      <AdminRevenueGoal />
-      <FirstCustomerPlan />
-      <LaunchScore />
-      <MarketingLinksPanel />
-      <ShareMessageGenerator />
-      <CustomerFeedbackPanel />
-      <StockWarnings />
-
-      <ExportOrdersButton orders={orders} />
-
-      <OrderSearchFilter search={search} setSearch={setSearch} status={status} setStatus={setStatus} />
-
-      <div className="grid sm:grid-cols-3 gap-4 mt-8">
-        <div className="bg-white border border-neutral-200 rounded-3xl p-5 shadow-sm">
-          <p className="text-neutral-500 font-bold">Offen</p>
-          <p className="text-5xl font-black">{openOrders.length}</p>
-        </div>
-
-        <div className="bg-white border border-neutral-200 rounded-3xl p-5 shadow-sm">
-          <p className="text-neutral-500 font-bold">Produktion</p>
-          <p className="text-5xl font-black">{productionOrders.length}</p>
-        </div>
-
-        <div className="bg-white border border-neutral-200 rounded-3xl p-5 shadow-sm">
-          <p className="text-neutral-500 font-bold">Fertig</p>
-          <p className="text-5xl font-black">{finishedOrders.length}</p>
-        </div>
-      </div>
-
-      <div className="mt-8 space-y-5">
-        {filteredOrders.length === 0 && (
-          <div className="bg-white border border-neutral-200 rounded-3xl p-6 shadow-sm">
-            <p className="text-neutral-500 font-bold">Noch keine Bestellungen.</p>
-          </div>
-        )}
-
-        {filteredOrders.map((order: any) => (
-          <div key={order.id} className="bg-white border border-neutral-200 rounded-3xl p-6 shadow-xl">
-            <div className="flex flex-col sm:flex-row sm:justify-between gap-4">
-              <div>
-                <p className="text-xs text-neutral-500 font-black uppercase">
-                  Bestellung
-                </p>
-
-                <p className="font-black break-all">{order.reference || order.id}</p>
-
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <PaymentStatusBadge mode={order.paymentStatus === "provider_ready_demo_redirect" ? "ready" : "demo"} />
-                  <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-black">
-                    {getPaymentLabel(order.paymentMethod)}
-                  </span>
-                  <span className="rounded-full bg-neutral-100 px-3 py-1 text-xs font-black">
-                    Provider: {getPaymentProvider(order.paymentMethod)}
-                  </span>
-                </div>
-
-                <div className="mt-4 grid gap-1 text-sm">
-                  <p><b>Kunde:</b> {order.customer?.name || "-"}</p>
-                  <p><b>E-Mail:</b> {order.customer?.email || "-"}</p>
-                  <p><b>Adresse:</b> {order.customer?.address || "-"}, {order.customer?.city || "-"}</p>
-                  <p><b>Payment Session:</b> {order.paymentSessionId || "-"}</p>
-                  <p><b>Erstellt:</b> {order.createdAt ? new Date(order.createdAt).toLocaleString("de-DE") : "-"}</p>
-                </div>
+        {/* STAT CARDS */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '3rem' }}>
+          {cards.map((card) => (
+            <Link key={card.label} href={card.href} style={{ textDecoration: 'none' }}>
+              <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: '12px', padding: '1.5rem', transition: 'border-color 0.2s' }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = '#333')}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = '#1a1a1a')}>
+                <div style={{ fontSize: '1.5rem', marginBottom: '0.75rem' }}>{card.icon}</div>
+                <p style={{ color: '#555', fontSize: '0.75rem', marginBottom: '0.25rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{card.label}</p>
+                <p style={{ color: card.color, fontSize: '1.5rem', fontWeight: 800 }}>{card.value}</p>
               </div>
+            </Link>
+          ))}
+        </div>
 
-              <div className="sm:text-right">
-                <p className="text-3xl font-black">{Number(order.total || 0).toFixed(2)} €</p>
+        {/* QUICK LINKS */}
+        <h2 style={{ fontSize: '0.75rem', color: '#555', letterSpacing: '0.2em', marginBottom: '1rem', textTransform: 'uppercase' }}>Quick Links</h2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '3rem' }}>
+          {links.map((l) => (
+            <a key={l.label} href={l.href} target={l.ext ? '_blank' : undefined} rel={l.ext ? 'noopener noreferrer' : undefined}
+              style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: '8px', padding: '0.875rem 1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', textDecoration: 'none', color: '#fff', fontSize: '0.875rem' }}>
+              <span>{l.label}</span>
+              <span style={{ color: '#333' }}>{l.ext ? '↗' : '→'}</span>
+            </a>
+          ))}
+        </div>
 
-                <OrderTimeline status={order.status} />
-
-                <PrintOrderButton order={order} />
-
-                <select
-                  value={order.status}
-                  onChange={(e) => updateStatus(order.id, e.target.value as any)}
-                  className="mt-3 bg-neutral-50 border border-neutral-300 p-3 rounded-2xl font-black"
-                >
-                  <option value="offen">offen</option>
-                  <option value="produktion">in Produktion</option>
-                  <option value="fertig">fertig</option>
-                </select>
-              </div>
+        {/* CHECKLISTE */}
+        <h2 style={{ fontSize: '0.75rem', color: '#555', letterSpacing: '0.2em', marginBottom: '1rem', textTransform: 'uppercase' }}>Launch Checkliste</h2>
+        <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: '12px', padding: '1.5rem' }}>
+          {[
+            { done: true,  label: 'Shop live auf Vercel' },
+            { done: true,  label: 'Stripe Checkout integriert' },
+            { done: true,  label: 'Produktseiten mit 360° Viewer' },
+            { done: true,  label: 'Admin Dashboard' },
+            { done: true,  label: 'Warenkorb mit LocalStorage' },
+            { done: stripeStatus === 'ok', label: 'Echter Stripe Key gesetzt' },
+            { done: false, label: 'Stripe Webhook aktiv' },
+            { done: false, label: 'Admin Passwort gesetzt' },
+            { done: false, label: 'Echte Produktbilder' },
+            { done: false, label: 'Erster echter Testkauf' },
+            { done: false, label: 'Datenbank (Supabase)' },
+            { done: false, label: 'E-Mail Bestätigung' },
+          ].map((item) => (
+            <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0', borderBottom: '1px solid #1a1a1a' }}>
+              <span style={{ color: item.done ? '#4ade80' : '#333', fontSize: '1rem', minWidth: '20px' }}>
+                {item.done ? '✓' : '○'}
+              </span>
+              <span style={{ color: item.done ? '#fff' : '#555', fontSize: '0.875rem' }}>{item.label}</span>
             </div>
-
-            <div className="mt-5 border-t border-neutral-200 pt-5">
-              <p className="font-black mb-3">Produktionsliste</p>
-
-              <div className="space-y-3">
-                {order.items?.map((item: any) => (
-                  <div key={`${item.id}-${item.size}-${item.fit}`} className="rounded-2xl bg-neutral-50 border border-neutral-200 p-4">
-                    <p className="font-black">
-                      {item.quantity}x {item.name}
-                    </p>
-
-                    <p className="text-sm text-neutral-600">
-                      Farbe: {item.color} · Größe: {item.size} · Passform: Regular · Technik: {item.print}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </main>
+    </div>
   );
 }
