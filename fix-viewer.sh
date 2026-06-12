@@ -1,3 +1,13 @@
+#!/bin/bash
+set -uo pipefail
+GREEN='\033[0;32m'; CYAN='\033[0;36m'; RED='\033[0;31m'; NC='\033[0m'
+ok()   { echo -e "${GREEN}[OK]${NC} $1"; }
+info() { echo -e "${CYAN}[->]${NC} $1"; }
+fail() { echo -e "${RED}[FAIL]${NC} $1"; }
+
+info "Viewer wird durch echte 360°-Version ersetzt..."
+
+cat > app/components/Viewer/Viewer.tsx << 'EOF'
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
@@ -120,3 +130,30 @@ export default function Viewer({ color = '#f5f5f5' }: ViewerProps) {
     </div>
   );
 }
+EOF
+ok "Viewer ersetzt"
+
+info "Build wird getestet..."
+if npm run build > /tmp/viewer-build.log 2>&1; then
+  ok "BUILD GRÜN"
+else
+  fail "Build Fehler:"
+  tail -20 /tmp/viewer-build.log
+  exit 1
+fi
+
+echo ""
+echo "=================================================="
+echo "  VIEWER REPARIERT"
+echo "=================================================="
+echo ""
+echo "  Server läuft wahrscheinlich noch. Falls nicht:"
+echo "    npm run dev"
+echo ""
+echo "  Dann im Chrome neu laden:"
+echo "    localhost:3000/product/1"
+echo ""
+echo "  Das Shirt dreht sich jetzt sauber,"
+echo "  zeigt Vorder- und Rückseite, ohne zur Linie zu werden."
+echo "=================================================="
+
