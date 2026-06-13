@@ -25,6 +25,19 @@ export default function ProductPage() {
   const [error, setError] = useState('');
   const [design, setDesign] = useState<{ front: string | null; back: string | null }>({ front: null, back: null });
 
+  const saveDesign = async (): Promise<string | null> => {
+    if (!design.front && !design.back) return null;
+    try {
+      const res = await fetch('/api/designs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ front: design.front, back: design.back, productId: id }),
+      });
+      const data = await res.json();
+      return data.id || null;
+    } catch { return null; }
+  };
+
   const addToCart = () => {
     if (!size) { setError('Bitte Größe wählen'); return; }
     setError('');
@@ -47,6 +60,7 @@ export default function ProductPage() {
     setError('');
     setLoading(true);
     try {
+      const designId = await saveDesign();
       const res = await fetch('/api/payments/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -55,7 +69,7 @@ export default function ProductPage() {
           reference: `PROD-${id}-${size}`,
           shipping: 4.99,
           total: product.price + 4.99,
-          items: [{ name: product.name, size, price: product.price, quantity: 1 }],
+          items: [{ name: product.name, size, price: product.price, quantity: 1, designId }],
         }),
       });
       const data = await res.json();
