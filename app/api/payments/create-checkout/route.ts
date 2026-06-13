@@ -92,6 +92,9 @@ export async function POST(request: Request) {
       metadata: {
         reference: body.reference || "",
         paymentMethod,
+        items: JSON.stringify(items).slice(0, 480),
+        shippingCountry: body.shippingCountry || "DE",
+        locale: body.locale || "de",
       },
     });
 

@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
           currency: session.currency?.toUpperCase() || 'EUR',
           locale: session.metadata?.locale || 'de',
           shippingCountry: session.metadata?.shippingCountry || 'DE',
-          items: [],
+          items: (() => { try { return JSON.parse(session.metadata?.items || "[]"); } catch { return []; } })(),
           status: 'paid',
         }),
       });

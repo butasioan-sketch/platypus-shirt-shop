@@ -21,11 +21,11 @@ async function getPg() {
 }
 
 export async function initDb() {
-  const sql = await getPg() as ((q: string) => Promise<unknown>) | null;
+  const sql = await getPg() as { query: (q: string, p?: unknown[]) => Promise<Record<string, unknown>[]> } | null;
   if (!sql) return false;
 
   try {
-    await sql(`
+    await sql.query(`
       CREATE TABLE IF NOT EXISTS orders (
         id TEXT PRIMARY KEY,
         stripe_session_id TEXT UNIQUE,
@@ -48,7 +48,7 @@ export async function initDb() {
 }
 
 export async function createOrder(order: Order): Promise<Order> {
-  const sql = await getPg() as ((q: string, p: unknown[]) => Promise<unknown[]>) | null;
+  const sql = await getPg() as { query: (q: string, p?: unknown[]) => Promise<Record<string, unknown>[]> } | null;
 
   if (!sql) {
     memoryStore.unshift(order);
@@ -56,7 +56,7 @@ export async function createOrder(order: Order): Promise<Order> {
   }
 
   try {
-    await sql(
+    await sql.query(
       `INSERT INTO orders (id, stripe_session_id, customer_email, amount_total, currency, status, items, locale, shipping_country)
        VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
        ON CONFLICT (stripe_session_id) DO NOTHING`,
@@ -70,7 +70,7 @@ export async function createOrder(order: Order): Promise<Order> {
 }
 
 export async function getOrders(status?: string, limit = 50): Promise<Order[]> {
-  const sql = await getPg() as ((q: string, p?: unknown[]) => Promise<Record<string, unknown>[]>) | null;
+  const sql = await getPg() as { query: (q: string, p?: unknown[]) => Promise<Record<string, unknown>[]> } | null;
 
   if (!sql) {
     let orders = memoryStore;
@@ -80,8 +80,8 @@ export async function getOrders(status?: string, limit = 50): Promise<Order[]> {
 
   try {
     const rows = status
-      ? await sql(`SELECT * FROM orders WHERE status=$1 ORDER BY created_at DESC LIMIT $2`, [status, limit])
-      : await sql(`SELECT * FROM orders ORDER BY created_at DESC LIMIT $1`, [limit]);
+      ? await sql.query(`SELECT * FROM orders WHERE status=$1 ORDER BY created_at DESC LIMIT $2`, [status, limit])
+      : await sql.query(`SELECT * FROM orders ORDER BY created_at DESC LIMIT $1`, [limit]);
 
     return rows.map(mapRow);
   } catch (err) {
@@ -91,7 +91,7 @@ export async function getOrders(status?: string, limit = 50): Promise<Order[]> {
 }
 
 export async function updateOrderStatus(id: string, status: string): Promise<boolean> {
-  const sql = await getPg() as ((q: string, p: unknown[]) => Promise<unknown>) | null;
+  const sql = await getPg() as { query: (q: string, p?: unknown[]) => Promise<Record<string, unknown>[]> } | null;
 
   if (!sql) {
     const order = memoryStore.find(o => o.id === id);
@@ -100,7 +100,7 @@ export async function updateOrderStatus(id: string, status: string): Promise<boo
   }
 
   try {
-    await sql(`UPDATE orders SET status=$1, updated_at=NOW() WHERE id=$2`, [status, id]);
+    await sql.query(`UPDATE orders SET status=$1, updated_at=NOW() WHERE id=$2`, [status, id]);
     return true;
   } catch {
     return false;
