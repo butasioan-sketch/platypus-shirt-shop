@@ -23,7 +23,6 @@ export default function ProductPage() {
   const [loading, setLoading] = useState(false);
   const [added, setAdded] = useState(false);
   const [error, setError] = useState('');
-  const [design, setDesign] = useState<{ front: string | null; back: string | null }>({ front: null, back: null });
 
   const addToCart = () => {
     if (!size) { setError('Bitte Größe wählen'); return; }
@@ -84,7 +83,7 @@ export default function ProductPage() {
 
         {/* VIEWER */}
         <div style={{ background: product.color, borderRadius: '16px', overflow: 'hidden', height: '500px', position: 'sticky', top: '5rem' }}>
-          <DesignStudio shirtColor={product.color} onDesignChange={setDesign} />
+          <DesignStudio shirtColor={product.color} />
         </div>
 
         {/* KAUFBEREICH */}
