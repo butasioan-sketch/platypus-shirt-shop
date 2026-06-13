@@ -6,7 +6,7 @@ import { useParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import Logo from '@/app/components/Logo';
 
-const Viewer = dynamic(() => import('@/app/components/Viewer/Viewer'), { ssr: false });
+const DesignStudio = dynamic(() => import('@/app/components/DesignStudio'), { ssr: false });
 
 const PRODUCTS: Record<string, { name: string; price: number; color: string; sizes: string[] }> = {
   '1': { name: 'Essential Weiß', price: 29.99, color: '#f5f5f5', sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
@@ -83,7 +83,7 @@ export default function ProductPage() {
 
         {/* VIEWER */}
         <div style={{ background: product.color, borderRadius: '16px', overflow: 'hidden', height: '500px', position: 'sticky', top: '5rem' }}>
-          <Viewer />
+          <DesignStudio shirtColor={product.color} />
         </div>
 
         {/* KAUFBEREICH */}
