@@ -36,7 +36,10 @@ export default function HomePage() {
         </nav>
       </header>
 
-      <section style={{ padding: '6rem 2rem', textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
+      <section style={{ padding: '4rem 2rem 6rem', textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.5rem' }}>
+          <Image src="/logo.jpeg" alt="PLATYPUS" width={260} height={260} style={{ borderRadius: '24px', boxShadow: '0 20px 60px rgba(226,0,26,0.25)' }} priority />
+        </div>
         <p style={{ color: '#666', fontSize: '0.75rem', letterSpacing: '0.3em', marginBottom: '1.5rem', textTransform: 'uppercase' }}>{t.hero.badge}</p>
         <h1 style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 900, lineHeight: 1, marginBottom: '1.5rem', letterSpacing: '-0.03em' }}>
           {t.hero.headline1}<br />
