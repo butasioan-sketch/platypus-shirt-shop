@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import Logo from '@/app/components/Logo';
 
 const Viewer = dynamic(() => import('@/app/components/Viewer/Viewer'), { ssr: false });
 

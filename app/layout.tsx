@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   title: 'PLATYPUS — Premium Print-on-Demand T-Shirts',
   description: 'Dein eigenes Shirt. 360° Viewer. Stripe Checkout. Produktion auf Bestellung. Versand in DE & RO.',
   keywords: 'platypus, t-shirt, print on demand, custom shirt, 360 viewer, tricouri, romania',
+  icons: {
+    icon: '/icon.jpeg',
+    apple: '/apple-icon.jpeg',
+  },
+  manifest: '/manifest.json',
   openGraph: {
     title: 'PLATYPUS — Premium T-Shirts',
     description: 'Dein Shirt. Cinematic 360° Viewer. Stripe Checkout.',

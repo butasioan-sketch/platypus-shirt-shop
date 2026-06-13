@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useLocale } from './components/LocaleProvider';
 import LocaleSwitcher from './components/LocaleSwitcher';
 import { getAllProducts, getProductName, getProductDescription } from '@/lib/products';
@@ -22,11 +23,14 @@ export default function HomePage() {
     <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
 
       <header style={{ padding: '1.25rem 2rem', borderBottom: '1px solid #1a1a1a', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, background: '#0a0a0a', zIndex: 100 }}>
-        <div style={{ fontSize: '1.5rem', fontWeight: 800, letterSpacing: '0.15em' }}>PLATYPUS</div>
+        <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
+          <Image src="/logo.jpeg" alt="PLATYPUS" width={56} height={56} style={{ borderRadius: '10px', marginRight: '0.75rem' }} priority />
+          <span style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '0.15em', color: '#fff' }}>PLATYPUS</span>
+        </Link>
         <nav style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
           <Link href="/versand" style={{ color: '#888', textDecoration: 'none', fontSize: '0.875rem' }}>{t.nav.shipping}</Link>
           <LocaleSwitcher />
-          <Link href="/cart" style={{ color: '#fff', textDecoration: 'none', fontSize: '0.875rem', background: '#1a1a1a', padding: '0.4rem 1rem', borderRadius: '999px', border: '1px solid #333' }}>
+          <Link href="/cart" style={{ color: '#fff', textDecoration: 'none', fontSize: '0.875rem', background: '#e2001a', padding: '0.5rem 1.25rem', borderRadius: '999px', border: 'none', fontWeight: 600 }}>
             {t.nav.cart} {cartCount > 0 && `(${cartCount})`}
           </Link>
         </nav>
@@ -42,7 +46,7 @@ export default function HomePage() {
           {t.hero.sub}
         </p>
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link href="/product/1" style={{ background: '#fff', color: '#000', padding: '0.875rem 2.5rem', borderRadius: '999px', textDecoration: 'none', fontWeight: 700, fontSize: '0.875rem', letterSpacing: '0.05em' }}>
+          <Link href="/product/1" style={{ background: '#e2001a', color: '#fff', padding: '0.875rem 2.5rem', borderRadius: '999px', textDecoration: 'none', fontWeight: 700, fontSize: '0.875rem', letterSpacing: '0.05em' }}>
             {t.hero.cta}
           </Link>
           <Link href="/product/1" style={{ background: 'transparent', color: '#fff', padding: '0.875rem 2.5rem', borderRadius: '999px', textDecoration: 'none', fontWeight: 600, fontSize: '0.875rem', border: '1px solid #333' }}>

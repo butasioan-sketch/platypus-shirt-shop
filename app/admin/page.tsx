@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import Logo from '@/app/components/Logo';
 
 export default function AdminPage() {
   const [orderCount, setOrderCount] = useState(0);

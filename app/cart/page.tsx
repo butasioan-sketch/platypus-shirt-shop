@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Logo from '@/app/components/Logo';
 
 interface CartItem {
   id: string;
