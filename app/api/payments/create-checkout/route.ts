@@ -76,7 +76,7 @@ export async function POST(request: Request) {
 
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      payment_method_types: ["card"],
+      // payment_method_types weggelassen -> Stripe zeigt automatisch alle im Dashboard aktivierten Methoden (PayPal, Klarna, Apple/Google Pay, SEPA, Karte)
       line_items: items.map((item) => ({
         quantity: Number(item.quantity || 1),
         price_data: {
