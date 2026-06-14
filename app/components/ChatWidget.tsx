@@ -75,11 +75,11 @@ export default function ChatWidget({ locale = 'de' }: Props) {
         style={{
           position: 'fixed', bottom: '1.5rem', right: '1.5rem', zIndex: 1000,
           width: '56px', height: '56px', borderRadius: '50%',
-          background: open ? '#333' : '#fff',
-          color: open ? '#fff' : '#000',
+          background: open ? '#1a1a1a' : 'linear-gradient(135deg, #e2001a, #a00014)',
+          color: '#fff',
           border: 'none', cursor: 'pointer',
           fontSize: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 4px 24px rgba(0,0,0,0.5)',
+          boxShadow: open ? '0 4px 24px rgba(0,0,0,0.5)' : '0 6px 28px rgba(226,0,26,0.45)',
           transition: 'all 0.2s',
         }}
       >
