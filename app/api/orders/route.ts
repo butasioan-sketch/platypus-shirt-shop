@@ -35,6 +35,7 @@ export async function POST(request: NextRequest) {
       items: body.items || [],
       locale: body.locale || 'de',
       shippingCountry: body.shippingCountry || 'DE',
+      designId: body.designId || null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
