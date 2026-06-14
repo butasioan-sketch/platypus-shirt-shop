@@ -42,9 +42,9 @@ export default function AnalyticsPage() {
   const FLAGS: Record<string, string> = { de: '🇩🇪', ro: '🇷🇴', en: '🇬🇧', DE: '🇩🇪', RO: '🇷🇴' };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
-      <header style={{ padding: '1.25rem 2rem', borderBottom: '1px solid #1a1a1a', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Link href="/admin" style={{ color: '#fff', textDecoration: 'none', fontWeight: 800, letterSpacing: '0.15em' }}>PLATYPUS</Link>
+    <div style={{ minHeight: '100vh', background: 'radial-gradient(1000px 500px at 50% -10%, rgba(226,0,26,0.06), transparent 60%), linear-gradient(180deg, #0c0c0d 0%, #0a0a0a 100%)', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+      <header style={{ padding: '1.1rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Link href="/admin" style={{ color: '#fff', textDecoration: 'none', fontWeight: 800, letterSpacing: '0.15em' }}>PLATYPUS <span style={{ color: '#e2001a', fontSize: '0.7rem' }}>ADMIN</span></Link>
         <div style={{ display: 'flex', gap: '1rem' }}>
           <button onClick={load} style={{ background: '#1a1a1a', border: '1px solid #333', color: '#888', padding: '0.4rem 1rem', borderRadius: '999px', cursor: 'pointer', fontSize: '0.8rem' }}>↻ Refresh</button>
           <Link href="/admin" style={{ color: '#555', fontSize: '0.8rem', textDecoration: 'none', alignSelf: 'center' }}>← Admin</Link>
@@ -66,7 +66,7 @@ export default function AnalyticsPage() {
                 { label: 'Letzte 24h', value: (stats?.last24h || 0).toString(), color: '#a78bfa' },
                 { label: 'Seitenaufrufe 24h', value: (analytics?.last24h || 0).toString(), color: '#facc15' },
               ].map((kpi) => (
-                <div key={kpi.label} style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: '12px', padding: '1.5rem' }}>
+                <div key={kpi.label} style={{ background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '1.5rem' }}>
                   <p style={{ color: '#555', fontSize: '0.75rem', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{kpi.label}</p>
                   <p style={{ color: kpi.color, fontSize: '2rem', fontWeight: 800 }}>{kpi.value}</p>
                 </div>
@@ -75,7 +75,7 @@ export default function AnalyticsPage() {
 
             {/* ORDER STATUS PIPELINE */}
             <h2 style={{ fontSize: '0.75rem', color: '#555', letterSpacing: '0.2em', marginBottom: '1rem', textTransform: 'uppercase' }}>Order Pipeline</h2>
-            <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: '12px', padding: '1.5rem', marginBottom: '2rem' }}>
+            <div style={{ background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '1.5rem', marginBottom: '2rem' }}>
               {[
                 { key: 'paid', label: 'Bezahlt', color: '#4ade80' },
                 { key: 'production', label: 'In Produktion', color: '#facc15' },
@@ -102,7 +102,7 @@ export default function AnalyticsPage() {
 
             {/* NACH LAND & SPRACHE */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-              <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: '12px', padding: '1.5rem' }}>
+              <div style={{ background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '1.5rem' }}>
                 <h3 style={{ fontSize: '0.75rem', color: '#555', letterSpacing: '0.2em', marginBottom: '1rem', textTransform: 'uppercase' }}>Bestellungen nach Land</h3>
                 {Object.entries(stats?.byCountry || {}).length === 0 ? (
                   <p style={{ color: '#444', fontSize: '0.875rem' }}>Noch keine Daten</p>
@@ -116,7 +116,7 @@ export default function AnalyticsPage() {
                 )}
               </div>
 
-              <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: '12px', padding: '1.5rem' }}>
+              <div style={{ background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '1.5rem' }}>
                 <h3 style={{ fontSize: '0.75rem', color: '#555', letterSpacing: '0.2em', marginBottom: '1rem', textTransform: 'uppercase' }}>Traffic nach Sprache</h3>
                 {Object.entries(analytics?.byLocale || {}).length === 0 ? (
                   <p style={{ color: '#444', fontSize: '0.875rem' }}>Noch keine Daten</p>

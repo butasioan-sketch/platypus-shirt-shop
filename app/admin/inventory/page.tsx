@@ -9,8 +9,8 @@ const PRODUCTS = [
 
 export default function InventoryPage() {
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
-      <header style={{ padding: '1.25rem 2rem', borderBottom: '1px solid #1a1a1a', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div style={{ minHeight: '100vh', background: 'radial-gradient(1000px 500px at 50% -10%, rgba(226,0,26,0.06), transparent 60%), linear-gradient(180deg, #0c0c0d 0%, #0a0a0a 100%)', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+      <header style={{ padding: '1.25rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Link href="/admin" style={{ color: '#fff', textDecoration: 'none', fontWeight: 800, letterSpacing: '0.15em' }}>PLATYPUS</Link>
         <Link href="/admin" style={{ color: '#555', fontSize: '0.8rem', textDecoration: 'none' }}>← Admin</Link>
       </header>
@@ -23,7 +23,7 @@ export default function InventoryPage() {
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           {PRODUCTS.map((p) => (
-            <div key={p.id} style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: '12px', padding: '1.5rem', display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+            <div key={p.id} style={{ background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '1.5rem', display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
               <div style={{ width: '60px', height: '60px', background: p.color, borderRadius: '8px', flexShrink: 0, border: '1px solid #333' }} />
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
@@ -44,7 +44,7 @@ export default function InventoryPage() {
           ))}
         </div>
 
-        <div style={{ marginTop: '2rem', background: '#111', border: '1px solid #1a1a1a', borderRadius: '12px', padding: '1.5rem' }}>
+        <div style={{ marginTop: '2rem', background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '1.5rem' }}>
           <p style={{ color: '#555', fontSize: '0.8rem', marginBottom: '0.5rem' }}>Print-on-Demand System</p>
           <p style={{ color: '#888', fontSize: '0.875rem' }}>Produkte werden nach Bestellung individuell produziert. Kein Lagerbestand notwendig.</p>
         </div>
