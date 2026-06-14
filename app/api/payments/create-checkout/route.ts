@@ -7,6 +7,7 @@ type CheckoutItem = {
   size?: string;
   price: number;
   quantity: number;
+  designId?: string;
 };
 
 function demoCheckout(body: any, method: any, status: string) {
@@ -93,6 +94,7 @@ export async function POST(request: Request) {
         reference: body.reference || "",
         paymentMethod,
         items: JSON.stringify(items).slice(0, 480),
+        designId: (Array.isArray(items) && items.find((i) => i.designId)?.designId) || "",
         shippingCountry: body.shippingCountry || "DE",
         locale: body.locale || "de",
       },

@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
           locale: session.metadata?.locale || 'de',
           shippingCountry: session.metadata?.shippingCountry || 'DE',
           items: (() => { try { return JSON.parse(session.metadata?.items || "[]"); } catch { return []; } })(),
+          designId: session.metadata?.designId || null,
           status: 'paid',
         }),
       });

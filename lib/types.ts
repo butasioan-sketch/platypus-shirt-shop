@@ -9,6 +9,7 @@ export interface OrderItem {
 export interface Order {
   id: string;
   stripeSessionId?: string;
+  designId?: string | null;
   customerEmail?: string;
   amountTotal: number;
   currency: string;

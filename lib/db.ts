@@ -57,10 +57,10 @@ export async function createOrder(order: Order): Promise<Order> {
 
   try {
     await sql.query(
-      `INSERT INTO orders (id, stripe_session_id, customer_email, amount_total, currency, status, items, locale, shipping_country)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+      `INSERT INTO orders (id, stripe_session_id, customer_email, amount_total, currency, status, items, locale, shipping_country, design_id)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
        ON CONFLICT (stripe_session_id) DO NOTHING`,
-      [order.id, order.stripeSessionId, order.customerEmail, order.amountTotal, order.currency, order.status, JSON.stringify(order.items), order.locale, order.shippingCountry]
+      [order.id, order.stripeSessionId, order.customerEmail, order.amountTotal, order.currency, order.status, JSON.stringify(order.items), order.locale, order.shippingCountry, order.designId || null]
     );
   } catch (err) {
     console.error('createOrder error:', err);
@@ -140,6 +140,7 @@ function mapRow(row: Record<string, unknown>): Order {
     items: (typeof row.items === 'string' ? JSON.parse(row.items) : row.items) as Order['items'],
     locale: row.locale as string,
     shippingCountry: row.shipping_country as string,
+    designId: (row.design_id as string) || null,
     createdAt: new Date(row.created_at as string).toISOString(),
     updatedAt: new Date(row.updated_at as string).toISOString(),
   };

@@ -26,16 +26,24 @@ export default function ProductPage() {
   const [design, setDesign] = useState<{ front: string | null; back: string | null }>({ front: null, back: null });
 
   const saveDesign = async (): Promise<string | null> => {
-    if (!design.front && !design.back) return null;
+    if (!design.front && !design.back) {
+      console.log('[DESIGN] Kein Design im State:', design);
+      return null;
+    }
     try {
+      console.log('[DESIGN] Speichere... front:', design.front?.length, 'back:', design.back?.length);
       const res = await fetch('/api/designs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ front: design.front, back: design.back, productId: id }),
       });
       const data = await res.json();
+      console.log('[DESIGN] Gespeichert, ID:', data.id);
       return data.id || null;
-    } catch { return null; }
+    } catch (e) {
+      console.log('[DESIGN] FEHLER:', e);
+      return null;
+    }
   };
 
   const addToCart = () => {
