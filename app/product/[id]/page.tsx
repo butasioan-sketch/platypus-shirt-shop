@@ -98,9 +98,15 @@ export default function ProductPage() {
 
       <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '3rem 2rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem' }}>
 
-        {/* VIEWER */}
-        <div style={{ background: product.color, borderRadius: '16px', overflow: 'hidden', height: '500px', position: 'sticky', top: '5rem' }}>
-          <DesignStudio shirtColor={product.color} onDesignChange={setDesign} />
+        {/* DESIGN-EDITOR */}
+        <div style={{ position: 'sticky', top: '5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+            <span style={{ background: '#e2001a', color: '#fff', fontSize: '0.65rem', fontWeight: 700, padding: '0.25rem 0.6rem', borderRadius: '999px', letterSpacing: '0.05em' }}>NEU</span>
+            <span style={{ color: '#888', fontSize: '0.8rem' }}>Lade dein eigenes Motiv hoch — vorne & hinten</span>
+          </div>
+          <div style={{ background: product.color, borderRadius: '16px', overflow: 'hidden', height: '500px' }}>
+            <DesignStudio shirtColor={product.color} onDesignChange={setDesign} />
+          </div>
         </div>
 
         {/* KAUFBEREICH */}
@@ -116,9 +122,9 @@ export default function ProductPage() {
               {product.sizes.map((s) => (
                 <button key={s} onClick={() => setSize(s)} style={{
                   padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 600,
-                  background: size === s ? '#fff' : '#111',
-                  color: size === s ? '#000' : '#888',
-                  border: size === s ? '1px solid #fff' : '1px solid #222',
+                  background: size === s ? '#e2001a' : '#111',
+                  color: size === s ? '#fff' : '#888',
+                  border: size === s ? '1px solid #e2001a' : '1px solid #222',
                   transition: 'all 0.15s',
                 }}>
                   {s}
@@ -134,9 +140,9 @@ export default function ProductPage() {
               {['Regular', 'Oversized'].map((f) => (
                 <button key={f} onClick={() => setFit(f)} style={{
                   padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.875rem',
-                  background: fit === f ? '#fff' : '#111',
-                  color: fit === f ? '#000' : '#888',
-                  border: fit === f ? '1px solid #fff' : '1px solid #222',
+                  background: fit === f ? '#e2001a' : '#111',
+                  color: fit === f ? '#fff' : '#888',
+                  border: fit === f ? '1px solid #e2001a' : '1px solid #222',
                 }}>
                   {f}
                 </button>
@@ -149,7 +155,7 @@ export default function ProductPage() {
           {/* BUTTONS */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '2rem' }}>
             <button onClick={buyNow} disabled={loading} style={{
-              background: '#fff', color: '#000', padding: '1rem', borderRadius: '12px',
+              background: '#e2001a', color: '#fff', padding: '1.05rem', borderRadius: '12px',
               fontWeight: 800, fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer',
               border: 'none', letterSpacing: '0.05em', opacity: loading ? 0.7 : 1,
             }}>
