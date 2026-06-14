@@ -129,7 +129,7 @@ export default function HomePage() {
             Premium Print-on-Demand. Gestalte dein eigenes Shirt — vorne & hinten. Versand in DE & RO.
           </p>
           <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            {[['Sendungsverfolgung', '/tracking'], ['Impressum', '/impressum'], ['Datenschutz', '/datenschutz'], ['AGB', '/agb'], [t.nav.shipping, '/versand']].map(([label, href]) => (
+            {[['FAQ', '/faq'], ['Sendungsverfolgung', '/tracking'], ['Impressum', '/impressum'], ['Datenschutz', '/datenschutz'], ['AGB', '/agb'], [t.nav.shipping, '/versand']].map(([label, href]) => (
               <Link key={href} href={href} style={{ color: '#999', textDecoration: 'none', fontSize: '0.8rem' }}>{label}</Link>
             ))}
           </div>
