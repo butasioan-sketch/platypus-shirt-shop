@@ -31,7 +31,8 @@ export async function POST(request: NextRequest) {
 
     try {
       const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://platypus-shirt-shop.vercel.app';
-      await fetch(`${siteUrl}/api/orders`, {
+      const parsedItems = (() => { try { return JSON.parse(session.metadata?.items || "[]"); } catch { return []; } })();
+      const orderRes = await fetch(`${siteUrl}/api/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -41,12 +42,35 @@ export async function POST(request: NextRequest) {
           currency: session.currency?.toUpperCase() || 'EUR',
           locale: session.metadata?.locale || 'de',
           shippingCountry: session.metadata?.shippingCountry || 'DE',
-          items: (() => { try { return JSON.parse(session.metadata?.items || "[]"); } catch { return []; } })(),
+          items: parsedItems,
           designId: session.metadata?.designId || null,
           status: 'paid',
         }),
       });
       console.log('Order erstellt für Session:', session.id);
+
+      // Bestätigungs-E-Mail senden (fehlertolerant - darf Bestellung nie kaputtmachen)
+      try {
+        const orderData = await orderRes.json().catch(() => ({}));
+        const orderId = orderData?.order?.id || orderData?.id || session.id;
+        const customerEmail = session.customer_email;
+        if (customerEmail) {
+          await fetch(`${siteUrl}/api/email`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              orderId,
+              email: customerEmail,
+              total: (session.amount_total || 0) / 100,
+              items: parsedItems,
+              locale: session.metadata?.locale || 'de',
+            }),
+          });
+          console.log('Bestätigungs-E-Mail ausgelöst für:', customerEmail);
+        }
+      } catch (mailErr) {
+        console.error('E-Mail-Versand fehlgeschlagen (Bestellung bleibt gültig):', mailErr);
+      }
     } catch (err) {
       console.error('Order Erstellung fehlgeschlagen:', err);
     }

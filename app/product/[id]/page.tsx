@@ -91,7 +91,7 @@ export default function ProductPage() {
     <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
 
       {/* HEADER */}
-      <header style={{ padding: '1.25rem 2rem', borderBottom: '1px solid #1a1a1a', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <header style={{ padding: '1.25rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Logo size={44} />
         <Link href="/cart" style={{ color: '#888', textDecoration: 'none', fontSize: '0.875rem' }}>Warenkorb</Link>
       </header>
