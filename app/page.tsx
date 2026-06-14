@@ -74,7 +74,7 @@ export default function HomePage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
           {products.map((p) => (
             <Link key={p.id} href={`/product/${p.id}`} style={{ textDecoration: 'none' }}>
-              <div className="produkt-karte" style={{ background: '#111', border: '1px solid #1f1f1f', borderRadius: '16px', overflow: 'hidden', transition: 'transform 0.2s, border-color 0.2s' }}>
+              <div className="produkt-karte" style={{ background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', overflow: 'hidden', transition: 'transform 0.2s, border-color 0.2s' }}>
                 <div style={{ height: '300px', background: `linear-gradient(160deg, ${p.color} 0%, ${p.color} 60%, ${p.color}dd 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
                   {/* Shirt-Silhouette */}
                   <svg width="150" height="180" viewBox="0 0 150 180" style={{ filter: `drop-shadow(0 10px 24px rgba(0,0,0,0.25))` }}>
@@ -103,10 +103,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section style={{ padding: '5rem 2rem', borderTop: '1px solid #161616', maxWidth: '1000px', margin: '0 auto' }}>
+      <section style={{ padding: '5rem 2rem', borderTop: '1px solid rgba(255,255,255,0.08)', maxWidth: '1000px', margin: '0 auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
           {t.trust.map((item) => (
-            <div key={item.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '0.85rem', padding: '1.5rem 1rem', background: '#0e0e0e', border: '1px solid #1a1a1a', borderRadius: '14px' }}>
+            <div key={item.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '0.85rem', padding: '1.5rem 1rem', background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px' }}>
               <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: '#141414', border: '1px solid rgba(226,0,26,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem' }}>
                 {item.icon}
               </div>
