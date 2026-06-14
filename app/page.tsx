@@ -66,7 +66,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section style={{ padding: '4rem 2rem', maxWidth: '1000px', margin: '0 auto' }}>
+      <section style={{ padding: '3rem 2rem 4rem', maxWidth: '1000px', margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <h2 style={{ fontSize: '1.9rem', fontWeight: 800, color: '#fff', marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>Unsere Shirts</h2>
+          <p style={{ color: '#888', fontSize: '0.95rem' }}>Premium Baumwolle. Dein Design. Vorne & hinten.</p>
+        </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
           {products.map((p) => (
             <Link key={p.id} href={`/product/${p.id}`} style={{ textDecoration: 'none' }}>
@@ -85,7 +89,7 @@ export default function HomePage() {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div>
                       <p style={{ color: '#fff', fontWeight: 700, marginBottom: '0.25rem', fontSize: '1.05rem' }}>{getProductName(p, locale)}</p>
-                      <p style={{ color: '#666', fontSize: '0.8rem' }}>{getProductDescription(p, locale)}</p>
+                      <p style={{ color: '#999', fontSize: '0.8rem', lineHeight: 1.5 }}>{getProductDescription(p, locale)}</p>
                     </div>
                     <p style={{ color: '#fff', fontWeight: 800, fontSize: '1.25rem' }}>€{p.price}</p>
                   </div>
@@ -108,7 +112,7 @@ export default function HomePage() {
               </div>
               <div>
                 <p style={{ color: '#fff', fontWeight: 600, fontSize: '0.875rem', marginBottom: '0.2rem' }}>{item.label}</p>
-                <p style={{ color: '#666', fontSize: '0.72rem', letterSpacing: '0.02em' }}>{item.sub}</p>
+                <p style={{ color: '#888', fontSize: '0.72rem', letterSpacing: '0.02em' }}>{item.sub}</p>
               </div>
             </div>
           ))}
