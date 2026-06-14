@@ -11,19 +11,19 @@ export default function VersandPage() {
       <div style={{ maxWidth: '700px', margin: '3rem auto', padding: '0 2rem' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '2rem' }}>Versand</h1>
         <div dangerouslySetInnerHTML={{ __html: `<div style='display:grid;gap:1.5rem'>
-        <div style='background:#111;border:1px solid #1a1a1a;border-radius:12px;padding:1.5rem'>
+        <div style='background:#121212;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1.5rem'>
           <h2 style='font-size:1.125rem;margin-bottom:0.5rem'>Deutschland</h2>
           <p style='color:#888;font-size:0.875rem'>€4.99 — 3–5 Werktage nach Produktion</p>
         </div>
-        <div style='background:#111;border:1px solid #1a1a1a;border-radius:12px;padding:1.5rem'>
+        <div style='background:#121212;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1.5rem'>
           <h2 style='font-size:1.125rem;margin-bottom:0.5rem'>EU</h2>
           <p style='color:#888;font-size:0.875rem'>€8.99 — 5–10 Werktage</p>
         </div>
-        <div style='background:#111;border:1px solid #1a1a1a;border-radius:12px;padding:1.5rem'>
+        <div style='background:#121212;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1.5rem'>
           <h2 style='font-size:1.125rem;margin-bottom:0.5rem'>Produktion</h2>
           <p style='color:#888;font-size:0.875rem'>Print-on-Demand: jedes Shirt wird nach Bestellung gedruckt. Produktionszeit: 2–3 Werktage.</p>
         </div>
-        <div style='background:#111;border:1px solid #1a1a1a;border-radius:12px;padding:1.5rem'>
+        <div style='background:#121212;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1.5rem'>
           <h2 style='font-size:1.125rem;margin-bottom:0.5rem'>Rückgabe</h2>
           <p style='color:#888;font-size:0.875rem'>14 Tage ab Erhalt. Rücksendekosten trägt der Käufer.</p>
         </div>
