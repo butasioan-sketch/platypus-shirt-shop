@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import DesignPreview from '@/app/components/DesignPreview';
 import Link from 'next/link';
 import { Order } from '@/lib/types';
 
@@ -111,6 +112,7 @@ export default function AdminOrdersPage() {
                     ))}
                   </div>
                 )}
+                {order.designId && <DesignPreview designId={order.designId} />}
                 {STATUS_FLOW.indexOf(order.status) < STATUS_FLOW.length - 1 && STATUS_FLOW.includes(order.status) && (
                   <button onClick={() => advance(order)} style={{
                     background: '#1a1a1a', border: '1px solid #333', color: '#fff',
