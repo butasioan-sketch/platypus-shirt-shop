@@ -94,13 +94,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section style={{ padding: '4rem 2rem', borderTop: '1px solid #111', maxWidth: '1000px', margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', textAlign: 'center' }}>
+      <section style={{ padding: '5rem 2rem', borderTop: '1px solid #161616', maxWidth: '1000px', margin: '0 auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
           {t.trust.map((item) => (
-            <div key={item.label}>
-              <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>{item.icon}</div>
-              <p style={{ color: '#fff', fontWeight: 600, fontSize: '0.875rem' }}>{item.label}</p>
-              <p style={{ color: '#555', fontSize: '0.75rem' }}>{item.sub}</p>
+            <div key={item.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '0.85rem', padding: '1.5rem 1rem', background: '#0e0e0e', border: '1px solid #1a1a1a', borderRadius: '14px' }}>
+              <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: '#141414', border: '1px solid rgba(226,0,26,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem' }}>
+                {item.icon}
+              </div>
+              <div>
+                <p style={{ color: '#fff', fontWeight: 600, fontSize: '0.875rem', marginBottom: '0.2rem' }}>{item.label}</p>
+                <p style={{ color: '#666', fontSize: '0.72rem', letterSpacing: '0.02em' }}>{item.sub}</p>
+              </div>
             </div>
           ))}
         </div>
