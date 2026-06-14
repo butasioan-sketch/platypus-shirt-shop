@@ -20,12 +20,16 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
+    <div style={{ minHeight: '100vh', background: 'radial-gradient(1200px 600px at 50% -10%, rgba(226,0,26,0.10), transparent 60%), linear-gradient(180deg, #0c0c0d 0%, #0a0a0a 100%)', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       <style>{`
-        .produkt-karte:hover { transform: translateY(-6px); border-color: #e2001a !important; }
+        .produkt-karte:hover { transform: translateY(-6px); border-color: #e2001a !important; box-shadow: 0 16px 40px rgba(226,0,26,0.12); }
+        .produkt-karte { transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
+        .btn-primary:hover { background: #ff1a33 !important; transform: translateY(-2px); }
+        .btn-primary { transition: background 0.2s, transform 0.2s; }
+        .btn-ghost:hover { border-color: #e2001a !important; color: #fff !important; }
       `}</style>
 
-      <header style={{ padding: '1.25rem 2rem', borderBottom: '1px solid #1a1a1a', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, background: '#0a0a0a', zIndex: 100 }}>
+      <header style={{ padding: '1.1rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, background: 'rgba(10,10,10,0.75)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', zIndex: 100 }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
           <Image src="/logo.jpeg" alt="PLATYPUS" width={56} height={56} style={{ borderRadius: '10px', marginRight: '0.75rem' }} priority />
           <span style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '0.15em', color: '#fff' }}>PLATYPUS</span>
@@ -39,23 +43,24 @@ export default function HomePage() {
         </nav>
       </header>
 
-      <section style={{ padding: '4rem 2rem 6rem', textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.5rem' }}>
-          <Image src="/logo.jpeg" alt="PLATYPUS" width={260} height={260} style={{ borderRadius: '24px', boxShadow: '0 20px 60px rgba(226,0,26,0.25)' }} priority />
+      <section style={{ padding: '5rem 2rem 7rem', textAlign: 'center', maxWidth: '820px', margin: '0 auto' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.75rem', position: 'relative' }}>
+          <div style={{ position: 'absolute', width: '320px', height: '320px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(226,0,26,0.28), transparent 65%)', filter: 'blur(20px)', zIndex: 0 }} />
+          <Image src="/logo.jpeg" alt="PLATYPUS" width={240} height={240} style={{ borderRadius: '28px', boxShadow: '0 24px 70px rgba(226,0,26,0.30)', position: 'relative', zIndex: 1 }} priority />
         </div>
-        <p style={{ color: '#666', fontSize: '0.75rem', letterSpacing: '0.3em', marginBottom: '1.5rem', textTransform: 'uppercase' }}>{t.hero.badge}</p>
-        <h1 style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 900, lineHeight: 1, marginBottom: '1.5rem', letterSpacing: '-0.03em' }}>
+        <p style={{ color: '#e2001a', fontSize: '0.72rem', letterSpacing: '0.32em', marginBottom: '1.5rem', textTransform: 'uppercase', fontWeight: 600 }}>{t.hero.badge}</p>
+        <h1 style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 900, lineHeight: 0.95, marginBottom: '1.75rem', letterSpacing: '-0.03em' }}>
           {t.hero.headline1}<br />
-          <span style={{ color: '#444' }}>{t.hero.headline2}</span>
+          <span style={{ background: 'linear-gradient(90deg, #e2001a, #ff5577)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{t.hero.headline2}</span>
         </h1>
-        <p style={{ color: '#666', fontSize: '1.125rem', marginBottom: '3rem', maxWidth: '500px', margin: '0 auto 3rem' }}>
+        <p style={{ color: '#9a9a9a', fontSize: '1.15rem', lineHeight: 1.6, maxWidth: '520px', margin: '0 auto 3rem' }}>
           {t.hero.sub}
         </p>
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link href="/product/1" style={{ background: '#e2001a', color: '#fff', padding: '0.875rem 2.5rem', borderRadius: '999px', textDecoration: 'none', fontWeight: 700, fontSize: '0.875rem', letterSpacing: '0.05em' }}>
+          <Link href="/product/1" className="btn-primary" style={{ background: '#e2001a', color: '#fff', padding: '0.95rem 2.75rem', borderRadius: '999px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '0.05em', boxShadow: '0 8px 24px rgba(226,0,26,0.35)' }}>
             {t.hero.cta}
           </Link>
-          <Link href="/product/1" style={{ background: 'transparent', color: '#fff', padding: '0.875rem 2.5rem', borderRadius: '999px', textDecoration: 'none', fontWeight: 600, fontSize: '0.875rem', border: '1px solid #333' }}>
+          <Link href="/product/1" className="btn-ghost" style={{ background: 'rgba(255,255,255,0.03)', color: '#ccc', padding: '0.95rem 2.75rem', borderRadius: '999px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem', border: '1px solid #2a2a2a', transition: 'all 0.2s' }}>
             {t.hero.viewer}
           </Link>
         </div>
