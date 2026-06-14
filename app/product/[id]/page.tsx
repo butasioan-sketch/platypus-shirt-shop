@@ -111,9 +111,9 @@ export default function ProductPage() {
 
         {/* KAUFBEREICH */}
         <div>
-          <p style={{ color: '#555', fontSize: '0.75rem', letterSpacing: '0.2em', marginBottom: '0.5rem', textTransform: 'uppercase' }}>Premium T-Shirt</p>
-          <h1 style={{ fontSize: '2.5rem', fontWeight: 900, marginBottom: '0.5rem' }}>{product.name}</h1>
-          <p style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '2rem' }}>€{product.price}</p>
+          <p style={{ color: '#e2001a', fontSize: '0.72rem', letterSpacing: '0.22em', marginBottom: '0.6rem', textTransform: 'uppercase', fontWeight: 600 }}>Premium T-Shirt</p>
+          <h1 style={{ fontSize: '2.6rem', fontWeight: 900, marginBottom: '0.6rem', color: '#ffffff', letterSpacing: '-0.02em', lineHeight: 1.05 }}>{product.name}</h1>
+          <p style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '2rem', color: '#ffffff' }}>€{product.price}</p>
 
           {/* GRÖSSE */}
           <div style={{ marginBottom: '1.5rem' }}>
@@ -189,7 +189,7 @@ export default function ProductPage() {
 
       {/* MOBILE STICKY CTA */}
       <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '1rem', background: '#0a0a0a', borderTop: '1px solid #1a1a1a', display: 'none' }}>
-        <button onClick={buyNow} style={{ width: '100%', background: '#fff', color: '#000', padding: '1rem', borderRadius: '12px', fontWeight: 800, border: 'none', fontSize: '1rem' }}>
+        <button onClick={buyNow} style={{ width: '100%', background: '#e2001a', color: '#fff', padding: '1rem', borderRadius: '12px', fontWeight: 800, border: 'none', fontSize: '1rem' }}>
           KAUFEN — €{(product.price + 4.99).toFixed(2)}
         </button>
       </div>
