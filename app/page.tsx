@@ -21,6 +21,9 @@ export default function HomePage() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
+      <style>{`
+        .produkt-karte:hover { transform: translateY(-6px); border-color: #e2001a !important; }
+      `}</style>
 
       <header style={{ padding: '1.25rem 2rem', borderBottom: '1px solid #1a1a1a', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, background: '#0a0a0a', zIndex: 100 }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
@@ -62,22 +65,26 @@ export default function HomePage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
           {products.map((p) => (
             <Link key={p.id} href={`/product/${p.id}`} style={{ textDecoration: 'none' }}>
-              <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: '16px', overflow: 'hidden' }}>
-                <div style={{ height: '280px', background: p.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <div style={{ textAlign: 'center', color: p.textColor }}>
-                    <div style={{ fontSize: '4rem', marginBottom: '0.5rem' }}>👕</div>
-                    <p style={{ fontSize: '0.75rem', letterSpacing: '0.2em', opacity: 0.5, textTransform: 'uppercase' }}>360° Viewer</p>
-                  </div>
+              <div className="produkt-karte" style={{ background: '#111', border: '1px solid #1f1f1f', borderRadius: '16px', overflow: 'hidden', transition: 'transform 0.2s, border-color 0.2s' }}>
+                <div style={{ height: '300px', background: `linear-gradient(160deg, ${p.color} 0%, ${p.color} 60%, ${p.color}dd 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
+                  {/* Shirt-Silhouette */}
+                  <svg width="150" height="180" viewBox="0 0 150 180" style={{ filter: `drop-shadow(0 10px 24px rgba(0,0,0,0.25))` }}>
+                    <path d="M45 32 L63 16 L87 16 L105 32 L128 48 L113 70 L100 60 L100 168 L50 168 L50 60 L37 70 L22 48 Z"
+                      fill={p.color === '#111111' ? '#1c1c1c' : '#ffffff'}
+                      stroke={p.color === '#111111' ? '#333' : '#e5e5e5'} strokeWidth="1.5"/>
+                    <path d="M63 16 Q75 34 87 16" fill="none" stroke={p.color === '#111111' ? '#333' : '#e5e5e5'} strokeWidth="1.5"/>
+                  </svg>
+                  <span style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(226,0,26,0.9)', color: '#fff', fontSize: '0.6rem', fontWeight: 700, padding: '0.3rem 0.7rem', borderRadius: '999px', letterSpacing: '0.1em' }}>SELBST GESTALTEN</span>
                 </div>
                 <div style={{ padding: '1.5rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                     <div>
-                      <p style={{ color: '#fff', fontWeight: 700, marginBottom: '0.25rem' }}>{getProductName(p, locale)}</p>
-                      <p style={{ color: '#555', fontSize: '0.8rem' }}>{getProductDescription(p, locale)}</p>
+                      <p style={{ color: '#fff', fontWeight: 700, marginBottom: '0.25rem', fontSize: '1.05rem' }}>{getProductName(p, locale)}</p>
+                      <p style={{ color: '#666', fontSize: '0.8rem' }}>{getProductDescription(p, locale)}</p>
                     </div>
-                    <p style={{ color: '#fff', fontWeight: 700, fontSize: '1.125rem' }}>€{p.price}</p>
+                    <p style={{ color: '#fff', fontWeight: 800, fontSize: '1.25rem' }}>€{p.price}</p>
                   </div>
-                  <div style={{ marginTop: '1.25rem', background: '#fff', color: '#000', padding: '0.625rem', borderRadius: '8px', textAlign: 'center', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.05em' }}>
+                  <div style={{ marginTop: '1.25rem', background: '#e2001a', color: '#fff', padding: '0.7rem', borderRadius: '10px', textAlign: 'center', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.05em' }}>
                     {t.hero.cta}
                   </div>
                 </div>
