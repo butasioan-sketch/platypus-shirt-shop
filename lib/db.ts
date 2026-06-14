@@ -90,6 +90,20 @@ export async function getOrders(status?: string, limit = 50): Promise<Order[]> {
   }
 }
 
+export async function getOrderById(id: string): Promise<Order | null> {
+  const sql = await getPg() as { query: (q: string, p?: unknown[]) => Promise<Record<string, unknown>[]> } | null;
+  if (!sql) {
+    return memoryStore.find(o => o.id === id) || null;
+  }
+  try {
+    const rows = await sql.query(`SELECT * FROM orders WHERE id=$1 LIMIT 1`, [id]);
+    return rows.length ? mapRow(rows[0]) : null;
+  } catch (err) {
+    console.error('getOrderById error:', err);
+    return memoryStore.find(o => o.id === id) || null;
+  }
+}
+
 export async function updateOrderStatus(id: string, status: string): Promise<boolean> {
   const sql = await getPg() as { query: (q: string, p?: unknown[]) => Promise<Record<string, unknown>[]> } | null;
 

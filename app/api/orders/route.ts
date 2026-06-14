@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createOrder, getOrders, updateOrderStatus, getOrderStats, initDb } from '@/lib/db';
+import { createOrder, getOrders, getOrderById, updateOrderStatus, getOrderStats, initDb } from '@/lib/db';
 import { Order } from '@/lib/types';
 
 let initialized = false;
