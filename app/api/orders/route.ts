@@ -10,6 +10,12 @@ async function ensureInit() {
 export async function GET(request: NextRequest) {
   await ensureInit();
   const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+  if (id) {
+    const order = await getOrderById(id);
+    if (!order) return NextResponse.json({ error: 'Bestellung nicht gefunden' }, { status: 404 });
+    return NextResponse.json({ order });
+  }
   const status = searchParams.get('status') || undefined;
   const stats = searchParams.get('stats');
 
