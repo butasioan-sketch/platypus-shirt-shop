@@ -122,9 +122,9 @@ export default function ProductPage() {
               {product.sizes.map((s) => (
                 <button key={s} onClick={() => setSize(s)} style={{
                   padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 600,
-                  background: size === s ? '#e2001a' : '#111',
+                  background: size === s ? '#e2001a' : '#121212',
                   color: size === s ? '#fff' : '#888',
-                  border: size === s ? '1px solid #e2001a' : '1px solid #222',
+                  border: size === s ? '1px solid #e2001a' : '1px solid rgba(255,255,255,0.10)',
                   transition: 'all 0.15s',
                 }}>
                   {s}
@@ -140,9 +140,9 @@ export default function ProductPage() {
               {['Regular', 'Oversized'].map((f) => (
                 <button key={f} onClick={() => setFit(f)} style={{
                   padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.875rem',
-                  background: fit === f ? '#e2001a' : '#111',
+                  background: fit === f ? '#e2001a' : '#121212',
                   color: fit === f ? '#fff' : '#888',
-                  border: fit === f ? '1px solid #e2001a' : '1px solid #222',
+                  border: fit === f ? '1px solid #e2001a' : '1px solid rgba(255,255,255,0.10)',
                 }}>
                   {f}
                 </button>
@@ -162,16 +162,16 @@ export default function ProductPage() {
               {loading ? 'Weiterleitung...' : 'JETZT KAUFEN — €' + (product.price + 4.99).toFixed(2)}
             </button>
             <button onClick={addToCart} style={{
-              background: '#111', color: added ? '#4ade80' : '#fff', padding: '1rem', borderRadius: '12px',
+              background: '#121212', color: added ? '#4ade80' : '#fff', padding: '1rem', borderRadius: '12px',
               fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer',
-              border: '1px solid #333', letterSpacing: '0.05em',
+              border: '1px solid rgba(255,255,255,0.10)', letterSpacing: '0.05em',
             }}>
               {added ? '✓ Im Warenkorb' : '+ In den Warenkorb'}
             </button>
           </div>
 
           {/* INFO */}
-          <div style={{ borderTop: '1px solid #1a1a1a', paddingTop: '1.5rem' }}>
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1.5rem' }}>
             {[
               ['🔒', 'Sichere Zahlung via Stripe'],
               ['📦', 'Print-on-Demand — Produktion nach Bestellung'],
@@ -188,7 +188,7 @@ export default function ProductPage() {
       </div>
 
       {/* MOBILE STICKY CTA */}
-      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '1rem', background: '#0a0a0a', borderTop: '1px solid #1a1a1a', display: 'none' }}>
+      <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '1rem', background: '#0a0a0a', borderTop: '1px solid rgba(255,255,255,0.08)', display: 'none' }}>
         <button onClick={buyNow} style={{ width: '100%', background: '#e2001a', color: '#fff', padding: '1rem', borderRadius: '12px', fontWeight: 800, border: 'none', fontSize: '1rem' }}>
           KAUFEN — €{(product.price + 4.99).toFixed(2)}
         </button>
