@@ -37,13 +37,13 @@ export default function NewsletterAdminPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f6f3ed] p-5 sm:p-10 text-black">
-      <Link href="/admin" className="font-black underline">
+    <main className="min-h-screen bg-[#0a0a0a] p-5 sm:p-10 text-white">
+      <Link href="/admin" className="font-black underline text-neutral-400 hover:text-white">
         ← Zurück zum Admin
       </Link>
 
-      <div className="mt-5 rounded-[2rem] bg-white border border-neutral-200 shadow-xl p-6 sm:p-10">
-        <p className="text-neutral-500 font-black uppercase tracking-widest text-xs">
+      <div className="mt-5 rounded-[2rem] bg-[#121212] border border-white/10 shadow-xl p-6 sm:p-10">
+        <p className="text-[#e2001a] font-black uppercase tracking-widest text-xs">
           Newsletter
         </p>
 
@@ -51,7 +51,7 @@ export default function NewsletterAdminPage() {
           E-Mail Leads
         </h1>
 
-        <p className="mt-4 text-neutral-600">
+        <p className="mt-4 text-neutral-400">
           Lokale Newsletter-Einträge aus dem Shop.
         </p>
 
@@ -76,7 +76,7 @@ export default function NewsletterAdminPage() {
 
       <div className="mt-8 grid gap-3">
         {emails.length === 0 && (
-          <div className="rounded-[2rem] bg-white border border-neutral-200 shadow-xl p-6">
+          <div className="rounded-[2rem] bg-[#121212] border border-white/10 shadow-xl p-6">
             <p className="font-black text-neutral-500">Noch keine E-Mails gespeichert.</p>
           </div>
         )}
@@ -84,7 +84,7 @@ export default function NewsletterAdminPage() {
         {emails.map((email, index) => (
           <div
             key={`${email}-${index}`}
-            className="rounded-2xl bg-white border border-neutral-200 p-4 font-black shadow-sm"
+            className="rounded-2xl bg-[#121212] border border-white/10 p-4 font-black shadow-sm text-white"
           >
             {email}
           </div>
