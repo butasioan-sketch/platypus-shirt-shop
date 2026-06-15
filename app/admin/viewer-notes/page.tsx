@@ -24,18 +24,18 @@ export default function ViewerNotesPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#f6f3ed] p-5 sm:p-10 text-black">
-      <Link href="/admin" className="font-black underline">
+    <main className="min-h-screen bg-[#0a0a0a] p-5 sm:p-10 text-white">
+      <Link href="/admin" className="font-black underline text-neutral-400 hover:text-white">
         ← Zurück zum Admin
       </Link>
 
-      <div className="mt-5 rounded-[2rem] bg-white border border-neutral-200 shadow-xl p-6 sm:p-10">
-        <p className="text-neutral-500 font-black uppercase tracking-widest text-xs">
-          Viewer Notes
+      <div className="mt-5 rounded-[2rem] bg-[#121212] border border-white/10 shadow-xl p-6 sm:p-10">
+        <p className="text-[#e2001a] font-black uppercase tracking-widest text-xs">
+          Kunden-Notizen
         </p>
 
         <h1 className="mt-3 text-4xl sm:text-6xl font-black">
-          360° Viewer Notizen
+          Viewer Notizen
         </h1>
 
         <button
@@ -49,13 +49,13 @@ export default function ViewerNotesPage() {
 
       <div className="mt-8 grid gap-3">
         {notes.length === 0 && (
-          <div className="rounded-[2rem] bg-white border border-neutral-200 shadow-xl p-6">
+          <div className="rounded-[2rem] bg-[#121212] border border-white/10 shadow-xl p-6">
             <p className="font-black text-neutral-500">Noch keine Viewer-Notizen gespeichert.</p>
           </div>
         )}
 
         {notes.map((note, index) => (
-          <div key={`${note.createdAt}-${index}`} className="rounded-2xl bg-white border border-neutral-200 p-4 shadow-sm">
+          <div key={`${note.createdAt}-${index}`} className="rounded-2xl bg-[#121212] border border-white/10 p-4 shadow-sm text-white">
             <p className="font-black">{note.message}</p>
             <p className="mt-2 text-xs font-bold text-neutral-500">{note.createdAt}</p>
           </div>
