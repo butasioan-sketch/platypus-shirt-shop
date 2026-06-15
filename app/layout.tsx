@@ -5,8 +5,8 @@ import ChatWidgetWrapper from './components/ChatWidgetWrapper';
 
 export const metadata: Metadata = {
   title: 'PLATYPUS — Premium Print-on-Demand T-Shirts',
-  description: 'Dein eigenes Shirt. 360° Viewer. Stripe Checkout. Produktion auf Bestellung. Versand in DE & RO.',
-  keywords: 'platypus, t-shirt, print on demand, custom shirt, 360 viewer, tricouri, romania',
+  description: 'Gestalte dein eigenes Shirt — Motiv vorne & hinten hochladen. Sichere Zahlung. Produktion auf Bestellung. Versand in DE & RO.',
+  keywords: 'platypus, t-shirt, print on demand, custom shirt, eigenes design, motiv hochladen, tricouri, romania',
   icons: {
     icon: '/icon.jpeg',
     apple: '/apple-icon.jpeg',
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
   openGraph: {
     title: 'PLATYPUS — Premium T-Shirts',
-    description: 'Dein Shirt. Cinematic 360° Viewer. Stripe Checkout.',
+    description: 'Gestalte dein eigenes Shirt. Lade dein Motiv hoch. Sichere Zahlung.',
     type: 'website',
     url: 'https://platypus-shirt-shop.vercel.app',
   },

@@ -84,7 +84,7 @@ export default function AdminPage() {
           {[
             { done: true,  label: 'Shop live auf Vercel' },
             { done: true,  label: 'Stripe Checkout integriert' },
-            { done: true,  label: 'Produktseiten mit 360° Viewer' },
+            { done: true,  label: 'Design-Editor: eigenes Motiv hochladen' },
             { done: true,  label: 'Admin Dashboard' },
             { done: true,  label: 'Warenkorb mit LocalStorage' },
             { done: stripeStatus === 'ok', label: 'Echter Stripe Key gesetzt' },
