@@ -8,7 +8,7 @@ export interface ShirtColor {
 
 export const SHIRT_COLORS: ShirtColor[] = [
   { key: 'weiss',    hex: '#f5f5f5', label: { de: 'Weiß',     ro: 'Alb',        en: 'White'      } },
-  { key: 'natur',    hex: '#ece4d6', label: { de: 'Natur',    ro: 'Natural',    en: 'Natural'    } },
+  { key: 'hellgelb', hex: '#f5ecc8', label: { de: 'Hellgelb', ro: 'Galben deschis', en: 'Light Yellow' } },
   { key: 'hellgrau', hex: '#d4d6d8', label: { de: 'Hellgrau', ro: 'Gri deschis',en: 'Light Grey' } },
   { key: 'hellblau', hex: '#cfe0ec', label: { de: 'Hellblau', ro: 'Bleu',       en: 'Light Blue' } },
   { key: 'mint',     hex: '#d4e8da', label: { de: 'Mint',     ro: 'Mentă',      en: 'Mint'       } },

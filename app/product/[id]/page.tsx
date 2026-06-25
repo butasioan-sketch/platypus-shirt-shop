@@ -10,7 +10,7 @@ const DesignStudio = dynamic(() => import('@/app/components/DesignStudio'), { ss
 
 const COLORS = [
   { key: 'weiss',    hex: '#f5f5f5', label: 'Weiß' },
-  { key: 'natur',    hex: '#ece4d6', label: 'Natur' },
+  { key: 'hellgelb', hex: '#f5ecc8', label: 'Hellgelb' },
   { key: 'hellgrau', hex: '#d4d6d8', label: 'Hellgrau' },
   { key: 'hellblau', hex: '#cfe0ec', label: 'Hellblau' },
   { key: 'mint',     hex: '#d4e8da', label: 'Mint' },
@@ -26,7 +26,7 @@ export default function ProductPage() {
   const product = PRODUCTS[id] || PRODUCTS['1'];
 
   const [size, setSize] = useState('');
-  const [fit, setFit] = useState('Regular');
+  const [fit] = useState('Unisex');
   const [colorKey, setColorKey] = useState('weiss');
   const activeColor = COLORS.find(c => c.key === colorKey) || COLORS[0];
   const [loading, setLoading] = useState(false);
@@ -105,7 +105,7 @@ export default function ProductPage() {
         <Link href="/cart" style={{ color: '#888', textDecoration: 'none', fontSize: '0.875rem' }}>Warenkorb</Link>
       </header>
 
-      <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '3rem 2rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem' }}>
+      <div className="product-grid" style={{ maxWidth: '1100px', margin: '0 auto', padding: '3rem 2rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem' }}>
 
         {/* DESIGN-EDITOR */}
         <div style={{ position: 'sticky', top: '5rem' }}>
@@ -158,21 +158,10 @@ export default function ProductPage() {
             </div>
           </div>
 
-          {/* FIT */}
+          {/* SCHNITT: fest Unisex */}
           <div style={{ marginBottom: '2rem' }}>
-            <p style={{ fontSize: '0.8rem', color: '#888', marginBottom: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Schnitt</p>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              {['Regular', 'Oversized'].map((f) => (
-                <button key={f} onClick={() => setFit(f)} style={{
-                  padding: '0.5rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.875rem',
-                  background: fit === f ? '#e2001a' : '#121212',
-                  color: fit === f ? '#fff' : '#888',
-                  border: fit === f ? '1px solid #e2001a' : '1px solid rgba(255,255,255,0.10)',
-                }}>
-                  {f}
-                </button>
-              ))}
-            </div>
+            <p style={{ fontSize: '0.8rem', color: '#888', marginBottom: '0.5rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Schnitt</p>
+            <p style={{ fontSize: '0.95rem', color: '#fff', fontWeight: 600 }}>Unisex</p>
           </div>
 
           {error && <p style={{ color: '#f87171', fontSize: '0.875rem', marginBottom: '1rem' }}>{error}</p>}
