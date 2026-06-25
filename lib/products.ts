@@ -1,5 +1,19 @@
 import { Locale } from './i18n';
 
+export interface ShirtColor {
+  key: string;
+  hex: string;
+  label: Record<Locale, string>;
+}
+
+export const SHIRT_COLORS: ShirtColor[] = [
+  { key: 'weiss',    hex: '#f5f5f5', label: { de: 'Weiß',     ro: 'Alb',        en: 'White'      } },
+  { key: 'natur',    hex: '#ece4d6', label: { de: 'Natur',    ro: 'Natural',    en: 'Natural'    } },
+  { key: 'hellgrau', hex: '#d4d6d8', label: { de: 'Hellgrau', ro: 'Gri deschis',en: 'Light Grey' } },
+  { key: 'hellblau', hex: '#cfe0ec', label: { de: 'Hellblau', ro: 'Bleu',       en: 'Light Blue' } },
+  { key: 'mint',     hex: '#d4e8da', label: { de: 'Mint',     ro: 'Mentă',      en: 'Mint'       } },
+];
+
 export interface Product {
   id: string;
   slug: string;
@@ -8,6 +22,7 @@ export interface Product {
   textColor: string;
   sizes: string[];
   fits: string[];
+  colors: ShirtColor[];
   material: string;
   weight: string;
   name: Record<Locale, string>;
@@ -20,49 +35,26 @@ export interface Product {
 export const PRODUCTS: Product[] = [
   {
     id: '1',
-    slug: 'essential-weiss',
+    slug: 'essential-polyester',
     price: 29.99,
     color: '#f5f5f5',
     textColor: '#000',
     sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
     fits: ['Regular', 'Oversized'],
-    material: '100% Baumwolle',
-    weight: '180g/m²',
+    colors: SHIRT_COLORS,
+    material: '100% Polyester (sublimationsgeeignet)',
+    weight: '160g/m²',
     name: {
-      de: 'Essential Weiß',
-      ro: 'Essential Alb',
-      en: 'Essential White',
+      de: 'Essential Polyester',
+      ro: 'Essential Poliester',
+      en: 'Essential Polyester',
     },
     description: {
-      de: 'Premium Baumwolle, unisex, Print-on-Demand',
-      ro: 'Bumbac premium, unisex, print la comandă',
-      en: 'Premium cotton, unisex, print-on-demand',
+      de: 'Helles Premium-Polyester, unisex, ideal für brillanten Sublimationsdruck',
+      ro: 'Poliester premium deschis, unisex, ideal pentru sublimare vibrantă',
+      en: 'Light premium polyester, unisex, ideal for vibrant sublimation print',
     },
-    tags: ['essential', 'weiss', 'white', 'alb', 'basic'],
-    active: true,
-    createdAt: '2026-01-01',
-  },
-  {
-    id: '2',
-    slug: 'essential-schwarz',
-    price: 29.99,
-    color: '#111111',
-    textColor: '#fff',
-    sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
-    fits: ['Regular', 'Oversized'],
-    material: '100% Baumwolle',
-    weight: '180g/m²',
-    name: {
-      de: 'Essential Schwarz',
-      ro: 'Essential Negru',
-      en: 'Essential Black',
-    },
-    description: {
-      de: 'Premium Baumwolle, unisex, Print-on-Demand',
-      ro: 'Bumbac premium, unisex, print la comandă',
-      en: 'Premium cotton, unisex, print-on-demand',
-    },
-    tags: ['essential', 'schwarz', 'black', 'negru', 'basic'],
+    tags: ['essential', 'polyester', 'sublimation', 'hell', 'basic'],
     active: true,
     createdAt: '2026-01-01',
   },

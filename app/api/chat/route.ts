@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 const SYSTEM_PROMPT = `Du bist der PLATYPUS Shop Assistent. Du hilfst Kunden bei:
 - Größenberatung (S=XS-S, M=M, L=L-XL, XL=XL-XXL, XXL=XXL+)
 - Versandinformationen (DE: 3-5 Werktage €4.99, RO: 5-7 Werktage €6.99, EU: 5-10 Werktage €8.99)
-- Produktinformationen (Essential Weiß & Schwarz, 100% Baumwolle, Print-on-Demand)
+- Produktinformationen (Essential Polyester, 100% helles Polyester, fünf Farben: Weiß/Natur/Hellgrau/Hellblau/Mint, Print-on-Demand)
 - Bestellstatus (Produktion nach Bestellung, 2-3 Werktage Produktion)
 - Rückgabe (14 Tage, keine Fragen)
 - Zahlung (Stripe, Kreditkarte, sichere Verbindung)

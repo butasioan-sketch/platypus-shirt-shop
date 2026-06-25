@@ -69,7 +69,7 @@ export default function HomePage() {
       <section style={{ padding: '3rem 2rem 4rem', maxWidth: '1000px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <h2 style={{ fontSize: '1.9rem', fontWeight: 800, color: '#fff', marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>Unsere Shirts</h2>
-          <p style={{ color: '#888', fontSize: '0.95rem' }}>Premium Baumwolle. Dein Design. Vorne & hinten.</p>
+          <p style={{ color: '#888', fontSize: '0.95rem' }}>Helles Premium-Polyester. Dein Design. Vorne & hinten.</p>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
           {products.map((p) => (

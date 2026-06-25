@@ -8,9 +8,16 @@ import Logo from '@/app/components/Logo';
 
 const DesignStudio = dynamic(() => import('@/app/components/DesignStudio'), { ssr: false });
 
+const COLORS = [
+  { key: 'weiss',    hex: '#f5f5f5', label: 'Weiß' },
+  { key: 'natur',    hex: '#ece4d6', label: 'Natur' },
+  { key: 'hellgrau', hex: '#d4d6d8', label: 'Hellgrau' },
+  { key: 'hellblau', hex: '#cfe0ec', label: 'Hellblau' },
+  { key: 'mint',     hex: '#d4e8da', label: 'Mint' },
+];
+
 const PRODUCTS: Record<string, { name: string; price: number; color: string; sizes: string[] }> = {
-  '1': { name: 'Essential Weiß', price: 29.99, color: '#f5f5f5', sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
-  '2': { name: 'Essential Schwarz', price: 29.99, color: '#111111', sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
+  '1': { name: 'Essential Polyester', price: 29.99, color: '#f5f5f5', sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
 };
 
 export default function ProductPage() {
@@ -20,6 +27,8 @@ export default function ProductPage() {
 
   const [size, setSize] = useState('');
   const [fit, setFit] = useState('Regular');
+  const [colorKey, setColorKey] = useState('weiss');
+  const activeColor = COLORS.find(c => c.key === colorKey) || COLORS[0];
   const [loading, setLoading] = useState(false);
   const [added, setAdded] = useState(false);
   const [error, setError] = useState('');
@@ -49,7 +58,7 @@ export default function ProductPage() {
       if (existing >= 0) {
         cart[existing].quantity = (cart[existing].quantity || 1) + 1;
       } else {
-        cart.push({ id, name: product.name, price: product.price, size, fit, quantity: 1 });
+        cart.push({ id, name: product.name, price: product.price, size, fit, color: activeColor.label, quantity: 1 });
       }
       localStorage.setItem('platypus_cart', JSON.stringify(cart));
       setAdded(true);
@@ -71,7 +80,7 @@ export default function ProductPage() {
           reference: `PROD-${id}-${size}`,
           shipping: 4.99,
           total: product.price + 4.99,
-          items: [{ name: product.name, size, price: product.price, quantity: 1, designId }],
+          items: [{ name: product.name, size, color: activeColor.label, price: product.price, quantity: 1, designId }],
         }),
       });
       const data = await res.json();
@@ -105,7 +114,7 @@ export default function ProductPage() {
             <span style={{ color: '#888', fontSize: '0.8rem' }}>Lade dein eigenes Motiv hoch — vorne & hinten</span>
           </div>
           <div style={{ background: product.color, borderRadius: '16px', overflow: 'hidden', height: '500px' }}>
-            <DesignStudio shirtColor={product.color} onDesignChange={setDesign} />
+            <DesignStudio shirtColor={activeColor.hex} onDesignChange={setDesign} />
           </div>
         </div>
 
@@ -114,6 +123,22 @@ export default function ProductPage() {
           <p style={{ color: '#e2001a', fontSize: '0.72rem', letterSpacing: '0.22em', marginBottom: '0.6rem', textTransform: 'uppercase', fontWeight: 600 }}>Premium T-Shirt</p>
           <h1 style={{ fontSize: '2.6rem', fontWeight: 900, marginBottom: '0.6rem', color: '#ffffff', letterSpacing: '-0.02em', lineHeight: 1.05 }}>{product.name}</h1>
           <p style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '2rem', color: '#ffffff' }}>€{product.price}</p>
+
+          {/* FARBE */}
+          <div style={{ marginBottom: '1.5rem' }}>
+            <p style={{ fontSize: '0.8rem', color: '#888', marginBottom: '0.75rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Farbe wählen: {activeColor.label}</p>
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+              {COLORS.map((c) => (
+                <button key={c.key} onClick={() => setColorKey(c.key)} title={c.label} style={{
+                  width: '40px', height: '40px', borderRadius: '50%', cursor: 'pointer',
+                  background: c.hex,
+                  border: colorKey === c.key ? '3px solid #e2001a' : '2px solid rgba(255,255,255,0.2)',
+                  boxShadow: colorKey === c.key ? '0 0 0 2px rgba(226,0,26,0.3)' : 'none',
+                  transition: 'all 0.15s',
+                }} />
+              ))}
+            </div>
+          </div>
 
           {/* GRÖSSE */}
           <div style={{ marginBottom: '1.5rem' }}>

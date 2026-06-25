@@ -3,8 +3,7 @@
 import Link from 'next/link';
 
 const PRODUCTS = [
-  { id: '1', name: 'Essential Weiß', price: 29.99, sizes: ['S', 'M', 'L', 'XL', 'XXL'], status: 'aktiv', color: '#f5f5f5' },
-  { id: '2', name: 'Essential Schwarz', price: 29.99, sizes: ['S', 'M', 'L', 'XL', 'XXL'], status: 'aktiv', color: '#111111' },
+  { id: '1', name: 'Essential Polyester', price: 29.99, sizes: ['S', 'M', 'L', 'XL', 'XXL'], status: 'aktiv', color: '#f5f5f5' },
 ];
 
 export default function InventoryPage() {
