@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
           currency: session.currency?.toUpperCase() || 'EUR',
           locale: session.metadata?.locale || 'de',
           shippingCountry: session.metadata?.shippingCountry || 'DE',
+          shippingMethod: session.metadata?.shippingMethod || null,
           items: parsedItems,
           designId: session.metadata?.designId || null,
           status: 'paid',
