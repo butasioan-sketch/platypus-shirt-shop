@@ -58,7 +58,7 @@ export async function createOrder(order: Order): Promise<Order> {
   try {
     await sql.query(
       `INSERT INTO orders (id, stripe_session_id, customer_email, amount_total, currency, status, items, locale, shipping_country, design_id, shipping_method)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
        ON CONFLICT (stripe_session_id) DO NOTHING`,
       [order.id, order.stripeSessionId, order.customerEmail, order.amountTotal, order.currency, order.status, JSON.stringify(order.items), order.locale, order.shippingCountry, order.designId || null, order.shippingMethod || null]
     );
