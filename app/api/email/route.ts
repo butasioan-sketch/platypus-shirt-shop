@@ -36,8 +36,13 @@ function buildHtml(title: string, intro: string, d: OrderEmailData, footer: stri
     <div style="background:#111;border:1px solid #222;border-radius:12px;padding:20px;margin-bottom:24px">
       <p style="color:#555;font-size:12px;margin-bottom:12px">Order ${d.orderId}</p>
       <table style="width:100%;border-collapse:collapse">${itemRows}</table>
-      <div style="border-top:1px solid #222;margin-top:12px;padding-top:12px;display:flex;justify-content:space-between">
-        <strong>Total</strong><strong>€${d.total.toFixed(2)}</strong>
+      <div style="border-top:1px solid #222;margin-top:12px;padding-top:12px">
+        <table style="width:100%;border-collapse:collapse">
+          <tr>
+            <td><strong>Total</strong></td>
+            <td style="text-align:right"><strong>€ ${d.total.toFixed(2)}</strong></td>
+          </tr>
+        </table>
       </div>
     </div>
     <p style="color:#555;font-size:13px">${footer}</p>
