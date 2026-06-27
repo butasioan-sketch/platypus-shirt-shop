@@ -2,6 +2,7 @@ export interface OrderItem {
   name: string;
   size: string;
   fit?: string;
+  color?: string;
   quantity: number;
   price: number;
 }
@@ -17,6 +18,7 @@ export interface Order {
   items: OrderItem[];
   locale: string;
   shippingCountry: string;
+  shippingMethod?: string;
   createdAt: string;
   updatedAt: string;
 }

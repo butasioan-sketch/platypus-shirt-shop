@@ -96,7 +96,7 @@ export default function AdminOrdersPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                   <div>
                     <p style={{ fontWeight: 700, fontSize: '0.9rem' }}>{order.id}</p>
-                    <p style={{ color: '#888', fontSize: '0.8rem' }}>{order.customerEmail} · {order.shippingCountry}</p>
+                    <p style={{ color: '#888', fontSize: '0.8rem' }}>{order.customerEmail} · {order.shippingCountry}{order.shippingMethod ? ' · ' + order.shippingMethod : ''}</p>
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <p style={{ fontWeight: 800, fontSize: '1.25rem' }}>€{Number(order.amountTotal).toFixed(2)}</p>
@@ -108,7 +108,7 @@ export default function AdminOrdersPage() {
                 {order.items?.length > 0 && (
                   <div style={{ borderTop: '1px solid #222', paddingTop: '0.75rem', marginBottom: '0.75rem' }}>
                     {order.items.map((item, i) => (
-                      <p key={i} style={{ color: '#aaa', fontSize: '0.8rem' }}>{item.quantity}× {item.name} ({item.size})</p>
+                      <p key={i} style={{ color: '#aaa', fontSize: '0.8rem' }}>{item.quantity}× {item.name} ({item.size}{item.color ? ', ' + item.color : ''})</p>
                     ))}
                   </div>
                 )}
