@@ -95,7 +95,8 @@ export async function POST(request: Request) {
         paymentMethod,
         items: JSON.stringify(items).slice(0, 480),
         designId: (Array.isArray(items) && items.find((i) => i.designId)?.designId) || "",
-        shippingCountry: body.shippingCountry || "DE",
+        shippingCountry: body.country || body.shippingCountry || "DE",
+        shippingMethod: body.shippingMethod || "DHL",
         locale: body.locale || "de",
       },
     });

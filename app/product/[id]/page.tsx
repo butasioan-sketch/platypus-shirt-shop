@@ -1,5 +1,6 @@
 'use client';
 
+import { getShipping, DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY } from '@/lib/shipping';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
@@ -78,8 +79,10 @@ export default function ProductPage() {
         body: JSON.stringify({
           paymentMethod: 'card',
           reference: `PROD-${id}-${size}`,
-          shipping: 4.99,
-          total: product.price + 4.99,
+          shipping: getShipping(DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY),
+          total: product.price + getShipping(DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY),
+          country: DEFAULT_COUNTRY,
+          shippingMethod: 'DHL',
           items: [{ name: product.name, size, color: activeColor.label, price: product.price, quantity: 1, designId }],
         }),
       });
@@ -173,7 +176,7 @@ export default function ProductPage() {
               fontWeight: 800, fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer',
               border: 'none', letterSpacing: '0.05em', opacity: loading ? 0.7 : 1,
             }}>
-              {loading ? 'Weiterleitung...' : 'JETZT KAUFEN — €' + (product.price + 4.99).toFixed(2)}
+              {loading ? 'Weiterleitung...' : 'JETZT KAUFEN — €' + product.price.toFixed(2)}
             </button>
             <button onClick={addToCart} style={{
               background: '#121212', color: added ? '#4ade80' : '#fff', padding: '1rem', borderRadius: '12px',
@@ -189,7 +192,7 @@ export default function ProductPage() {
             {[
               ['🔒', 'Sichere Zahlung via Stripe'],
               ['📦', 'Print-on-Demand — Produktion nach Bestellung'],
-              ['🚚', 'Versand DE: 3–5 Werktage (+€4.99)'],
+              ['🚚', 'Versand wählbar (DHL/Hermes/DPD) — DE & RO'],
               ['↩️', '14 Tage Rückgabe'],
             ].map(([icon, text]) => (
               <div key={text} style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'center' }}>
@@ -204,7 +207,7 @@ export default function ProductPage() {
       {/* MOBILE STICKY CTA */}
       <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, padding: '1rem', background: '#0a0a0a', borderTop: '1px solid rgba(255,255,255,0.08)', display: 'none' }}>
         <button onClick={buyNow} style={{ width: '100%', background: '#e2001a', color: '#fff', padding: '1rem', borderRadius: '12px', fontWeight: 800, border: 'none', fontSize: '1rem' }}>
-          KAUFEN — €{(product.price + 4.99).toFixed(2)}
+          KAUFEN — €{product.price.toFixed(2)}
         </button>
       </div>
 
