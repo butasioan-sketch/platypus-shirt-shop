@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from: 'PLATYPUS <orders@platypus-shop.de>',
+        from: 'PLATYPUS <onboarding@resend.dev>',
         to: data.email,
         subject: template.subject,
         html: template.html,
