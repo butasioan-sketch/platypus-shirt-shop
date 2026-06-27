@@ -5,6 +5,7 @@ import { getProviderMode } from "../../../../lib/paymentProviders";
 type CheckoutItem = {
   name: string;
   size?: string;
+  color?: string;
   price: number;
   quantity: number;
   designId?: string;
@@ -84,10 +85,17 @@ export async function POST(request: Request) {
           currency: "eur",
           unit_amount: Math.round(Number(item.price || 0) * 100),
           product_data: {
-            name: `${item.name}${item.size ? ` · Größe ${item.size}` : ""}`,
+            name: `${item.name}${item.color ? ` · ${item.color}` : ""}${item.size ? ` · Größe ${item.size}` : ""}`,
           },
         },
       })),
+      shipping_options: Number(body.shipping || 0) > 0 ? [{
+        shipping_rate_data: {
+          type: "fixed_amount",
+          fixed_amount: { amount: Math.round(Number(body.shipping || 0) * 100), currency: "eur" },
+          display_name: `Versand${body.shippingMethod ? ` · ${body.shippingMethod}` : ""}`,
+        },
+      }] : undefined,
       success_url: `${siteUrl}/?payment=success`,
       cancel_url: `${siteUrl}/?payment=cancel`,
       metadata: {
