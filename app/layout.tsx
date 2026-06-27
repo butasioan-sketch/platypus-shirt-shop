@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { LocaleProvider } from './components/LocaleProvider';
 import ChatWidgetWrapper from './components/ChatWidgetWrapper';
+import Footer from './components/Footer';
 
 export const metadata: Metadata = {
   title: 'PLATYPUS — Premium Print-on-Demand T-Shirts',
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <LocaleProvider>
           {children}
           <ChatWidgetWrapper />
+          <Footer />
         </LocaleProvider>
       </body>
     </html>
