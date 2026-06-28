@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Logo from '@/app/components/Logo';
+import CartCount from '@/app/components/CartCount';
 import { SHIPPING_OPTIONS, COUNTRIES, DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY, getShipping, type Country } from '@/lib/shipping';
 
 interface CartItem {
@@ -75,7 +76,7 @@ export default function CartPage() {
     <div style={{ minHeight: '100vh', background: 'radial-gradient(1000px 500px at 50% -10%, rgba(226,0,26,0.08), transparent 60%), linear-gradient(180deg, #0c0c0d 0%, #0a0a0a 100%)', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       <header style={{ padding: '1.1rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Logo size={44} />
-        <span style={{ color: '#888', fontSize: '0.875rem' }}>Warenkorb</span>
+        <CartCount />
       </header>
 
       <div style={{ maxWidth: '700px', margin: '3rem auto', padding: '0 2rem 6rem' }}>

@@ -10,14 +10,9 @@ import { getAllProducts, getProductName, getProductDescription } from '@/lib/pro
 
 export default function HomePage() {
   const { t, locale } = useLocale();
-  const [cartCount, setCartCount] = useState(0);
   const products = getAllProducts();
 
   useEffect(() => {
-    try {
-      const cart = JSON.parse(localStorage.getItem('platypus_cart') || '[]');
-      setCartCount(cart.reduce((s: number, i: { quantity?: number }) => s + (i.quantity || 1), 0));
-    } catch { setCartCount(0); }
   }, []);
 
   return (

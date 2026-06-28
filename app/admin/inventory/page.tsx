@@ -3,7 +3,7 @@
 import Link from 'next/link';
 
 const PRODUCTS = [
-  { id: '1', name: 'Essential Polyester', price: 29.99, sizes: ['S', 'M', 'L', 'XL', 'XXL'], status: 'aktiv', color: '#f5f5f5' },
+  { id: '1', name: 'AirFit Pro', price: 29.99, sizes: ['S', 'M', 'L', 'XL', 'XXL'], status: 'aktiv', color: '#f5f5f5' },
 ];
 
 export default function InventoryPage() {
