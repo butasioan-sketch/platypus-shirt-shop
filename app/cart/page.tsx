@@ -78,7 +78,7 @@ export default function CartPage() {
         <span style={{ color: '#888', fontSize: '0.875rem' }}>Warenkorb</span>
       </header>
 
-      <div style={{ maxWidth: '700px', margin: '3rem auto', padding: '0 2rem' }}>
+      <div style={{ maxWidth: '700px', margin: '3rem auto', padding: '0 2rem 6rem' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '2rem' }}>Warenkorb</h1>
 
         {items.length === 0 ? (

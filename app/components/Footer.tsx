@@ -5,8 +5,11 @@ export default function Footer() {
         <div>© {new Date().getFullYear()} PLATYPUS. Alle Rechte vorbehalten.</div>
         <div className="flex gap-6">
           <a href="/impressum" className="hover:text-white transition">Impressum</a>
+          <span>·</span>
           <a href="/agb" className="hover:text-white transition">AGB</a>
+          <span>·</span>
           <a href="/datenschutz" className="hover:text-white transition">Datenschutz</a>
+          <span>·</span>
           <a href="/versand" className="hover:text-white transition">Versand</a>
         </div>
       </div>
