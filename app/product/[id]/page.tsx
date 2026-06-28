@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import Logo from '@/app/components/Logo';
+import CartCount from '@/app/components/CartCount';
 
 const DesignStudio = dynamic(() => import('@/app/components/DesignStudio'), { ssr: false });
 
@@ -103,7 +104,7 @@ export default function ProductPage() {
       {/* HEADER */}
       <header style={{ padding: '1rem 1.25rem', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Logo size={40} />
-        <Link href="/cart" style={{ color: '#888', textDecoration: 'none', fontSize: '0.875rem' }}>Warenkorb</Link>
+        <CartCount />
       </header>
 
       {/* LAYOUT: Mobile einspaltig, Desktop zweispaltig */}

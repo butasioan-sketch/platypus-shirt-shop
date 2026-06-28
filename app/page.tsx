@@ -37,9 +37,7 @@ export default function HomePage() {
         <nav style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
           <Link href="/versand" style={{ color: '#888', textDecoration: 'none', fontSize: '0.875rem' }}>{t.nav.shipping}</Link>
           <LocaleSwitcher />
-          <Link href="/cart" style={{ color: '#fff', textDecoration: 'none', fontSize: '0.875rem', background: '#e2001a', padding: '0.5rem 1.25rem', borderRadius: '999px', border: 'none', fontWeight: 600 }}>
-            {t.nav.cart} {cartCount > 0 && `(${cartCount})`}
-          </Link>
+          <CartCount />
         </nav>
       </header>
 
