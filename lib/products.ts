@@ -45,9 +45,9 @@ export const PRODUCTS: Product[] = [
     material: '100% Polyester (sublimationsgeeignet)',
     weight: '160g/m²',
     name: {
-      de: 'Essential Polyester',
+      de: 'AirFit Pro',
       ro: 'Essential Poliester',
-      en: 'Essential Polyester',
+      en: 'AirFit Pro',
     },
     description: {
       de: 'Helles Premium-Polyester, unisex, ideal für brillanten Sublimationsdruck',

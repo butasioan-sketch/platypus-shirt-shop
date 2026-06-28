@@ -69,7 +69,7 @@ export default function HomePage() {
       <section style={{ padding: '3rem 2rem 4rem', maxWidth: '1000px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <h2 style={{ fontSize: '1.9rem', fontWeight: 800, color: '#fff', marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>Unsere Shirts</h2>
-          <p style={{ color: '#888', fontSize: '0.95rem' }}>Helles Premium-Polyester. Dein Design. Vorne & hinten.</p>
+          <p style={{ color: '#888', fontSize: '0.95rem' }}>100% Performance-Polyester. Atmungsaktiv. Sublimationsdruck.</p>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
           {products.map((p) => (
@@ -118,24 +118,6 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
-      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.06)', padding: '3.5rem 2rem 2.5rem', marginTop: '2rem' }}>
-        <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem' }}>
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', textDecoration: 'none' }}>
-            <Image src="/logo.jpeg" alt="PLATYPUS" width={40} height={40} style={{ borderRadius: '9px' }} />
-            <span style={{ fontSize: '1rem', fontWeight: 800, letterSpacing: '0.18em', color: '#fff' }}>PLATYPUS</span>
-          </Link>
-          <p style={{ color: '#777', fontSize: '0.82rem', textAlign: 'center', maxWidth: '380px', lineHeight: 1.6 }}>
-            Premium Print-on-Demand. Gestalte dein eigenes Shirt — vorne & hinten. Versand in DE & RO.
-          </p>
-          <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-            {[['FAQ', '/faq'], ['Sendungsverfolgung', '/tracking'], ['Impressum', '/impressum'], ['Datenschutz', '/datenschutz'], ['AGB', '/agb'], [t.nav.shipping, '/versand']].map(([label, href]) => (
-              <Link key={href} href={href} style={{ color: '#999', textDecoration: 'none', fontSize: '0.8rem' }}>{label}</Link>
-            ))}
-          </div>
-          <p style={{ color: '#444', fontSize: '0.7rem', marginTop: '0.5rem', letterSpacing: '0.05em' }}>© 2026 PLATYPUS. Alle Rechte vorbehalten.</p>
-        </div>
-      </footer>
 
     </div>
   );
