@@ -74,9 +74,6 @@ input, select, textarea {
   .editor-col > div:last-child {
     height: 380px !important;
   }
-    gap: 2rem !important;
-    padding: 1.5rem 1.25rem !important;
-  }
 }
 
 @media (min-width: 769px) {
