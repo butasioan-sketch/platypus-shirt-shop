@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useLocale } from './components/LocaleProvider';
 import LocaleSwitcher from './components/LocaleSwitcher';
+import CartCount from '@/app/components/CartCount';
 import { getAllProducts, getProductName, getProductDescription } from '@/lib/products';
 
 export default function HomePage() {
