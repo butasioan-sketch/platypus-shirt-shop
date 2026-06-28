@@ -79,10 +79,10 @@ export default function DesignStudio({ shirtColor = '#f5f5f5', onDesignChange }:
   const endDrag = () => { setDragging(false); dragStart.current = null; };
 
   return (
-    <div style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+    <div style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '0.5rem', boxSizing: 'border-box', overflow: 'hidden' }}>
 
       {/* Vorder-/Rückseite Umschalter */}
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
         {(['front', 'back'] as const).map((s) => (
           <button key={s} onClick={() => setSide(s)} style={{
             padding: '0.4rem 1.1rem', borderRadius: '999px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700,
@@ -98,8 +98,8 @@ export default function DesignStudio({ shirtColor = '#f5f5f5', onDesignChange }:
       <div style={{ position: 'relative', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
         <svg
           ref={svgRef}
-          width="260" height="320" viewBox="0 0 260 320"
-          style={{ filter: `drop-shadow(0 14px 24px rgba(0,0,0,${isDark ? 0.5 : 0.25}))`, touchAction: 'none', cursor: currentImg ? (dragging ? 'grabbing' : 'grab') : 'default' }}
+          width="100%" height="100%" viewBox="0 0 260 320" style={{ maxHeight: '280px' }}
+          style={{ filter: `drop-shadow(0 14px 24px rgba(0,0,0,${isDark ? 0.5 : 0.25}))`, touchAction: 'none', cursor: currentImg ? (dragging ? 'grabbing' : 'grab') : 'default', display: 'block' }}
           onMouseDown={(e) => startDrag(e.clientX, e.clientY)}
           onMouseMove={(e) => moveDrag(e.clientX, e.clientY)}
           onMouseUp={endDrag}
@@ -156,13 +156,13 @@ export default function DesignStudio({ shirtColor = '#f5f5f5', onDesignChange }:
       </div>
 
       {/* Upload + Steuerung */}
-      <div style={{ width: '100%', maxWidth: '300px', marginTop: '1rem' }}>
+      <div style={{ width: '100%', maxWidth: '300px', marginTop: '0.4rem' }}>
         <input ref={fileRef} type="file" accept="image/*" onChange={handleUpload} style={{ display: 'none' }} />
 
         {!currentImg ? (
           <button onClick={() => fileRef.current?.click()} style={{
             width: '100%', background: '#e2001a', color: '#fff', border: 'none', borderRadius: '10px',
-            padding: '0.75rem', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', letterSpacing: '0.03em',
+            padding: '0.6rem', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer', letterSpacing: '0.03em',
           }}>
             ⬆ Bild hochladen ({side === 'front' ? 'Vorderseite' : 'Rückseite'})
           </button>
