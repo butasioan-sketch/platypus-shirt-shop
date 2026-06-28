@@ -1,4 +1,11 @@
 import type { Metadata } from 'next';
+import type { Viewport } from 'next';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
 import './globals.css';
 import { LocaleProvider } from './components/LocaleProvider';
 import ChatWidgetWrapper from './components/ChatWidgetWrapper';

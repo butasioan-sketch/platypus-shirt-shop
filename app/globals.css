@@ -64,6 +64,16 @@ input, select, textarea {
   .mobile-sticky-cta { display: block !important; }
   .product-grid {
     grid-template-columns: 1fr !important;
+    padding: 1rem !important;
+    gap: 1.5rem !important;
+  }
+  .editor-col {
+    position: static !important;
+    top: auto !important;
+  }
+  .editor-col > div:last-child {
+    height: 380px !important;
+  }
     gap: 2rem !important;
     padding: 1.5rem 1.25rem !important;
   }
