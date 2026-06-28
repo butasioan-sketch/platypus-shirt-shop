@@ -98,8 +98,8 @@ export default function DesignStudio({ shirtColor = '#f5f5f5', onDesignChange }:
       <div style={{ position: 'relative', flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
         <svg
           ref={svgRef}
-          width="100%" height="100%" viewBox="0 0 260 320" style={{ maxHeight: '280px' }}
-          style={{ filter: `drop-shadow(0 14px 24px rgba(0,0,0,${isDark ? 0.5 : 0.25}))`, touchAction: 'none', cursor: currentImg ? (dragging ? 'grabbing' : 'grab') : 'default', display: 'block' }}
+          width="100%" height="100%" viewBox="0 0 260 320"
+          style={{ maxHeight: '280px', display: 'block', filter: `drop-shadow(0 14px 24px rgba(0,0,0,${isDark ? 0.5 : 0.25}))`, touchAction: 'none', cursor: currentImg ? (dragging ? 'grabbing' : 'grab') : 'default' }}
           onMouseDown={(e) => startDrag(e.clientX, e.clientY)}
           onMouseMove={(e) => moveDrag(e.clientX, e.clientY)}
           onMouseUp={endDrag}
