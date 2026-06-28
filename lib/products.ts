@@ -46,7 +46,7 @@ export const PRODUCTS: Product[] = [
     weight: '160g/m²',
     name: {
       de: 'AirFit Pro',
-      ro: 'Essential Poliester',
+      ro: 'AirFit Pro',
       en: 'AirFit Pro',
     },
     description: {
