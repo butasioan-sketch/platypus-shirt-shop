@@ -11,11 +11,8 @@ import CartCount from '@/app/components/CartCount';
 const DesignStudio = dynamic(() => import('@/app/components/DesignStudio'), { ssr: false });
 
 const COLORS = [
-  { key: 'weiss',    hex: '#f5f5f5', label: 'Weiß' },
-  { key: 'hellgelb', hex: '#f5ecc8', label: 'Hellgelb' },
-  { key: 'hellgrau', hex: '#d4d6d8', label: 'Hellgrau' },
-  { key: 'hellblau', hex: '#cfe0ec', label: 'Hellblau' },
-  { key: 'mint',     hex: '#d4e8da', label: 'Mint' },
+  { key: 'weiss', hex: '#f5f5f5', label: 'Weiß' },
+  // weitere Farben folgen wenn Blanks bestellt
 ];
 
 const PRODUCTS: Record<string, { name: string; price: number; color: string; sizes: string[] }> = {
