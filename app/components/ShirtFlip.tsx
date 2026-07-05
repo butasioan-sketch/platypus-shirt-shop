@@ -9,16 +9,17 @@ export default function ShirtFlip({ color = '#f5f5f5' }: ShirtFlipProps) {
   const [flipped, setFlipped] = useState(false);
 
   return (
-    <div style={{ position: 'relative', width: '100%' }}>
-      {/* Flip-Wrapper */}
+    <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+      
+      {/* Flip-Container */}
       <div
         onClick={() => setFlipped(!flipped)}
-        style={{ cursor: 'pointer', perspective: '1000px', width: '100%' }}
+        style={{ cursor: 'pointer', perspective: '1000px', width: '260px', height: '260px' }}
       >
         <div style={{
           position: 'relative',
           width: '100%',
-          paddingBottom: '100%',
+          height: '100%',
           transformStyle: 'preserve-3d',
           transition: 'transform 0.6s ease',
           transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
@@ -29,15 +30,12 @@ export default function ShirtFlip({ color = '#f5f5f5' }: ShirtFlipProps) {
             position: 'absolute', inset: 0,
             backfaceVisibility: 'hidden',
             WebkitBackfaceVisibility: 'hidden',
-            borderRadius: '12px',
-            overflow: 'hidden',
-            background: 'transparent',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <img
               src="/airfit-front.png"
-              alt="AirFit Pro Vorderseite"
-              style={{ width: '90%', height: '90%', objectFit: 'contain' }}
+              alt="Vorderseite"
+              style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.4))' }}
             />
           </div>
 
@@ -47,35 +45,24 @@ export default function ShirtFlip({ color = '#f5f5f5' }: ShirtFlipProps) {
             backfaceVisibility: 'hidden',
             WebkitBackfaceVisibility: 'hidden',
             transform: 'rotateY(180deg)',
-            borderRadius: '12px',
-            overflow: 'hidden',
-            background: 'transparent',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <img
               src="/airfit-back.png"
-              alt="AirFit Pro Rückseite"
-              style={{ width: '90%', height: '90%', objectFit: 'contain' }}
+              alt="Rückseite"
+              style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.4))' }}
             />
           </div>
         </div>
       </div>
 
-      {/* Hinweis AUSSERHALB des Flip-Containers — bleibt immer lesbar */}
-      <div
+      {/* Hinweis */}
+      <p
         onClick={() => setFlipped(!flipped)}
-        style={{
-          cursor: 'pointer',
-          textAlign: 'center',
-          marginTop: '0.5rem',
-          color: '#aaa',
-          fontSize: '0.72rem',
-          letterSpacing: '0.08em',
-          textTransform: 'uppercase',
-        }}
+        style={{ cursor: 'pointer', color: '#666', fontSize: '0.68rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: '0.5rem' }}
       >
-        {flipped ? '← Vorderseite zeigen' : 'Tippen für Rückseite →'}
-      </div>
+        {flipped ? '← Vorderseite' : 'Rückseite →'}
+      </p>
     </div>
   );
 }
