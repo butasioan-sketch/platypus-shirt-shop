@@ -175,6 +175,9 @@ export default function ProductPage() {
             }}>
               {loading ? 'Weiterleitung...' : `JETZT KAUFEN — €${product.price.toFixed(2)}`}
             </button>
+            <p style={{ color: '#666', fontSize: '0.72rem', textAlign: 'center', marginTop: '0.6rem', lineHeight: 1.5 }}>
+              Individuell bedruckte Ware — kein Widerrufsrecht gem. § 312g Abs. 2 Nr. 1 BGB. Kostenloser Ersatz bei Mängeln.
+            </p>
             <button onClick={addToCart} style={{
               background: '#121212', color: added ? '#4ade80' : '#fff', padding: '0.9rem', borderRadius: '12px',
               fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer',
