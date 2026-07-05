@@ -190,7 +190,7 @@ export default function ProductPage() {
               ['🔒', 'Sichere Zahlung via Stripe'],
               ['📦', 'Print-on-Demand — Produktion nach Bestellung'],
               ['🚚', 'Versand wählbar (DHL/Hermes/DPD) — DE & RO'],
-              ['↩️', '14 Tage Rückgabe'],
+              ['↩️', 'Qualitätsgarantie'],
             ].map(([icon, text]) => (
               <div key={text} style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.6rem', alignItems: 'center' }}>
                 <span style={{ fontSize: '1rem' }}>{icon}</span>

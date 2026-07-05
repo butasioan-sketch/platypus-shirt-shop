@@ -14,7 +14,7 @@ const FAQS: FaqItem[] = [
   { q: 'Welche Größen gibt es?', a: 'Unsere Shirts sind unisex und in den Größen S, M, L, XL und XXL erhältlich. Du kannst zwischen Regular und Oversized Fit wählen. Im Zweifel: Oversized fällt eine Nummer größer aus.' },
   { q: 'Aus welchem Material sind die Shirts?', a: 'Helles Premium-Polyester, angenehm zu tragen und langlebig. Optimiert für brillanten Sublimationsdruck deiner Motive in fünf hellen Farben.' },
   { q: 'Wie wird gedruckt?', a: 'Wir nutzen ein hochwertiges Druckverfahren für volle Farben und scharfe Details — auch bei komplexen Motiven und Fotos. Der Druck ist waschbeständig bei normaler Pflege (auf links, 30°C).' },
-  { q: 'Kann ich umtauschen oder zurückgeben?', a: 'Du hast 14 Tage Rückgaberecht. Bitte beachte: Individuell gestaltete Shirts mit deinem eigenen Motiv sind von der Rückgabe ausgenommen, sofern kein Produktionsfehler vorliegt. Bei Mängeln melde dich einfach bei uns.' },
+  { q: 'Kann ich umtauschen oder zurückgeben?', a: 'Du hast Qualitätsgarantierecht. Bitte beachte: Individuell gestaltete Shirts mit deinem eigenen Motiv sind von der Rückgabe ausgenommen, sofern kein Produktionsfehler vorliegt. Bei Mängeln melde dich einfach bei uns.' },
   { q: 'Welche Zahlungsmethoden gibt es?', a: 'Die Zahlung läuft sicher über Stripe — Kreditkarte und weitere gängige Methoden. Deine Zahlungsdaten werden verschlüsselt verarbeitet und nicht bei uns gespeichert.' },
   { q: 'Wie erreiche ich den Kundenservice?', a: 'Nutze unseren Chat-Assistenten unten rechts auf jeder Seite — er beantwortet die meisten Fragen sofort. Für individuelle Anliegen kannst du uns über die im Impressum genannten Kontaktdaten erreichen.' },
 ];

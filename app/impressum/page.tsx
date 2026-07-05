@@ -8,12 +8,13 @@ export default function ImpressumPage() {
         <Logo size={44} />
         <Link href="/" style={{ color: '#888', fontSize: '0.8rem', textDecoration: 'none' }}>← Zurück</Link>
       </header>
-      <div style={{ maxWidth: '700px', margin: '3rem auto', padding: '0 2rem' }}>
+      <div style={{ maxWidth: '700px', margin: '3rem auto', padding: '0 2rem', lineHeight: 1.7 }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '2rem' }}>Impressum</h1>
-        <div dangerouslySetInnerHTML={{ __html: `<p>Angaben gemäß § 5 TMG</p>
-        <p style='margin-top:1rem'>PLATYPUS Shop<br/>Musterstraße 1<br/>12345 Musterstadt<br/>Deutschland</p>
-        <p style='margin-top:1rem'>Kontakt:<br/>E-Mail: kontakt@platypus-shop.de</p>
-        <p style='margin-top:1rem;color:#555;font-size:0.8rem'>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV: Inhaber PLATYPUS Shop</p>` }} />
+        <p style={{ color: '#888' }}>Angaben gemäß § 5 DDG</p>
+        <p style={{ marginTop: '1rem' }}>Vorname Nachname<br/>PLATYPUS Shop<br/>Straße Hausnummer<br/>60000 Frankfurt am Main<br/>Deutschland</p>
+        <p style={{ marginTop: '1rem' }}>Kontakt:<br/>E-Mail: kontakt@platypus-shop.de</p>
+        <p style={{ marginTop: '1rem', color: '#888' }}>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV:<br/>Vorname Nachname, Anschrift wie oben</p>
+        <p style={{ marginTop: '2rem', color: '#555', fontSize: '0.85rem' }}>Plattform der EU-Kommission zur Online-Streitbeilegung: https://ec.europa.eu/consumers/odr — Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.</p>
       </div>
     </div>
   );
