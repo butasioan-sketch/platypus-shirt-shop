@@ -26,7 +26,7 @@ export default function ShirtFlip() {
             WebkitBackfaceVisibility: 'hidden',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <img src="/airfit-front.png" alt="Vorderseite"
+            <img src="/airfit-front-t.png" alt="Vorderseite"
               style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.5))' }}
             />
           </div>
@@ -38,7 +38,7 @@ export default function ShirtFlip() {
             transform: 'rotateY(180deg)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
-            <img src="/airfit-back.png" alt="Rückseite"
+            <img src="/airfit-back-t.png" alt="Rückseite"
               style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.5))' }}
             />
           </div>
