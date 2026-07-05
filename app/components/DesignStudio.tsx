@@ -131,7 +131,7 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
         <img
           src={side === 'front' ? '/airfit-front.png' : '/airfit-back.png'}
           alt={side === 'front' ? 'Vorderseite' : 'Rückseite'}
-          style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', userSelect: 'none', pointerEvents: 'none', filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.35))' }}
+          style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', userSelect: 'none', pointerEvents: 'none', mixBlendMode: 'multiply' as const }}
           draggable={false}
         />
 
