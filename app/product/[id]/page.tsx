@@ -113,7 +113,7 @@ export default function ProductPage() {
             <span style={{ background: '#e2001a', color: '#fff', fontSize: '0.65rem', fontWeight: 700, padding: '0.25rem 0.6rem', borderRadius: '999px', letterSpacing: '0.05em' }}>NEU</span>
             <span style={{ color: '#888', fontSize: '0.8rem' }}>Lade dein Motiv hoch — vorne & hinten</span>
           </div>
-          <div style={{ background: activeColor.hex, borderRadius: '16px', overflow: 'hidden', height: '460px' }}>
+          <div style={{ borderRadius: '16px', overflow: 'visible', background: 'transparent' }}>
             <DesignStudio shirtColor={activeColor.hex} onDesignChange={setDesign} />
           </div>
         </div>

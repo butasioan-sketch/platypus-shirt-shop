@@ -114,11 +114,12 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
         style={{
           position: 'relative',
           width: '100%',
-          maxWidth: '380px',
-          aspectRatio: '3/4',
+          maxWidth: '420px',
+          aspectRatio: '4/5',
           opacity: flipping ? 0 : 1,
           transform: flipping ? 'scale(0.97)' : 'scale(1)',
           transition: 'opacity 0.3s, transform 0.3s',
+          background: 'transparent',
         }}
         onMouseMove={(e) => moveDrag(e.clientX, e.clientY)}
         onMouseUp={endDrag}
@@ -130,7 +131,7 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
         <img
           src={side === 'front' ? '/airfit-front.png' : '/airfit-back.png'}
           alt={side === 'front' ? 'Vorderseite' : 'Rückseite'}
-          style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', userSelect: 'none', pointerEvents: 'none' }}
+          style={{ width: '100%', height: '100%', objectFit: 'contain', display: 'block', userSelect: 'none', pointerEvents: 'none', filter: 'drop-shadow(0 8px 32px rgba(0,0,0,0.35))' }}
           draggable={false}
         />
 
