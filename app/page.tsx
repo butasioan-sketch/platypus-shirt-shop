@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useLocale } from './components/LocaleProvider';
 import LocaleSwitcher from './components/LocaleSwitcher';
 import CartCount from '@/app/components/CartCount';
+import ShirtFlip from '@/app/components/ShirtFlip';
 import { getAllProducts, getProductName, getProductDescription } from '@/lib/products';
 
 export default function HomePage() {
@@ -71,13 +72,8 @@ Oder endlich: dich selbst.</p>
             <Link key={p.id} href={`/product/${p.id}`} style={{ textDecoration: 'none' }}>
               <div className="produkt-karte" style={{ background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', overflow: 'hidden', transition: 'transform 0.2s, border-color 0.2s' }}>
                 <div style={{ height: '300px', background: `linear-gradient(160deg, ${p.color} 0%, ${p.color} 60%, ${p.color}dd 100%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
-                  {/* Shirt-Silhouette */}
-                  <svg width="150" height="180" viewBox="0 0 150 180" style={{ filter: `drop-shadow(0 10px 24px rgba(0,0,0,0.25))` }}>
-                    <path d="M45 32 L63 16 L87 16 L105 32 L128 48 L113 70 L100 60 L100 168 L50 168 L50 60 L37 70 L22 48 Z"
-                      fill={p.color === '#111111' ? '#1c1c1c' : '#ffffff'}
-                      stroke={p.color === '#111111' ? '#333' : '#e5e5e5'} strokeWidth="1.5"/>
-                    <path d="M63 16 Q75 34 87 16" fill="none" stroke={p.color === '#111111' ? '#333' : '#e5e5e5'} strokeWidth="1.5"/>
-                  </svg>
+                  {/* Shirt-Flip-Animation */}
+                  <ShirtFlip color={p.color} />
                   <span style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(226,0,26,0.9)', color: '#fff', fontSize: '0.6rem', fontWeight: 700, padding: '0.3rem 0.7rem', borderRadius: '999px', letterSpacing: '0.1em' }}>SELBST GESTALTEN</span>
                 </div>
                 <div style={{ padding: '1.5rem' }}>
