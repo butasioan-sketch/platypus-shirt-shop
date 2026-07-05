@@ -12,7 +12,7 @@ export default function Footer() {
             { label: 'Impressum', href: '/impressum' },
             { label: 'AGB', href: '/agb' },
             { label: 'Datenschutz', href: '/datenschutz' },
-            { label: 'Versand & Rückgabe', href: '/versand' },
+            { label: 'Versand & Reklamation', href: '/versand' },
             { label: 'FAQ', href: '/faq' },
             { label: 'Sendungsverfolgung', href: '/tracking' },
           ].map(({ label, href }) => (

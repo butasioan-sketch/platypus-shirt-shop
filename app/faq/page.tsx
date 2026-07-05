@@ -14,7 +14,7 @@ const FAQS: FaqItem[] = [
   { q: 'Welche Größen gibt es?', a: 'Unsere Shirts sind unisex und in den Größen S, M, L, XL und XXL erhältlich. Du kannst zwischen Regular und Oversized Fit wählen. Im Zweifel: Oversized fällt eine Nummer größer aus.' },
   { q: 'Aus welchem Material sind die Shirts?', a: 'Helles Premium-Polyester, angenehm zu tragen und langlebig. Optimiert für brillanten Sublimationsdruck deiner Motive in fünf hellen Farben.' },
   { q: 'Wie wird gedruckt?', a: 'Wir nutzen ein hochwertiges Druckverfahren für volle Farben und scharfe Details — auch bei komplexen Motiven und Fotos. Der Druck ist waschbeständig bei normaler Pflege (auf links, 30°C).' },
-  { q: 'Kann ich umtauschen oder zurückgeben?', a: 'Du hast Qualitätsgarantierecht. Bitte beachte: Individuell gestaltete Shirts mit deinem eigenen Motiv sind von der Rückgabe ausgenommen, sofern kein Produktionsfehler vorliegt. Bei Mängeln melde dich einfach bei uns.' },
+  { q: 'Kann ich umtauschen oder zurückgeben?', a: 'Da jedes Shirt individuell mit deinem Motiv bedruckt wird, ist ein Widerruf gesetzlich ausgeschlossen (§ 312g BGB). Aber: Bei Druckfehlern, Beschädigung oder Falschlieferung ersetzen wir dein Shirt selbstverständlich kostenfrei — schick uns einfach ein Foto per E-Mail.' },
   { q: 'Welche Zahlungsmethoden gibt es?', a: 'Die Zahlung läuft sicher über Stripe — Kreditkarte und weitere gängige Methoden. Deine Zahlungsdaten werden verschlüsselt verarbeitet und nicht bei uns gespeichert.' },
   { q: 'Wie erreiche ich den Kundenservice?', a: 'Nutze unseren Chat-Assistenten unten rechts auf jeder Seite — er beantwortet die meisten Fragen sofort. Für individuelle Anliegen kannst du uns über die im Impressum genannten Kontaktdaten erreichen.' },
 ];
@@ -33,7 +33,7 @@ export default function FaqPage() {
         <p style={{ color: '#e2001a', fontSize: '0.72rem', letterSpacing: '0.22em', marginBottom: '0.6rem', textTransform: 'uppercase', fontWeight: 600 }}>Hilfe & Antworten</p>
         <h1 style={{ fontSize: '2.4rem', fontWeight: 900, marginBottom: '0.6rem', color: '#fff', letterSpacing: '-0.02em' }}>Häufige Fragen</h1>
         <p style={{ color: '#999', fontSize: '1rem', marginBottom: '2.5rem', lineHeight: 1.6 }}>
-          Alles Wichtige rund um Gestaltung, Versand und Rückgabe. Findest du keine Antwort? Frag unseren Chat-Assistenten.
+          Alles Wichtige rund um Gestaltung, Versand und Reklamation. Findest du keine Antwort? Frag unseren Chat-Assistenten.
         </p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
