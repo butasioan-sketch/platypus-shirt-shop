@@ -31,7 +31,7 @@ export default function ShirtFlip({ color = '#f5f5f5' }: ShirtFlipProps) {
             WebkitBackfaceVisibility: 'hidden',
             borderRadius: '12px',
             overflow: 'hidden',
-            background: '#f8f8f8',
+            background: 'transparent',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <img
@@ -49,7 +49,7 @@ export default function ShirtFlip({ color = '#f5f5f5' }: ShirtFlipProps) {
             transform: 'rotateY(180deg)',
             borderRadius: '12px',
             overflow: 'hidden',
-            background: '#f8f8f8',
+            background: 'transparent',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>
             <img
