@@ -72,7 +72,7 @@ input, select, textarea {
     top: auto !important;
   }
   .editor-col > div:last-child {
-    height: 380px !important;
+    height: auto !important;
   }
 }
 
