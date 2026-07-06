@@ -28,8 +28,4 @@ export const LOCALE_LABELS: Record<Locale, string> = {
   en: 'English',
 };
 
-export const SHIPPING_COSTS: Record<Locale, { price: number; days: string }> = {
-  de: { price: 4.99, days: '3–5 Werktage' },
-  ro: { price: 6.99, days: '5–7 zile' },
-  en: { price: 8.99, days: '5–10 days' },
-};
+// SHIPPING_COSTS entfernt — einzige Wahrheit ist lib/shipping.ts
