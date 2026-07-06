@@ -24,7 +24,7 @@ export const translations = {
       selectSize: 'Bitte Größe wählen',
       shipping: 'Versand DE: 3–5 Werktage',
       secure: 'Sichere Zahlung via Stripe',
-      returns: '14 Tage Rückgabe',
+      returns: 'Qualitätsgarantie',
       production: 'Print-on-Demand — Produktion nach Bestellung',
     },
     cart: {
@@ -40,7 +40,7 @@ export const translations = {
     trust: [
       { icon: '🔒', label: 'Stripe Checkout', sub: 'Sichere Zahlung' },
       { icon: '📦', label: 'Print-on-Demand', sub: 'Auf Bestellung' },
-      { icon: '↩️', label: '14 Tage Rückgabe', sub: 'Keine Fragen' },
+      { icon: '✅', label: 'Qualitätsgarantie', sub: 'Ersatz bei Mängeln' },
       { icon: '🚚', label: 'Versand DE & RO', sub: '3–7 Werktage' },
     ],
     ai: {
@@ -73,7 +73,7 @@ export const translations = {
       selectSize: 'Alege o mărime',
       shipping: 'Livrare RO: 3–5 zile lucrătoare',
       secure: 'Plată securizată prin Stripe',
-      returns: 'Returnare 14 zile',
+      returns: 'Garanție de calitate',
       production: 'Print-on-Demand — produs la comandă',
     },
     cart: {
@@ -89,7 +89,7 @@ export const translations = {
     trust: [
       { icon: '🔒', label: 'Stripe Checkout', sub: 'Plată securizată' },
       { icon: '📦', label: 'Print-on-Demand', sub: 'La comandă' },
-      { icon: '↩️', label: 'Returnare 14 zile', sub: 'Fără întrebări' },
+      { icon: '✅', label: 'Garanție de calitate', sub: 'Înlocuire la defecte' },
       { icon: '🚚', label: 'Livrare DE & RO', sub: '3–7 zile lucrătoare' },
     ],
     ai: {
@@ -122,7 +122,7 @@ export const translations = {
       selectSize: 'Please select a size',
       shipping: 'Shipping EU: 5–10 days',
       secure: 'Secure payment via Stripe',
-      returns: '14-day returns',
+      returns: 'Quality guarantee',
       production: 'Print-on-Demand — produced after order',
     },
     cart: {
@@ -138,7 +138,7 @@ export const translations = {
     trust: [
       { icon: '🔒', label: 'Stripe Checkout', sub: 'Secure payment' },
       { icon: '📦', label: 'Print-on-Demand', sub: 'Made to order' },
-      { icon: '↩️', label: '14-day returns', sub: 'No questions' },
+      { icon: '✅', label: 'Quality guarantee', sub: 'Free replacement for defects' },
       { icon: '🚚', label: 'Shipping EU', sub: '5–10 working days' },
     ],
     ai: {

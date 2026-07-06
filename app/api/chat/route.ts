@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const SYSTEM_PROMPT = `Du bist der PLATYPUS Shop Assistent. Du hilfst Kunden bei:
 - Größenberatung (S=XS-S, M=M, L=L-XL, XL=XL-XXL, XXL=XXL+)
-- Versandinformationen (DE: DHL €4.99/Hermes €4.49/DPD €4.79, RO: ab €12.99)
-- Produktinformationen (AirFit Pro, 100% Performance-Polyester, fünf Farben: Weiß/Hellgelb/Hellgrau/Hellblau/Mint, Print-on-Demand)
+- Versandinformationen (DE: Hermes €4.49 / DPD €4.79 / DHL €4.99, 3–5 Werktage; RO: ab €12.99, 5–7 Werktage)
+- Produktinformationen (AirFit Pro, 100% Performance-Polyester, aktuell nur in Weiß erhältlich, weitere Farben folgen, Print-on-Demand)
 - Bestellstatus (Produktion nach Bestellung, 2-3 Werktage Produktion)
-- Rückgabe (14 Tage, keine Fragen)
+- Reklamation (individuell bedruckte Ware: kein Widerrufsrecht gem. § 312g BGB, aber kostenloser Ersatz bei Druckfehlern, Beschädigung oder Falschlieferung)
 - Zahlung (Stripe, Kreditkarte, sichere Verbindung)
 
 Antworte kurz, freundlich und hilfreich. Max 3 Sätze. 
@@ -75,27 +75,27 @@ function getFallbackResponse(message: string, locale: string): string {
   const responses: Record<string, Record<string, string>> = {
     de: {
       groesse: 'Unsere Größen: S (XS-S), M (M), L (L-XL), XL (XL-XXL), XXL (XXL+). Bei Unsicherheit empfehlen wir eine Größe größer.',
-      versand: 'Deutschland: €4.99, 3–5 Werktage. Rumänien: €6.99, 5–7 Werktage. EU: €8.99, 5–10 Werktage.',
-      rueckgabe: '14 Tage Rückgabe ab Erhalt. Einfach E-Mail schreiben, wir kümmern uns darum.',
+      versand: 'Deutschland: ab €4.49 (Hermes), €4.79 (DPD) oder €4.99 (DHL), 3–5 Werktage. Rumänien: ab €12.99, 5–7 Werktage.',
+      rueckgabe: 'Da jedes Shirt individuell bedruckt wird, ist ein Widerruf gesetzlich ausgeschlossen (§ 312g BGB). Bei Druckfehlern oder Beschädigung ersetzen wir dein Shirt kostenlos — schreib uns einfach eine E-Mail mit Foto.',
       zahlung: 'Wir akzeptieren alle Kreditkarten über Stripe. 100% sichere Verbindung.',
       produktion: 'Jedes Shirt wird individuell nach deiner Bestellung produziert. Produktionszeit: 2–3 Werktage.',
-      default: 'Hallo! Ich helfe dir gerne. Frag mich nach Größen, Versand, Produktion oder Rückgabe.',
+      default: 'Hallo! Ich helfe dir gerne. Frag mich nach Größen, Versand, Produktion oder Reklamation.',
     },
     ro: {
       groesse: 'Mărimi: S (XS-S), M (M), L (L-XL), XL (XL-XXL), XXL (XXL+). La nesiguranță, comandați o mărime mai mare.',
-      versand: 'România: €6.99, 5–7 zile. Germania: €4.99, 3–5 zile. UE: €8.99, 5–10 zile.',
-      rueckgabe: 'Returnare în 14 zile de la primire. Scrieți-ne un email și ne ocupăm.',
+      versand: 'România: de la €12.99, 5–7 zile. Germania: de la €4.49, 3–5 zile.',
+      rueckgabe: 'Deoarece fiecare tricou este imprimat individual, retragerea este exclusă legal. La defecte de imprimare sau deteriorare, înlocuim tricoul gratuit — trimiteți-ne un email cu o poză.',
       zahlung: 'Acceptăm toate cardurile prin Stripe. Conexiune 100% sigură.',
       produktion: 'Fiecare tricou este produs individual după comanda ta. Timp de producție: 2–3 zile.',
-      default: 'Bună! Te ajut cu plăcere. Întreabă-mă despre mărimi, livrare sau returnare.',
+      default: 'Bună! Te ajut cu plăcere. Întreabă-mă despre mărimi, livrare sau reclamații.',
     },
     en: {
       groesse: 'Sizes: S (XS-S), M (M), L (L-XL), XL (XL-XXL), XXL (XXL+). When in doubt, size up.',
-      versand: 'Germany: €4.99, 3–5 days. Romania: €6.99, 5–7 days. EU: €8.99, 5–10 days.',
-      rueckgabe: '14-day returns from receipt. Just email us and we\'ll handle everything.',
+      versand: 'Germany: from €4.49, 3–5 business days. Romania: from €12.99, 5–7 business days.',
+      rueckgabe: 'Since every shirt is individually printed, returns are legally excluded. For print defects or damage we replace your shirt free of charge — just email us a photo.',
       zahlung: 'We accept all credit cards via Stripe. 100% secure connection.',
       produktion: 'Each shirt is individually produced after your order. Production time: 2–3 days.',
-      default: 'Hi! Happy to help. Ask me about sizes, shipping, production or returns.',
+      default: 'Hi! Happy to help. Ask me about sizes, shipping, production or quality claims.',
     },
   };
 
