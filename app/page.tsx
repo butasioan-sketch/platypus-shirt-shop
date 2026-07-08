@@ -12,12 +12,27 @@ import { getAllProducts, getProductName, getProductDescription } from '@/lib/pro
 export default function HomePage() {
   const { t, locale } = useLocale();
   const products = getAllProducts();
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('payment') === 'success') {
+      setPaymentSuccess(true);
+      localStorage.removeItem('platypus_cart');
+      window.dispatchEvent(new Event('cart-updated'));
+      window.history.replaceState({}, '', '/');
+      const timer = setTimeout(() => setPaymentSuccess(false), 10000);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   return (
     <div style={{ minHeight: '100vh', background: 'radial-gradient(1200px 600px at 50% -10%, rgba(226,0,26,0.10), transparent 60%), linear-gradient(180deg, #0c0c0d 0%, #0a0a0a 100%)', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
+      {paymentSuccess && (
+        <div style={{ position: 'fixed', top: '1rem', left: '50%', transform: 'translateX(-50%)', zIndex: 1000, background: '#16a34a', color: '#fff', padding: '0.9rem 1.5rem', borderRadius: '12px', fontWeight: 700, fontSize: '0.9rem', boxShadow: '0 12px 32px rgba(22,163,74,0.4)', maxWidth: '90vw', textAlign: 'center' }}>
+          ✅ Zahlung erfolgreich! Du erhältst deine Bestellbestätigung per E-Mail.
+        </div>
+      )}
       <style>{`
         .produkt-karte:hover { transform: translateY(-6px); border-color: #e2001a !important; box-shadow: 0 16px 40px rgba(226,0,26,0.12); }
         .produkt-karte { transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
