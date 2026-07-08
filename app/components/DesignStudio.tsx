@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import ShirtFlip from './ShirtFlip';
+import { BASE_PRICE, PRINT_SURCHARGE } from '@/lib/pricing';
 
 interface DesignStudioProps {
   shirtColor?: string;
@@ -9,8 +10,6 @@ interface DesignStudioProps {
 
 // Druckfläche relativ zum Foto (in Prozent der Bildgröße)
 const PRINT_AREA = { top: 18, left: 28, width: 44, height: 52 };
-const BASE_PRICE = 29.99;
-const PRINT_SURCHARGE = 4.00; // Aufpreis je bedruckter Seite
 
 export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
   const [side, setSide] = useState<'front' | 'back'>('front');

@@ -9,6 +9,7 @@ import Logo from '@/app/components/Logo';
 import CartCount from '@/app/components/CartCount';
 
 const DesignStudio = dynamic(() => import('@/app/components/DesignStudio'), { ssr: false });
+import { calcUnitPrice } from '@/lib/pricing';
 
 const COLORS = [
   { key: 'weiss', hex: '#f5f5f5', label: 'Weiß' },
@@ -32,6 +33,7 @@ export default function ProductPage() {
   const [added, setAdded] = useState(false);
   const [error, setError] = useState('');
   const [design, setDesign] = useState<{ front: string | null; back: string | null }>({ front: null, back: null });
+  const unitPrice = calcUnitPrice(design?.front, design?.back);
 
   const saveDesign = async (): Promise<string | null> => {
     if (!design.front && !design.back) return null;
@@ -55,7 +57,7 @@ export default function ProductPage() {
       if (existing >= 0) {
         cart[existing].quantity = (cart[existing].quantity || 1) + 1;
       } else {
-        cart.push({ id, name: product.name, price: product.price, size, fit, color: activeColor.label, quantity: 1 });
+        cart.push({ id, name: product.name, price: unitPrice, size, fit, color: activeColor.label, quantity: 1 });
       }
       localStorage.setItem('platypus_cart', JSON.stringify(cart));
       setAdded(true);
@@ -79,7 +81,7 @@ export default function ProductPage() {
           total: product.price + getShipping(DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY),
           country: DEFAULT_COUNTRY,
           shippingMethod: 'DHL',
-          items: [{ name: product.name, size, color: activeColor.label, price: product.price, quantity: 1, designId }],
+          items: [{ name: product.name, size, color: activeColor.label, price: unitPrice, quantity: 1, designId }],
         }),
       });
       const data = await res.json();
@@ -122,7 +124,7 @@ export default function ProductPage() {
         <div>
           <p style={{ color: '#e2001a', fontSize: '0.72rem', letterSpacing: '0.22em', marginBottom: '0.5rem', textTransform: 'uppercase', fontWeight: 600 }}>Premium T-Shirt</p>
           <h1 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '0.5rem', color: '#fff', letterSpacing: '-0.02em', lineHeight: 1.1 }}>{product.name}</h1>
-          <p style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '1.5rem', color: '#fff' }}>€{product.price}</p>
+          <p style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '1.5rem', color: '#fff' }}>€{unitPrice.toFixed(2)}</p>
 
           {/* FARBE */}
           <div style={{ marginBottom: '1.25rem' }}>
@@ -173,7 +175,7 @@ export default function ProductPage() {
               fontWeight: 800, fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer',
               border: 'none', letterSpacing: '0.05em', opacity: loading ? 0.7 : 1,
             }}>
-              {loading ? 'Weiterleitung...' : `JETZT KAUFEN — €${product.price.toFixed(2)}`}
+              {loading ? 'Weiterleitung...' : `JETZT KAUFEN — €${unitPrice.toFixed(2)}`}
             </button>
             <p style={{ color: '#666', fontSize: '0.72rem', textAlign: 'center', marginTop: '0.6rem', lineHeight: 1.5 }}>
               Individuell bedruckte Ware — kein Widerrufsrecht gem. § 312g Abs. 2 Nr. 1 BGB. Kostenloser Ersatz bei Mängeln.
