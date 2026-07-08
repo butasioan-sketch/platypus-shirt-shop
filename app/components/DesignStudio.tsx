@@ -3,6 +3,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import ShirtFlip from './ShirtFlip';
 import dynamic from 'next/dynamic';
 const Shirt3D = dynamic(() => import('./Shirt3D'), { ssr: false });
+import dynamic from 'next/dynamic';
+const Shirt3D = dynamic(() => import('./Shirt3D'), { ssr: false });
 import { BASE_PRICE, PRINT_SURCHARGE } from '@/lib/pricing';
 
 interface DesignStudioProps {
