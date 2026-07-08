@@ -198,7 +198,7 @@ export default function ShirtFlip({
   };
   const wrapStyle: React.CSSProperties = { position: 'relative', height: '100%', aspectRatio: '4/5', maxWidth: '100%' };
   const PRINT_AREA = { top: 18, left: 28, width: 44, height: 52 };
-  const printBox: React.CSSProperties = { position: 'absolute', top: `${PRINT_AREA.top}%`, left: `${PRINT_AREA.left}%`, width: `${PRINT_AREA.width}%`, height: `${PRINT_AREA.height}%`, overflow: 'hidden', pointerEvents: 'none' };
+  const printBox: React.CSSProperties = { position: 'absolute', top: `${PRINT_AREA.top}%`, left: `${PRINT_AREA.left}%`, width: `${PRINT_AREA.width}%`, height: `${PRINT_AREA.height}%`, overflow: 'hidden', pointerEvents: 'none', zIndex: 2, opacity: 0.98 };
   const renderPrint = (pr?: { src: string; x?: number; y?: number; scale?: number }) => pr ? (
     <div style={printBox}>
       <img src={pr.src} alt="" draggable={false} style={{ position: 'absolute', width: `${(pr.scale ?? 1) * 100}%`, height: `${(pr.scale ?? 1) * 100}%`, objectFit: 'contain', top: `${50 + (pr.y ?? 0)}%`, left: `${50 + (pr.x ?? 0)}%`, transform: 'translate(-50%, -50%)', pointerEvents: 'none' }} />
