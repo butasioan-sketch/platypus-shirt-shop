@@ -13,6 +13,8 @@ interface ShirtFlipProps {
   perspective?: number;        // Stellschraube 4
   shadow?: string;             // Stellschraube 5
   inertiaFriction?: number;    // Stellschraube 6
+  frontPrint?: { src: string; x?: number; y?: number; scale?: number };
+  backPrint?: { src: string; x?: number; y?: number; scale?: number };
   showHint?: boolean;
   showControls?: boolean;
   enableInertia?: boolean;
@@ -44,6 +46,8 @@ export default function ShirtFlip({
   showHint = true,
   showControls = true,
   enableInertia = true,
+  frontPrint,
+  backPrint,
   onRotationChange,
 }: ShirtFlipProps) {
   const rotationRef = useRef(initialRotation);
@@ -189,9 +193,17 @@ export default function ShirtFlip({
     display: 'flex', alignItems: 'center', justifyContent: 'center',
   };
   const imgStyle: React.CSSProperties = {
-    maxWidth: '100%', maxHeight: '100%', objectFit: 'contain',
+    width: '100%', height: '100%', objectFit: 'contain',
     pointerEvents: 'none', filter: `drop-shadow(${shadow})`,
   };
+  const wrapStyle: React.CSSProperties = { position: 'relative', height: '100%', aspectRatio: '4/5', maxWidth: '100%' };
+  const PRINT_AREA = { top: 18, left: 28, width: 44, height: 52 };
+  const printBox: React.CSSProperties = { position: 'absolute', top: `${PRINT_AREA.top}%`, left: `${PRINT_AREA.left}%`, width: `${PRINT_AREA.width}%`, height: `${PRINT_AREA.height}%`, overflow: 'hidden', pointerEvents: 'none' };
+  const renderPrint = (pr?: { src: string; x?: number; y?: number; scale?: number }) => pr ? (
+    <div style={printBox}>
+      <img src={pr.src} alt="" draggable={false} style={{ position: 'absolute', width: `${(pr.scale ?? 1) * 100}%`, height: `${(pr.scale ?? 1) * 100}%`, objectFit: 'contain', top: `${50 + (pr.y ?? 0)}%`, left: `${50 + (pr.x ?? 0)}%`, transform: 'translate(-50%, -50%)', pointerEvents: 'none' }} />
+    </div>
+  ) : null;
   const ctrlBtn: React.CSSProperties = {
     padding: '0.5rem', background: 'transparent', border: 'none', color: '#999',
     borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -222,10 +234,16 @@ export default function ShirtFlip({
           style={{ transformStyle: 'preserve-3d', cursor: 'grab', width: '100%', height: '100%', position: 'relative', willChange: 'transform' }}
         >
           <div style={faceStyle}>
-            <img src={frontSrc} alt={altFront} draggable={false} onLoad={handleImageLoad} onError={handleImageError} style={imgStyle} />
+            <div style={wrapStyle}>
+              <img src={frontSrc} alt={altFront} draggable={false} onLoad={handleImageLoad} onError={handleImageError} style={imgStyle} />
+              {renderPrint(frontPrint)}
+            </div>
           </div>
           <div style={{ ...faceStyle, transform: 'rotateY(180deg)' }}>
-            <img src={backSrc} alt={altBack} draggable={false} onLoad={handleImageLoad} onError={handleImageError} style={imgStyle} />
+            <div style={wrapStyle}>
+              <img src={backSrc} alt={altBack} draggable={false} onLoad={handleImageLoad} onError={handleImageError} style={imgStyle} />
+              {renderPrint(backPrint)}
+            </div>
           </div>
         </div>
       </div>
