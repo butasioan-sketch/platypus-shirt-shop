@@ -74,7 +74,14 @@ Oder endlich: dich selbst.</p>
                 <div style={{ height: '340px', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
                   {/* Shirt-Flip-Animation */}
                   <div style={{ width: '100%', height: '340px' }}>
-                    <ShirtFlip />
+                    <ShirtFlip
+                      autoRotateSpeed={0.022}
+                      dragSensitivity={0.55}
+                      idleDelayMs={3800}
+                      inertiaFriction={0.91}
+                      showControls={true}
+                      showHint={true}
+                    />
                   </div>
                   <span style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(226,0,26,0.9)', color: '#fff', fontSize: '0.6rem', fontWeight: 700, padding: '0.3rem 0.7rem', borderRadius: '999px', letterSpacing: '0.1em' }}>SELBST GESTALTEN</span>
                 </div>
