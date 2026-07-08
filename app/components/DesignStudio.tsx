@@ -1,11 +1,8 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
-import ShirtFlip from './ShirtFlip';
 import dynamic from 'next/dynamic';
+import { calcUnitPrice } from '@/lib/pricing';
 const Shirt3D = dynamic(() => import('./Shirt3D'), { ssr: false });
-import dynamic from 'next/dynamic';
-const Shirt3D = dynamic(() => import('./Shirt3D'), { ssr: false });
-import { BASE_PRICE, PRINT_SURCHARGE } from '@/lib/pricing';
 
 interface DesignStudioProps {
   shirtColor?: string;
@@ -30,6 +27,8 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const dragStart = useRef<{ mx: number; my: number; px: number; py: number } | null>(null);
 
+  useEffect(() => { onDesignChange?.({ front: frontImg, back: backImg }); }, [frontImg, backImg]);
+
   const currentImg = side === 'front' ? frontImg : backImg;
   const currentScale = side === 'front' ? frontScale : backScale;
   const currentPos = side === 'front' ? frontPos : backPos;
@@ -48,8 +47,8 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
     const reader = new FileReader();
     reader.onload = (ev) => {
       const dataUrl = ev.target?.result as string;
-      if (side === 'front') { setFrontImg(dataUrl); onDesignChange?.({ front: dataUrl, back: backImg }); }
-      else { setBackImg(dataUrl); onDesignChange?.({ front: frontImg, back: dataUrl }); }
+      if (side === 'front') setFrontImg(dataUrl);
+      else setBackImg(dataUrl);
       setCurrentScale(1); setCurrentPos({ x: 0, y: 0 });
     };
     reader.readAsDataURL(file);
@@ -57,8 +56,8 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
   };
 
   const removeImg = () => {
-    if (side === 'front') { setFrontImg(null); onDesignChange?.({ front: null, back: backImg }); }
-    else { setBackImg(null); onDesignChange?.({ front: frontImg, back: null }); }
+    if (side === 'front') setFrontImg(null);
+    else setBackImg(null);
     setCurrentPos({ x: 0, y: 0 }); setCurrentScale(1);
   };
 
@@ -130,7 +129,7 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
           Dein Preis {frontImg && backImg ? '(2 Seiten bedruckt)' : (frontImg || backImg) ? '(1 Seite bedruckt)' : ''}
         </span>
         <span style={{ color: '#fff', fontWeight: 800, fontSize: '1.1rem' }}>
-          €{(BASE_PRICE + (frontImg ? PRINT_SURCHARGE : 0) + (backImg ? PRINT_SURCHARGE : 0)).toFixed(2)}
+          €{calcUnitPrice(frontImg, backImg).toFixed(2)}
         </span>
       </div>
 

@@ -17,15 +17,14 @@ const MODEL_PATH = '/models/shirt.glb';
 function PrintDecal({ print, front }: { print: PrintData; front: boolean }) {
   const tex = useTexture(print.src);
   tex.anisotropy = 8;
-  // Position: x/y kommen als -20..20 (%) aus DesignStudio → auf Mesh-Koordinaten mappen
   const px = (print.x / 100) * 0.4;
   const py = 0.15 - (print.y / 100) * 0.5;
   const s = 0.35 * print.scale;
   return (
     <Decal
-      position={[px, py, front ? 0.12 : -0.12]}
+      position={[px, py, front ? 0.15 : -0.15]}
       rotation={[0, front ? 0 : Math.PI, 0]}
-      scale={[s, s, 0.2]}
+      scale={[s, s, 0.3]}
     >
       <meshStandardMaterial
         map={tex}
@@ -49,7 +48,6 @@ function ShirtModel({ frontPrint, backPrint, shirtColor = '#ffffff' }: Shirt3DPr
       if (!found && (o as THREE.Mesh).isMesh) found = o as THREE.Mesh;
     });
     if (found) {
-      // Polyester-Look: leichter Glanz, kein Metall
       (found as THREE.Mesh).material = new THREE.MeshStandardMaterial({
         color: new THREE.Color(shirtColor),
         roughness: 0.65,
@@ -61,7 +59,7 @@ function ShirtModel({ frontPrint, backPrint, shirtColor = '#ffffff' }: Shirt3DPr
 
   if (!mesh) return <primitive object={scene} />;
   return (
-    <mesh geometry={mesh.geometry} material={mesh.material} castShadow receiveShadow>
+    <mesh geometry={mesh.geometry} material={mesh.material}>
       {frontPrint && <PrintDecal print={frontPrint} front={true} />}
       {backPrint && <PrintDecal print={backPrint} front={false} />}
     </mesh>
@@ -77,7 +75,6 @@ export default function Shirt3D(props: Shirt3DProps) {
       .catch(() => setModelExists(false));
   }, []);
 
-  // Lade-Skeleton
   if (modelExists === null) {
     return (
       <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#555', fontSize: '0.75rem', letterSpacing: '0.1em' }}>
@@ -86,7 +83,6 @@ export default function Shirt3D(props: Shirt3DProps) {
     );
   }
 
-  // Fallback: kein Modell → bewährter Foto-Viewer
   if (!modelExists) {
     return (
       <ShirtFlip
@@ -101,12 +97,12 @@ export default function Shirt3D(props: Shirt3DProps) {
   }
 
   return (
-    <Canvas camera={{ position: [0, 0, 2], fov: 45 }} dpr={[1, 2]} style={{ width: '100%', height: '100%' }}>
+    <Canvas camera={{ position: [0, 0, 2.2], fov: 45 }} dpr={[1, 2]} style={{ width: '100%', height: '100%' }}>
       <Suspense fallback={null}>
         <Stage environment="city" intensity={0.5} shadows={false}>
           <ShirtModel {...props} />
         </Stage>
-        <OrbitControls enablePan={false} minDistance={1.2} maxDistance={3.5} autoRotate autoRotateSpeed={0.8} />
+        <OrbitControls enablePan={false} minDistance={1.2} maxDistance={4} autoRotate autoRotateSpeed={0.8} />
       </Suspense>
     </Canvas>
   );
