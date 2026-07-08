@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
+import ShirtFlip from './ShirtFlip';
 
 interface DesignStudioProps {
   shirtColor?: string;
@@ -11,6 +12,7 @@ const PRINT_AREA = { top: 18, left: 28, width: 44, height: 52 };
 
 export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
   const [side, setSide] = useState<'front' | 'back'>('front');
+  const [preview360, setPreview360] = useState(false);
   const [flipping, setFlipping] = useState(false);
   const [frontImg, setFrontImg] = useState<string | null>(null);
   const [backImg, setBackImg] = useState<string | null>(null);
@@ -106,7 +108,33 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
             {s === 'back' && backImg && <span style={{ marginLeft: '0.4rem', width: '6px', height: '6px', borderRadius: '50%', background: '#4ade80', display: 'inline-block', verticalAlign: 'middle' }} />}
           </button>
         ))}
+        <button onClick={() => setPreview360(v => !v)} style={{
+          padding: '0.45rem 1.25rem', borderRadius: '999px', cursor: 'pointer',
+          fontSize: '0.72rem', fontWeight: 700, border: 'none', letterSpacing: '0.08em',
+          background: preview360 ? '#e2001a' : 'transparent',
+          color: preview360 ? '#fff' : '#666',
+          transition: 'all 0.2s',
+        }}>
+          360°
+        </button>
       </div>
+
+      {/* 360-GRAD-VORSCHAU */}
+      {preview360 && (
+        <div style={{ width: '100%', maxWidth: '420px', aspectRatio: '4/5' }}>
+          <ShirtFlip
+            autoRotateSpeed={0.03}
+            idleDelayMs={3000}
+            showControls={false}
+            showHint={true}
+            frontPrint={frontImg ? { src: frontImg, x: frontPos.x, y: frontPos.y, scale: frontScale } : undefined}
+            backPrint={backImg ? { src: backImg, x: backPos.x, y: backPos.y, scale: backScale } : undefined}
+          />
+        </div>
+      )}
+
+      {!preview360 && (
+      <>
 
       {/* Shirt-Container */}
       <div
@@ -209,6 +237,8 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
           </div>
         )}
       </div>
+      </>
+      )}
     </div>
   );
 }
