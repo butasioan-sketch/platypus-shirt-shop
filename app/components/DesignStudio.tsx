@@ -9,6 +9,8 @@ interface DesignStudioProps {
 
 // Druckfläche relativ zum Foto (in Prozent der Bildgröße)
 const PRINT_AREA = { top: 18, left: 28, width: 44, height: 52 };
+const BASE_PRICE = 29.99;
+const PRINT_SURCHARGE = 4.00; // Aufpreis je bedruckter Seite
 
 export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
   const [side, setSide] = useState<'front' | 'back'>('front');
@@ -117,6 +119,16 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
         }}>
           360°
         </button>
+      </div>
+
+      {/* LIVE-PREIS */}
+      <div style={{ width: '100%', maxWidth: '380px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '0.6rem 1rem' }}>
+        <span style={{ color: '#888', fontSize: '0.72rem', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+          Dein Preis {frontImg && backImg ? '(2 Seiten bedruckt)' : (frontImg || backImg) ? '(1 Seite bedruckt)' : ''}
+        </span>
+        <span style={{ color: '#fff', fontWeight: 800, fontSize: '1.1rem' }}>
+          €{(BASE_PRICE + (frontImg ? PRINT_SURCHARGE : 0) + (backImg ? PRINT_SURCHARGE : 0)).toFixed(2)}
+        </span>
       </div>
 
       {/* 360-GRAD-VORSCHAU */}

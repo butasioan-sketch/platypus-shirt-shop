@@ -79,8 +79,9 @@ Oder endlich: dich selbst.</p>
                       dragSensitivity={0.55}
                       idleDelayMs={3800}
                       inertiaFriction={0.91}
-                      showControls={true}
-                      showHint={true}
+                      showControls={false}
+                      showHint={false}
+                      shadow="0 12px 32px rgba(0,0,0,0.55)"
                     />
                   </div>
                   <span style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(226,0,26,0.9)', color: '#fff', fontSize: '0.6rem', fontWeight: 700, padding: '0.3rem 0.7rem', borderRadius: '999px', letterSpacing: '0.1em' }}>SELBST GESTALTEN</span>
