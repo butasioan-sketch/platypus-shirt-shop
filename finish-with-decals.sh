@@ -1,3 +1,10 @@
+#!/bin/bash
+set -e
+
+echo "🚀 START: Deine Shirt-Fotos werden als Decals auf das 3D-Modell gelegt."
+
+# --- 1. Shirt3D.tsx komplett neu schreiben (mit Decal-Lösung) ---
+cat > app/components/Shirt3D.tsx << 'SHIRT3D'
 'use client';
 import React, { Suspense, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
@@ -162,3 +169,26 @@ export default function Shirt3D(props: Shirt3DProps) {
     </Canvas>
   );
 }
+SHIRT3D
+
+echo "✅ Shirt3D.tsx mit Decal-Lösung (echte Shirt-Fotos + Kundenmotive) überschrieben."
+
+# --- 2. 3D-Pakete installieren (falls nicht vorhanden) ---
+npm list @react-three/fiber @react-three/drei three || npm install three @react-three/fiber @react-three/drei --legacy-peer-deps
+
+# --- 3. Build & Deploy ---
+echo "⏳ Führe Build aus..."
+npm run build
+echo "✅ Build erfolgreich."
+
+echo "⏳ Deploye auf Vercel..."
+./p deploy "final: echte shirt-fotos als decals + kundenmotive darüber"
+
+echo ""
+echo "🎉 FERTIG! Dein Shop ist live mit deinen echten Shirt-Bildern in 3D."
+echo "   Öffne: https://platypus-shirt-shop.vercel.app/product/1"
+echo ""
+echo "👉 Lade ein Motiv hoch, klicke auf 360° – du siehst dein echtes Shirt mit deinem Design."
+echo "   Falls die Decal-Position nicht perfekt ist, passe in der Datei"
+echo "   app/components/Shirt3D.tsx die Werte 'scale' in ShirtDecalFront/Back an"
+echo "   (Zeilen mit scale={[0.9, 1.1, 0.3]}) und führe das Skript erneut aus."
