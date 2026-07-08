@@ -1,4 +1,5 @@
 
+
 'use client';
 import React, { Suspense, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
@@ -19,8 +20,8 @@ function PrintDecal({ print, front }: { print: PrintData; front: boolean }) {
   const tex = useTexture(print.src);
   tex.anisotropy = 8;
   const px = (print.x / 100) * 0.4;
-  const py = 0.22 - (print.y / 100) * 0.5;
-  const s = 0.45 * print.scale;
+  const py = 0.15 - (print.y / 100) * 0.5;
+  const s = 0.35 * print.scale;
   return (
     <Decal
       position={[px, py, front ? 0.15 : -0.15]}
