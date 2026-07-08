@@ -13,11 +13,11 @@ export default function VersandPage() {
         <div dangerouslySetInnerHTML={{ __html: `<div style='display:grid;gap:1.5rem'>
         <div style='background:#121212;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1.5rem'>
           <h2 style='font-size:1.125rem;margin-bottom:0.5rem'>Deutschland</h2>
-          <p style='color:#888;font-size:0.875rem'>€4.99 — 3–5 Werktage nach Produktion</p>
+          <p style='color:#888;font-size:0.875rem'>Ab €4.49 — 2–4 Werktage nach Produktion. Wähle im Warenkorb zwischen Hermes (€4.49), DPD (€4.79) und DHL (€4.99).</p>
         </div>
         <div style='background:#121212;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1.5rem'>
-          <h2 style='font-size:1.125rem;margin-bottom:0.5rem'>EU</h2>
-          <p style='color:#888;font-size:0.875rem'>€8.99 — 5–10 Werktage</p>
+          <h2 style='font-size:1.125rem;margin-bottom:0.5rem'>Rumänien</h2>
+          <p style='color:#888;font-size:0.875rem'>Ab €12.99 — 4–7 Werktage. Hermes, DPD oder DHL wählbar.</p>
         </div>
         <div style='background:#121212;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1.5rem'>
           <h2 style='font-size:1.125rem;margin-bottom:0.5rem'>Produktion</h2>
