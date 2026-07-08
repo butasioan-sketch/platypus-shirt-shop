@@ -1,6 +1,8 @@
 'use client';
 import React, { useState, useRef, useEffect } from 'react';
 import ShirtFlip from './ShirtFlip';
+import dynamic from 'next/dynamic';
+const Shirt3D = dynamic(() => import('./Shirt3D'), { ssr: false });
 import { BASE_PRICE, PRINT_SURCHARGE } from '@/lib/pricing';
 
 interface DesignStudioProps {
@@ -133,11 +135,7 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
       {/* 360-GRAD-VORSCHAU */}
       {preview360 && (
         <div style={{ width: '100%', maxWidth: '420px', aspectRatio: '4/5' }}>
-          <ShirtFlip
-            autoRotateSpeed={0.03}
-            idleDelayMs={3000}
-            showControls={false}
-            showHint={true}
+          <Shirt3D
             frontPrint={frontImg ? { src: frontImg, x: frontPos.x, y: frontPos.y, scale: frontScale } : undefined}
             backPrint={backImg ? { src: backImg, x: backPos.x, y: backPos.y, scale: backScale } : undefined}
           />

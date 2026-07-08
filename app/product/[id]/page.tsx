@@ -78,7 +78,7 @@ export default function ProductPage() {
           paymentMethod: 'card',
           reference: `PROD-${id}-${size}`,
           shipping: getShipping(DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY),
-          total: product.price + getShipping(DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY),
+          total: unitPrice + getShipping(DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY),
           country: DEFAULT_COUNTRY,
           shippingMethod: 'DHL',
           items: [{ name: product.name, size, color: activeColor.label, price: unitPrice, quantity: 1, designId }],
