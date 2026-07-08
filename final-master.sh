@@ -1,3 +1,27 @@
+#!/bin/bash
+set -e  # Stoppt bei jedem Fehler
+
+echo "🚀 START: Das Master-Skript übernimmt jetzt komplett."
+
+# 1. Automatisch in das richtige Projektverzeichnis wechseln
+PROJECT_DIR="$HOME/Schreibtisch/platypus-shirt-shop"
+if [ ! -d "$PROJECT_DIR" ]; then
+  echo "❌ Projektordner nicht gefunden: $PROJECT_DIR"
+  echo "👉 Bitte prüfe den Pfad oder lege den Ordner an."
+  exit 1
+fi
+cd "$PROJECT_DIR"
+echo "✅ Erfolgreich gewechselt in: $(pwd)"
+
+# 2. Pfade der echten Shirt-Bilder aus ShirtFlip.tsx extrahieren
+FRONT_IMG=$(grep -oP "(?<=frontSrc = ')[^']*" app/components/ShirtFlip.tsx 2>/dev/null || echo "/airfit-front-t.png")
+BACK_IMG=$(grep -oP "(?<=backSrc = ')[^']*" app/components/ShirtFlip.tsx 2>/dev/null || echo "/airfit-back-t.png")
+echo "✅ Vorderseite: $FRONT_IMG"
+echo "✅ Rückseite: $BACK_IMG"
+
+# 3. Shirt3D.tsx komplett mit echten Texturen und optimierten Decals überschreiben
+mkdir -p app/components
+cat > app/components/Shirt3D.tsx << 'SHIRT3D'
 'use client';
 import React, { Suspense, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
@@ -113,3 +137,20 @@ export default function Shirt3D(props: Shirt3DProps) {
     </Canvas>
   );
 }
+SHIRT3D
+echo "✅ Shirt3D.tsx mit echten Texturen und optimierter Decal-Position überschrieben."
+
+# 4. 3D-Pakete installieren (falls nicht vorhanden)
+npm list @react-three/fiber @react-three/drei three || npm install three @react-three/fiber @react-three/drei --legacy-peer-deps
+
+# 5. Build durchführen
+echo "⏳ Führe Build aus..."
+npm run build
+
+# 6. Deployen
+echo "⏳ Deploye auf Vercel..."
+./p deploy "final: 3d-shop mit echten texturen und kalibrierten decals"
+
+echo "🎉 ALLES FERTIG! Dein Shop ist jetzt live:"
+echo "   https://platypus-shirt-shop.vercel.app/product/1"
+echo "   Lade ein Motiv hoch, klicke auf 360° und sieh dein echtes Shirt in 3D."
