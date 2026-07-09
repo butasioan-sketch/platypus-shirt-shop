@@ -21,6 +21,7 @@ function ShirtDecalFront({ src }: { src: string }) {
   // Das gesamte Shirt-Foto als Decal auf die Vorderseite legen
   // Position (0,0) zentriert, scale so groß, dass es das Shirt bedeckt
   return (
+<<<<<<< Updated upstream
     <Decal
       position={[0, 0.05, 0.12]}  // leicht nach vorne, mittig
       rotation={[0, 0, 0]}
@@ -160,5 +161,15 @@ export default function Shirt3D(props: Shirt3DProps) {
         <OrbitControls enablePan={false} minDistance={1.2} maxDistance={4} autoRotate autoRotateSpeed={0.8} />
       </Suspense>
     </Canvas>
+=======
+    <ShirtFlip
+      autoRotateSpeed={0.03}
+      idleDelayMs={3000}
+      showControls={false}
+      showHint={true}
+      frontPrint={props.frontPrint}
+      backPrint={props.backPrint}
+    />
+>>>>>>> Stashed changes
   );
 }

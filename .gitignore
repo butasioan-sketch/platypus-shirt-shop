@@ -50,3 +50,4 @@ backups/
 # Temporäre Dateien
 *.log
 .DS_Store
+diagnose.txt
