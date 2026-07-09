@@ -111,9 +111,6 @@ function ShirtModel({ frontPrint, backPrint, shirtColor = '#ffffff' }: Shirt3DPr
   if (!mesh) return <primitive object={scene} />;
   return (
     <mesh geometry={mesh.geometry} material={mesh.material}>
-      {/* Echte Shirt-Decals */}
-      <ShirtDecalFront src={frontShirtImg} />
-      <ShirtDecalBack src={backShirtImg} />
       {/* Kundenmotive */}
       {frontPrint && <CustomerPrint print={frontPrint} front={true} />}
       {backPrint && <CustomerPrint print={backPrint} front={false} />}
