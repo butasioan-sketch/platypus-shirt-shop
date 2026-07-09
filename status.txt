@@ -1,0 +1,13 @@
+## BUILD-STATUS
+> Build error occurred
+Error: Turbopack build failed with 2 errors:
+
+## GIT-STAND (muss 'main' zeigen, nicht detached)
+main
+848e695 fix: shirt3d modelUrl-prop entfernt, diagnose.txt ignoriert
+ce6577d final: echte shirt-fotos als decals + kundenmotive darüber
+b280b2f final: 3d-shop mit echten texturen und kalibrierten decals
+be5d424 final fix: 3d-decal position kalibriert
+
+## LIVE-CHECK
+Startseite: 200

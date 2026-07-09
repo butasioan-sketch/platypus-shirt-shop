@@ -1,3 +1,35 @@
+## VOLLE BUILD-FEHLER
+
+  Creating an optimized production build ...
+
+> Build error occurred
+Error: Turbopack build failed with 2 errors:
+./Schreibtisch/platypus-shirt-shop/app/components/Shirt3D.tsx:24:1
+Merge conflict marker encountered.
+  [90m22 |[0m   [90m// Position (0,0) zentriert, scale so groß, dass es das S...[0m
+  [90m23 |[0m   [36mreturn[0m (
+[31m[1m>[0m [90m24 |[0m <<<<<<< [33mUpdated[0m upstream
+  [90m   |[0m [31m[1m^^^^^^^[0m
+  [90m25 |[0m     <[33mDecal[0m
+  [90m26 |[0m       position={[[35m0[0m, [35m0.05[0m, [35m0.12[0m]}  [90m// leicht nach vorne, mittig[0m
+  [90m27 |[0m       rotation={[[35m0[0m, [35m0[0m, [35m0[0m]}
+
+Parsing ecmascript source code failed
+
+Import trace:
+  Client Component Browser:
+    ./Schreibtisch/platypus-shirt-shop/app/components/Shirt3D.tsx [Client Component Browser]
+
+## WELCHE 3D-DATEIEN EXISTIEREN
+-rw-rw-r-- 1 jonny jonny  5354 Jul  9 18:45 app/components/Shirt3D.tsx
+-rw-rw-r-- 1 jonny jonny 12446 Jul  8 14:09 app/components/ShirtFlip.tsx
+
+## THREE.JS INSTALLIERT?
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
+    "three": "^0.184.0",
+
+## SHIRT3D KOMPLETT
 'use client';
 import React, { Suspense, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
@@ -21,6 +53,7 @@ function ShirtDecalFront({ src }: { src: string }) {
   // Das gesamte Shirt-Foto als Decal auf die Vorderseite legen
   // Position (0,0) zentriert, scale so groß, dass es das Shirt bedeckt
   return (
+<<<<<<< Updated upstream
     <Decal
       position={[0, 0.05, 0.12]}  // leicht nach vorne, mittig
       rotation={[0, 0, 0]}
@@ -160,5 +193,15 @@ export default function Shirt3D(props: Shirt3DProps) {
         <OrbitControls enablePan={false} minDistance={1.2} maxDistance={4} autoRotate autoRotateSpeed={0.8} />
       </Suspense>
     </Canvas>
+=======
+    <ShirtFlip
+      autoRotateSpeed={0.03}
+      idleDelayMs={3000}
+      showControls={false}
+      showHint={true}
+      frontPrint={props.frontPrint}
+      backPrint={props.backPrint}
+    />
+>>>>>>> Stashed changes
   );
 }
