@@ -12,7 +12,7 @@ interface Shirt3DProps {
   shirtColor?: string;
 }
 
-const MODEL_PATH = '/models/shirt.glb';
+const MODEL_PATH = '/models/shirt-white-v2.glb';
 
 // === DECAL FÜR DAS ECHTE SHIRT-BILD (VORDERSEITE) ===
 function ShirtDecalFront({ src }: { src: string }) {
