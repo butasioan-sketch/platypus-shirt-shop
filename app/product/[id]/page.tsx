@@ -48,16 +48,17 @@ export default function ProductPage() {
     } catch { return null; }
   };
 
-  const addToCart = () => {
+  const addToCart = async () => {
     if (!size) { setError('Bitte Größe wählen'); return; }
     setError('');
+    const designId = await saveDesign();
     try {
       const cart = JSON.parse(localStorage.getItem('platypus_cart') || '[]');
       const existing = cart.findIndex((i: { id: string; size: string }) => i.id === id && i.size === size);
       if (existing >= 0) {
         cart[existing].quantity = (cart[existing].quantity || 1) + 1;
       } else {
-        cart.push({ id, name: product.name, price: unitPrice, size, fit, color: activeColor.label, quantity: 1 });
+        cart.push({ id, name: product.name, price: unitPrice, size, fit, color: activeColor.label, quantity: 1, designId });
       }
       localStorage.setItem('platypus_cart', JSON.stringify(cart));
       setAdded(true);

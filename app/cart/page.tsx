@@ -51,11 +51,12 @@ export default function CartPage() {
         body: JSON.stringify({
           paymentMethod: 'card',
           reference: `CART-${Date.now()}`,
+          shippingId: shipId,
           shipping,
           total,
           country,
           shippingMethod: SHIPPING_OPTIONS.find(o => o.id === shipId)?.carrier || 'DHL',
-          items: items.map(i => ({ name: i.name, size: i.size, color: i.color, price: i.price, quantity: i.quantity })),
+          items: items.map(i => ({ name: i.name, size: i.size, color: i.color, price: i.price, quantity: i.quantity, designId: (i as any).designId })),
         }),
       });
       const data = await res.json();
