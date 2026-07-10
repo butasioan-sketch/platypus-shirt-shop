@@ -131,13 +131,16 @@ export default function Shirt3D({ enableTouch = true, ...props }: Shirt3DProps) 
         <directionalLight position={[-3, 2, -2]} intensity={0.4} />
         <ShirtModel {...props} />
         <OrbitControls
-          enablePan={false}
-          minDistance={0.3}
-          maxDistance={2}
-          autoRotate
-          autoRotateSpeed={0.8}
-          target={[0, 0.53, 0]}
-        />
+        enablePan={false}
+        minDistance={0.8}
+        maxDistance={3.5}
+        autoRotate
+        autoRotateSpeed={0.6}
+        target={[0, 0.55, 0]}
+        enableRotate={enableTouch}
+        enableZoom={enableTouch}
+        enableDamping={enableTouch}
+      />
       </Suspense>
     </Canvas>
   );
