@@ -14,7 +14,11 @@ export async function GET(request: NextRequest) {
   if (id) {
     const order = await getOrderById(id);
     if (!order) return NextResponse.json({ error: 'Bestellung nicht gefunden' }, { status: 404 });
-    return NextResponse.json({ order });
+    // Tracking: nur unkritische Felder (keine E-Mail, Motive, Betraege)
+    return NextResponse.json({ order: {
+      id: order.id, status: order.status, createdAt: order.createdAt,
+      updatedAt: order.updatedAt, shippingCountry: order.shippingCountry,
+    } });
   }
   const status = searchParams.get('status') || undefined;
   const stats = searchParams.get('stats');

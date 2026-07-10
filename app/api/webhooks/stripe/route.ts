@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       const parsedItems = (() => { try { return JSON.parse(session.metadata?.items || "[]"); } catch { return []; } })();
       const orderRes = await fetch(`${siteUrl}/api/orders`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'x-internal-key': process.env.INTERNAL_API_KEY || '' },
         body: JSON.stringify({
           stripeSessionId: session.id,
           customerEmail: session.customer_email,
