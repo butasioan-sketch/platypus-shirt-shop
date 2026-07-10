@@ -1,7 +1,7 @@
 'use client';
-import React, { Suspense, useState, useEffect } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Decal, Stage, useTexture } from '@react-three/drei';
+import React, { Suspense, useEffect, useMemo, useState } from 'react';
+import { Canvas, createPortal } from '@react-three/fiber';
+import { OrbitControls, useGLTF, Decal, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import ShirtFlip from './ShirtFlip';
 
@@ -14,69 +14,39 @@ interface Shirt3DProps {
 
 const MODEL_PATH = '/models/shirt-white-v2.glb';
 
-// === DECAL FÜR DAS ECHTE SHIRT-BILD (VORDERSEITE) ===
-function ShirtDecalFront({ src }: { src: string }) {
-  const tex = useTexture(src);
-  tex.anisotropy = 8;
-  // Das gesamte Shirt-Foto als Decal auf die Vorderseite legen
-  // Position (0,0) zentriert, scale so groß, dass es das Shirt bedeckt
-  return (
-    <Decal
-      position={[0, 0.05, 0.12]}  // leicht nach vorne, mittig
-      rotation={[0, 0, 0]}
-      scale={[0.9, 1.1, 0.3]}     // Breite/Höhe anpassen – hier experimentell
-    >
-      <meshStandardMaterial
-        map={tex}
-        transparent={false}
-        roughness={0.6}
-        metalness={0}
-        toneMapped={false}
-      />
-    </Decal>
-  );
-}
-
-// === DECAL FÜR DAS ECHTE SHIRT-BILD (RÜCKSEITE) ===
-function ShirtDecalBack({ src }: { src: string }) {
-  const tex = useTexture(src);
-  tex.anisotropy = 8;
-  return (
-    <Decal
-      position={[0, 0.05, -0.12]} // leicht nach hinten
-      rotation={[0, Math.PI, 0]}
-      scale={[0.9, 1.1, 0.3]}
-    >
-      <meshStandardMaterial
-        map={tex}
-        transparent={false}
-        roughness={0.6}
-        metalness={0}
-        toneMapped={false}
-      />
-    </Decal>
-  );
-}
-
-// === DECAL FÜR KUNDENMOTIV (VORNE/HINTEN) ===
-function CustomerPrint({ print, front }: { print: PrintData; front: boolean }) {
+// === KUNDENMOTIV ALS DECAL ===
+// Position wird dynamisch aus der Bounding-Box des Shirt-Meshes abgeleitet.
+// print.x / print.y: -20..+20 (% aus 2D-Editor, 0 = Mitte, y+ = nach unten)
+// print.scale: Multiplikator (Slider, 1 = 100 %)
+function CustomerPrint({ mesh, print, front }:
+  { mesh: THREE.Mesh; print: PrintData; front: boolean }) {
   const tex = useTexture(print.src);
   tex.anisotropy = 8;
-  // Position aus DesignStudio (x/y) in % auf das Shirt übertragen
-  const px = (print.x / 100) * 0.35;
-  const py = 0.12 - (print.y / 100) * 0.45;
-  const s = 0.3 * print.scale;
+
+  const { pos, size } = useMemo(() => {
+    mesh.geometry.computeBoundingBox();
+    const bb = mesh.geometry.boundingBox as THREE.Box3;
+    const c = new THREE.Vector3(); bb.getCenter(c);
+    const s = new THREE.Vector3(); bb.getSize(s);
+    const chestY = c.y + s.y * 0.08;             // Brusthoehe: knapp ueber Mitte
+    const dirX = front ? 1 : -1;                 // Rueckseite: X spiegeln
+    const x = c.x + dirX * (print.x / 100) * s.x;
+    const y = chestY - (print.y / 100) * s.y;
+    const z = c.z + (front ? 1 : -1) * (s.z / 2);
+    const w = s.x * 0.5 * (print.scale || 1);    // Basis = 50 % Shirtbreite
+    return {
+      pos: [x, y, z] as [number, number, number],
+      size: [w, w, Math.max(s.z * 1.5, 0.1)] as [number, number, number],
+    };
+  }, [mesh, print.x, print.y, print.scale, front]);
   return (
-    <Decal
-      position={[px, py, front ? 0.16 : -0.16]}
-      rotation={[0, front ? 0 : Math.PI, 0]}
-      scale={[s, s, 0.2]}
-    >
+    <Decal position={pos} rotation={[0, front ? 0 : Math.PI, 0]} scale={size}>
       <meshStandardMaterial
         map={tex}
-        transparent={true}
+        transparent
         polygonOffset
-        polygonOffsetFactor={-1}
+        polygonOffsetFactor={-2}
+        depthWrite={false}
         roughness={0.6}
         toneMapped={false}
       />
@@ -84,40 +54,49 @@ function CustomerPrint({ print, front }: { print: PrintData; front: boolean }) {
   );
 }
 
+// === SHIRT-MODELL ===
 function ShirtModel({ frontPrint, backPrint, shirtColor = '#ffffff' }: Shirt3DProps) {
   const { scene } = useGLTF(MODEL_PATH);
   const [mesh, setMesh] = useState<THREE.Mesh | null>(null);
 
-  // Deine echten Shirt-Bilder (aus public/)
-  const frontShirtImg = '/airfit-front-t.png';
-  const backShirtImg = '/airfit-back-t.png';
-
   useEffect(() => {
-    let found: THREE.Mesh | null = null;
+    let best: THREE.Mesh | null = null;
+    let bestCount = 0;
     scene.traverse((o) => {
-      if (!found && (o as THREE.Mesh).isMesh) found = o as THREE.Mesh;
+      const m = o as THREE.Mesh;
+      if (m.isMesh && m.geometry) {
+        const n = m.geometry.attributes.position?.count ?? 0;
+        if (n > bestCount) { best = m; bestCount = n; }
+      }
     });
-    if (found) {
-      // Basis-Material auf einfarbig weiß, damit die Decals sauber leuchten
-      (found as THREE.Mesh).material = new THREE.MeshStandardMaterial({
-        color: new THREE.Color(0xffffff),
-        roughness: 0.6,
+    if (best) {
+      const b = best as THREE.Mesh;
+      b.material = new THREE.MeshStandardMaterial({
+        color: new THREE.Color(shirtColor),
+        roughness: 0.65,
         metalness: 0,
       });
-      setMesh(found);
+      b.geometry.computeBoundingBox();
+      console.log('[Shirt3D] Decal-Mesh:', b.name,
+        'bbox:', JSON.stringify(b.geometry.boundingBox));
+      setMesh(b);
     }
-  }, [scene]);
-
-  if (!mesh) return <primitive object={scene} />;
+  }, [scene, shirtColor]);
   return (
-    <mesh geometry={mesh.geometry} material={mesh.material}>
-      {/* Kundenmotive */}
-      {frontPrint && <CustomerPrint print={frontPrint} front={true} />}
-      {backPrint && <CustomerPrint print={backPrint} front={false} />}
-    </mesh>
+    <>
+      <primitive object={scene} />
+      {mesh && createPortal(
+        <>
+          {frontPrint && <CustomerPrint mesh={mesh} print={frontPrint} front />}
+          {backPrint && <CustomerPrint mesh={mesh} print={backPrint} front={false} />}
+        </>,
+        mesh
+      )}
+    </>
   );
 }
 
+// === HAUPTKOMPONENTE ===
 export default function Shirt3D(props: Shirt3DProps) {
   const [modelExists, setModelExists] = useState<boolean | null>(null);
 
@@ -129,33 +108,38 @@ export default function Shirt3D(props: Shirt3DProps) {
 
   if (modelExists === null) {
     return (
-      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#555', fontSize: '0.75rem', letterSpacing: '0.1em' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',
+        height: '100%', color: '#888', fontSize: 13 }}>
         LADE 3D-ANSICHT…
       </div>
     );
   }
 
   if (!modelExists) {
-    return (
-      <ShirtFlip
-        autoRotateSpeed={0.03}
-        idleDelayMs={3000}
-        showControls={false}
-        showHint={true}
-        frontPrint={props.frontPrint ? { src: props.frontPrint.src, x: props.frontPrint.x, y: props.frontPrint.y, scale: props.frontPrint.scale } : undefined}
-        backPrint={props.backPrint ? { src: props.backPrint.src, x: props.backPrint.x, y: props.backPrint.y, scale: props.backPrint.scale } : undefined}
-      />
-    );
+    return <ShirtFlip frontPrint={props.frontPrint} backPrint={props.backPrint} />;
   }
-
   return (
-    <Canvas camera={{ position: [0, 0, 2.2], fov: 45 }} dpr={[1, 2]} style={{ width: '100%', height: '100%' }}>
+    <Canvas
+      camera={{ position: [0, 0.58, 0.85], fov: 40 }}
+      dpr={[1, 2]}
+      style={{ width: '100%', height: '100%', background: 'transparent' }}
+    >
       <Suspense fallback={null}>
-        <Stage environment="city" intensity={0.5} shadows={false}>
-          <ShirtModel {...props} />
-        </Stage>
-        <OrbitControls enablePan={false} minDistance={1.2} maxDistance={4} autoRotate autoRotateSpeed={0.8} />
+        <ambientLight intensity={0.7} />
+        <directionalLight position={[2, 4, 3]} intensity={1.1} />
+        <directionalLight position={[-3, 2, -2]} intensity={0.4} />
+        <ShirtModel {...props} />
+        <OrbitControls
+          enablePan={false}
+          minDistance={0.3}
+          maxDistance={2}
+          autoRotate
+          autoRotateSpeed={0.8}
+          target={[0, 0.53, 0]}
+        />
       </Suspense>
     </Canvas>
   );
 }
+
+useGLTF.preload(MODEL_PATH);
