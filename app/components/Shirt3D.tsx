@@ -10,6 +10,7 @@ interface Shirt3DProps {
   frontPrint?: PrintData;
   backPrint?: PrintData;
   shirtColor?: string;
+  enableTouch?: boolean;
 }
 
 const MODEL_PATH = '/models/shirt-white-v2.glb';
@@ -97,7 +98,7 @@ function ShirtModel({ frontPrint, backPrint, shirtColor = '#ffffff' }: Shirt3DPr
 }
 
 // === HAUPTKOMPONENTE ===
-export default function Shirt3D(props: Shirt3DProps) {
+export default function Shirt3D({ enableTouch = true, ...props }: Shirt3DProps) {
   const [modelExists, setModelExists] = useState<boolean | null>(null);
 
   useEffect(() => {
