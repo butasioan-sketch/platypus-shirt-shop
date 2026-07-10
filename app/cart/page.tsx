@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Logo from '@/app/components/Logo';
 import CartCount from '@/app/components/CartCount';
 import { SHIPPING_OPTIONS, COUNTRIES, DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY, getShipping, type Country } from '@/lib/shipping';
+import { BASE_PRICE } from '@/lib/pricing';
 
 interface CartItem {
   id: string;
@@ -96,6 +97,11 @@ export default function CartPage() {
                   <div>
                     <p style={{ fontWeight: 700, marginBottom: '0.25rem' }}>{item.name}</p>
                     <p style={{ color: '#999', fontSize: '0.8rem' }}>Größe: {item.size}{item.color ? ' | Farbe: ' + item.color : ''} | {item.fit || 'Unisex'} | Menge: {item.quantity}</p>
+                    <p style={{ color: '#666', fontSize: '0.72rem', marginTop: '0.2rem' }}>
+                      {item.price > BASE_PRICE
+                        ? <>Basis €{BASE_PRICE.toFixed(2)} + Druck €{(item.price - BASE_PRICE).toFixed(2)}</>
+                        : <>Basis €{BASE_PRICE.toFixed(2)}</>} je Stück
+                    </p>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                     <p style={{ fontWeight: 700 }}>€{(item.price * item.quantity).toFixed(2)}</p>
