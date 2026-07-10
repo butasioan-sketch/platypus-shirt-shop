@@ -7,6 +7,23 @@ import { useLocale } from './components/LocaleProvider';
 import LocaleSwitcher from './components/LocaleSwitcher';
 import CartCount from '@/app/components/CartCount';
 import ShirtFlip from '@/app/components/ShirtFlip';
+import dynamic from 'next/dynamic';
+
+// 3D lazy: Seite steht sofort, 3D laedt nach; solange dreht das 2D-Shirt
+const Shirt3D = dynamic(() => import('@/app/components/Shirt3D'), {
+  ssr: false,
+  loading: () => (
+    <ShirtFlip
+      autoRotateSpeed={0.022}
+      dragSensitivity={0.55}
+      idleDelayMs={3800}
+      inertiaFriction={0.91}
+      showControls={false}
+      showHint={false}
+      shadow="0 12px 32px rgba(0,0,0,0.55)"
+    />
+  ),
+});
 import { getAllProducts, getProductName, getProductDescription } from '@/lib/products';
 
 export default function HomePage() {
@@ -89,15 +106,7 @@ Oder endlich: dich selbst.</p>
                 <div style={{ height: '340px', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
                   {/* Shirt-Flip-Animation */}
                   <div style={{ width: '100%', height: '340px' }}>
-                    <ShirtFlip
-                      autoRotateSpeed={0.022}
-                      dragSensitivity={0.55}
-                      idleDelayMs={3800}
-                      inertiaFriction={0.91}
-                      showControls={false}
-                      showHint={false}
-                      shadow="0 12px 32px rgba(0,0,0,0.55)"
-                    />
+                    <Shirt3D />
                   </div>
                   <span style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(226,0,26,0.9)', color: '#fff', fontSize: '0.6rem', fontWeight: 700, padding: '0.3rem 0.7rem', borderRadius: '999px', letterSpacing: '0.1em' }}>SELBST GESTALTEN</span>
                 </div>
