@@ -103,8 +103,9 @@ export async function POST(request: Request) {
       priced.push({ ...item, pages, qty, unitPrice: calcUnitPrice(front, back) });
     }
 
-    const serverTotal =
-      priced.reduce((sum, p) => sum + p.unitPrice * p.qty, 0) + shippingCost;
+    const serverTotal = Math.round(
+      (priced.reduce((sum, p) => sum + p.unitPrice * p.qty, 0) + shippingCost) * 100
+    ) / 100;
 
     if (method.provider !== "stripe") {
       return demoCheckout(body, method, "non_stripe_demo_checkout_created", serverTotal);
