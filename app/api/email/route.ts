@@ -1,5 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+const STATUS_TEXTS: Record<string, Record<string, { subject: string; title: string; body: string }>> = {
+  production: {
+    de: { subject: 'Deine Bestellung ist in Produktion', title: 'Es geht los!', body: 'Dein Shirt wird jetzt bedruckt. Wir melden uns, sobald es versendet wird.' },
+    ro: { subject: 'Comanda ta este în producție', title: 'Am început!', body: 'Tricoul tău este acum imprimat. Te anunțăm când va fi expediat.' },
+    en: { subject: 'Your order is in production', title: 'Here we go!', body: 'Your shirt is being printed now. We will let you know once it ships.' },
+  },
+  shipped: {
+    de: { subject: 'Deine Bestellung ist unterwegs', title: 'Versendet!', body: 'Dein Paket ist auf dem Weg zu dir. Den Status kannst du jederzeit verfolgen.' },
+    ro: { subject: 'Comanda ta este pe drum', title: 'Expediat!', body: 'Pachetul tău este în drum spre tine. Poți urmări statusul oricând.' },
+    en: { subject: 'Your order is on its way', title: 'Shipped!', body: 'Your package is on its way. You can track the status anytime.' },
+  },
+  delivered: {
+    de: { subject: 'Deine Bestellung wurde zugestellt', title: 'Angekommen!', body: 'Dein Shirt wurde zugestellt. Viel Freude damit — words are not just words.' },
+    ro: { subject: 'Comanda ta a fost livrată', title: 'A ajuns!', body: 'Tricoul tău a fost livrat. Bucură-te de el — words are not just words.' },
+    en: { subject: 'Your order was delivered', title: 'Delivered!', body: 'Your shirt has been delivered. Enjoy it — words are not just words.' },
+  },
+};
+
+function buildStatusHtml(title: string, body: string, orderId: string): string {
+  return `
+  <div style="background:#0a0a0a;color:#fff;font-family:system-ui,sans-serif;padding:40px 20px;max-width:600px;margin:0 auto">
+    <h1 style="font-size:24px;letter-spacing:0.15em;margin-bottom:32px">PLATYPUS</h1>
+    <h2 style="font-size:20px;margin-bottom:8px">${title}</h2>
+    <p style="color:#888;margin-bottom:24px">${body}</p>
+    <div style="background:#111;border:1px solid #222;border-radius:12px;padding:20px;margin-bottom:24px">
+      <p style="color:#555;font-size:12px;margin:0">Order ${orderId}</p>
+    </div>
+    <p style="color:#555;font-size:13px">
+      <a href="https://platypus-shirt-shop.vercel.app/tracking" style="color:#e2001a">Sendungsverfolgung / Track order</a>
+    </p>
+  </div>`;
+}
+
 const EMAIL_TEMPLATES: Record<string, (data: OrderEmailData) => { subject: string; html: string }> = {
   de: (d) => ({
     subject: `PLATYPUS — Bestellbestätigung ${d.orderId}`,
@@ -21,6 +54,7 @@ interface OrderEmailData {
   total: number;
   items: { name: string; size: string; quantity: number; price: number }[];
   locale: string;
+  type?: 'confirmation' | 'production' | 'shipped' | 'delivered';
 }
 
 function buildHtml(title: string, intro: string, d: OrderEmailData, footer: string): string {
@@ -54,7 +88,11 @@ export async function POST(request: NextRequest) {
     const data: OrderEmailData = await request.json();
     const apiKey = process.env.RESEND_API_KEY;
 
-    const template = (EMAIL_TEMPLATES[data.locale] || EMAIL_TEMPLATES.de)(data);
+    const statusSet = data.type && data.type !== 'confirmation' ? STATUS_TEXTS[data.type] : null;
+    const template = statusSet
+      ? (() => { const t = statusSet[data.locale] || statusSet.de;
+          return { subject: `PLATYPUS — ${t.subject} (${data.orderId})`, html: buildStatusHtml(t.title, t.body, data.orderId) }; })()
+      : (EMAIL_TEMPLATES[data.locale] || EMAIL_TEMPLATES.de)(data);
 
     if (!apiKey) {
       console.log('E-Mail (Demo):', template.subject, '→', data.email);

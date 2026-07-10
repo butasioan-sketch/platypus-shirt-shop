@@ -61,6 +61,31 @@ export async function PATCH(request: NextRequest) {
   try {
     const { id, status } = await request.json();
     const success = await updateOrderStatus(id, status);
+
+    // Status-Mail (fehlertolerant — darf das Update nie brechen)
+    if (success && ['production', 'shipped', 'delivered'].includes(status)) {
+      try {
+        const order = await getOrderById(id);
+        if (order?.customerEmail) {
+          const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://platypus-shirt-shop.vercel.app';
+          await fetch(`${siteUrl}/api/email`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              type: status,
+              orderId: order.id,
+              email: order.customerEmail,
+              total: order.amountTotal || 0,
+              items: order.items || [],
+              locale: order.locale || 'de',
+            }),
+          });
+        }
+      } catch (mailErr) {
+        console.error('Status-Mail fehlgeschlagen (Update bleibt gueltig):', mailErr);
+      }
+    }
+
     return NextResponse.json({ success });
   } catch (err: unknown) {
     return NextResponse.json({ error: err instanceof Error ? err.message : 'Fehler' }, { status: 500 });
