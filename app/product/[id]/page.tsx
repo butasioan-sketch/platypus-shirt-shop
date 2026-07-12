@@ -159,6 +159,28 @@ export default function ProductPage() {
                 </button>
               ))}
             </div>
+            <details style={{ marginTop: '0.7rem' }}>
+              <summary style={{ cursor: 'pointer', color: '#888', fontSize: '0.8rem', userSelect: 'none' }}>
+                📏 Größentabelle
+              </summary>
+              <div style={{ marginTop: '0.6rem', background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '0.9rem', fontSize: '0.8rem' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', color: '#ccc' }}>
+                  <thead><tr style={{ color: '#888', textAlign: 'left' }}>
+                    <th style={{ padding: '0.3rem 0' }}>Größe</th><th>Brustweite*</th><th>Länge</th>
+                  </tr></thead>
+                  <tbody>
+                    {[['S','50 cm','70 cm'],['M','53 cm','72 cm'],['L','56 cm','74 cm'],['XL','59 cm','76 cm'],['XXL','62 cm','78 cm']].map(([g,b,l]) => (
+                      <tr key={g} style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                        <td style={{ padding: '0.35rem 0', fontWeight: 600, color: '#fff' }}>{g}</td><td>{b}</td><td>{l}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <p style={{ color: '#666', fontSize: '0.7rem', marginTop: '0.6rem', lineHeight: 1.5 }}>
+                  *Halbe Brustweite, 1 cm unter der Armöffnung gemessen. Herstellerangaben B&C, Toleranz bis 10 % möglich. Zwischen zwei Größen? Nimm die größere.
+                </p>
+              </div>
+            </details>
           </div>
 
           {/* SCHNITT */}

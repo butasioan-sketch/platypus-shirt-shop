@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ order: {
       id: order.id, status: order.status, createdAt: order.createdAt,
       updatedAt: order.updatedAt, shippingCountry: order.shippingCountry,
+      shippingMethod: order.shippingMethod,
     } });
   }
   const status = searchParams.get('status') || undefined;

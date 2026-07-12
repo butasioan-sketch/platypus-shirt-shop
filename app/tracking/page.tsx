@@ -1,13 +1,13 @@
 'use client';
+import { SHIPPING_OPTIONS } from '@/lib/shipping';
 
 import { useState } from 'react';
 import Link from 'next/link';
 import Logo from '@/app/components/Logo';
 
-interface OrderItem { name: string; size: string; quantity: number; price: number; }
 interface Order {
-  id: string; status: string; amountTotal: number;
-  items: OrderItem[]; createdAt: string; shippingCountry: string;
+  id: string; status: string; createdAt: string; updatedAt: string;
+  shippingCountry: string; shippingMethod?: string;
 }
 
 const STEPS = [
@@ -83,7 +83,7 @@ export default function TrackingPage() {
                 <p style={{ color: '#666', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.3rem' }}>Bestellnummer</p>
                 <p style={{ color: '#fff', fontWeight: 700, fontSize: '0.95rem' }}>{order.id}</p>
               </div>
-              <p style={{ color: '#fff', fontWeight: 800, fontSize: '1.25rem' }}>€{order.amountTotal.toFixed(2)}</p>
+              <p style={{ color: '#888', fontWeight: 600, fontSize: '0.85rem' }}>{order.shippingCountry === 'RO' ? 'Rumänien' : 'Deutschland'}</p>
             </div>
 
             {isCancelled ? (
@@ -115,13 +115,11 @@ export default function TrackingPage() {
             )}
 
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1.25rem' }}>
-              <p style={{ color: '#666', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Artikel</p>
-              {order.items.map((it, i) => (
-                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.4rem', fontSize: '0.875rem' }}>
-                  <span style={{ color: '#ccc' }}>{it.quantity}× {it.name} ({it.size})</span>
-                  <span style={{ color: '#fff' }}>€{(it.price * it.quantity).toFixed(2)}</span>
-                </div>
-              ))}
+              <p style={{ color: '#666', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>Versand</p>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem' }}>
+                <span style={{ color: '#ccc' }}>{order.shippingMethod || 'Wird vorbereitet'}</span>
+                <span style={{ color: '#fff' }}>{SHIPPING_OPTIONS.find(o => o.carrier === order.shippingMethod)?.eta?.[order.shippingCountry as 'DE' | 'RO'] || ''}</span>
+              </div>
             </div>
           </div>
         )}
