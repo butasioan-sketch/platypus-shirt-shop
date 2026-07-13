@@ -1,4 +1,5 @@
 export interface OrderItem {
+  designId?: string;
   name: string;
   size: string;
   fit?: string;

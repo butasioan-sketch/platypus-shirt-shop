@@ -112,7 +112,12 @@ export default function AdminOrdersPage() {
                     ))}
                   </div>
                 )}
-                {order.designId && <DesignPreview designId={order.designId} />}
+                {Array.from(new Set(
+                  [...(order.items || []).map((it) => it.designId), order.designId]
+                    .filter((d): d is string => Boolean(d))
+                )).map((did) => (
+                  <DesignPreview key={did} designId={did} />
+                ))}
                 {STATUS_FLOW.indexOf(order.status) < STATUS_FLOW.length - 1 && STATUS_FLOW.includes(order.status) && (
                   <button onClick={() => advance(order)} style={{
                     background: '#1a1a1a', border: '1px solid #333', color: '#fff',
