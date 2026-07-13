@@ -1,12 +1,14 @@
 {
-  "name": "PLATYPUS Shirt Shop",
+  "name": "PLATYPUS — Premium Print-on-Demand T-Shirts",
   "short_name": "PLATYPUS",
-  "description": "Premium Print-on-Demand T-Shirts",
+  "description": "Gestalte dein eigenes Shirt. Motiv vorne & hinten. Sichere Zahlung.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
-  "theme_color": "#e2001a",
+  "theme_color": "#0a0a0a",
   "icons": [
-    { "src": "/icon.jpeg", "sizes": "512x512", "type": "image/jpeg" }
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icon-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
