@@ -54,7 +54,12 @@ export default function ProductPage() {
     const designId = await saveDesign();
     try {
       const cart = JSON.parse(localStorage.getItem('platypus_cart') || '[]');
-      const existing = cart.findIndex((i: { id: string; size: string }) => i.id === id && i.size === size);
+      // Mit Motiv: IMMER eigene Position (jedes Design = eigener Druckauftrag).
+      // Ohne Motiv: gleiche Groesse zusammenfassen wie bisher.
+      const existing = designId ? -1 : cart.findIndex(
+        (i: { id: string; size: string; designId?: string }) =>
+          i.id === id && i.size === size && !i.designId
+      );
       if (existing >= 0) {
         cart[existing].quantity = (cart[existing].quantity || 1) + 1;
       } else {
