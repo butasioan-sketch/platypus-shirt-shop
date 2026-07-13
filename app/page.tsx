@@ -1,4 +1,5 @@
 'use client';
+import React from 'react';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -28,6 +29,13 @@ import { getAllProducts, getProductName, getProductDescription } from '@/lib/pro
 
 export default function HomePage() {
   const { t, locale } = useLocale();
+  const outdoorIcons: Record<string, React.ReactNode> = {
+    climb: <path d="M4 26 L14 8 L20 18 L26 6 L30 26 Z" fill="none" stroke="#e2001a" strokeWidth="2" strokeLinejoin="round"/>,
+    run: <><circle cx="20" cy="7" r="3" fill="#e2001a"/><path d="M17 12 L11 18 L15 22 L13 28 M17 12 L23 15 L27 12 M17 12 L18 20" fill="none" stroke="#e2001a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></>,
+    ride: <><circle cx="9" cy="22" r="5" fill="none" stroke="#e2001a" strokeWidth="2"/><circle cx="25" cy="22" r="5" fill="none" stroke="#e2001a" strokeWidth="2"/><path d="M9 22 L15 12 L22 12 M15 12 L25 22 M20 8 L23 8" fill="none" stroke="#e2001a" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></>,
+    wild: <><path d="M16 4 L26 26 L6 26 Z" fill="none" stroke="#e2001a" strokeWidth="2" strokeLinejoin="round"/><path d="M12 26 L16 16 L20 26" fill="none" stroke="#e2001a" strokeWidth="2" strokeLinejoin="round"/></>,
+  };
+
   const products = getAllProducts();
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
@@ -124,6 +132,22 @@ Oder endlich: dich selbst.</p>
                 </div>
               </div>
             </Link>
+          ))}
+        </div>
+      </section>
+
+      <section style={{ padding: '5rem 2rem 1rem', maxWidth: '1000px', margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <h2 style={{ fontSize: '1.9rem', fontWeight: 800, color: '#fff', marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>{t.outdoor.title}</h2>
+          <p style={{ color: '#999', fontSize: '0.95rem', maxWidth: '620px', margin: '0 auto', lineHeight: 1.6 }}>{t.outdoor.sub}</p>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
+          {t.outdoor.cards.map((c) => (
+            <div key={c.key} style={{ background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', padding: '1.75rem 1.25rem', textAlign: 'center', transition: 'border-color 0.2s' }}>
+              <svg viewBox="0 0 32 32" width="44" height="44" style={{ marginBottom: '1rem' }}>{outdoorIcons[c.key]}</svg>
+              <p style={{ color: '#fff', fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.35rem' }}>{c.label}</p>
+              <p style={{ color: '#888', fontSize: '0.82rem', fontStyle: 'italic' }}>{c.line}</p>
+            </div>
           ))}
         </div>
       </section>

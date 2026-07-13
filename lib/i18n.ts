@@ -37,6 +37,16 @@ export const translations = {
       redirecting: 'Weiterleitung zu Stripe...',
       back: '← Zurück zum Shop',
     },
+    outdoor: {
+      title: 'FÜR DIE, DIE DRAUSSEN LEBEN.',
+      sub: 'Sublimationsdruck zieht in die Faser ein — dein Statement verblasst nie, bricht nie, überlebt jeden Trail.',
+      cards: [
+        { key: 'climb', label: 'Klettern', line: 'Wände lügen nicht.' },
+        { key: 'run', label: 'Laufen', line: 'Kilometer zählen, nicht Ausreden.' },
+        { key: 'ride', label: 'Radfahren', line: 'Der Wind kennt deinen Namen.' },
+        { key: 'wild', label: 'Draußen', line: 'Kein Empfang. Kein Problem.' },
+      ],
+    },
     trust: [
       { icon: '🔒', label: 'Stripe Checkout', sub: 'Sichere Zahlung' },
       { icon: '📦', label: 'Print-on-Demand', sub: 'Auf Bestellung' },
@@ -86,6 +96,16 @@ export const translations = {
       redirecting: 'Redirecționare către Stripe...',
       back: '← Înapoi la magazin',
     },
+    outdoor: {
+      title: 'PENTRU CEI CARE TRĂIESC AFARĂ.',
+      sub: 'Sublimarea pătrunde în fibră — mesajul tău nu se decolorează, nu crapă, rezistă pe orice traseu.',
+      cards: [
+        { key: 'climb', label: 'Cățărat', line: 'Pereții nu mint.' },
+        { key: 'run', label: 'Alergare', line: 'Contează kilometrii, nu scuzele.' },
+        { key: 'ride', label: 'Ciclism', line: 'Vântul îți știe numele.' },
+        { key: 'wild', label: 'În natură', line: 'Fără semnal. Fără probleme.' },
+      ],
+    },
     trust: [
       { icon: '🔒', label: 'Stripe Checkout', sub: 'Plată securizată' },
       { icon: '📦', label: 'Print-on-Demand', sub: 'La comandă' },
@@ -134,6 +154,16 @@ export const translations = {
       checkout: 'CHECKOUT',
       redirecting: 'Redirecting to Stripe...',
       back: '← Back to shop',
+    },
+    outdoor: {
+      title: 'FOR THOSE WHO LIVE OUTSIDE.',
+      sub: 'Sublimation sinks into the fiber — your statement never fades, never cracks, survives every trail.',
+      cards: [
+        { key: 'climb', label: 'Climbing', line: 'Walls never lie.' },
+        { key: 'run', label: 'Running', line: 'Miles count, not excuses.' },
+        { key: 'ride', label: 'Cycling', line: 'The wind knows your name.' },
+        { key: 'wild', label: 'Outdoors', line: 'No signal. No problem.' },
+      ],
     },
     trust: [
       { icon: '🔒', label: 'Stripe Checkout', sub: 'Secure payment' },
