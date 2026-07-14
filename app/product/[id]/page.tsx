@@ -210,13 +210,13 @@ export default function ProductPage() {
           </div>
 
           {editHint && (
-            <div style={{ background: 'rgba(226,0,26,0.08)', border: '1px solid rgba(226,0,26,0.25)', borderRadius: '10px', padding: '0.7rem 1rem', marginBottom: '1rem', fontSize: '0.8rem', color: '#fca5a5', lineHeight: 1.5 }}>
+            <div className="plt-fade-in-up" style={{ background: 'rgba(226,0,26,0.08)', border: '1px solid rgba(226,0,26,0.25)', borderRadius: '10px', padding: '0.7rem 1rem', marginBottom: '1rem', fontSize: '0.8rem', color: '#fca5a5', lineHeight: 1.5 }}>
               Größe & Farbe vorausgewählt. Lade dein Motiv erneut hoch um das Piece zu aktualisieren.
             </div>
           )}
 
           {/* Design-Status Indikator */}
-          <div style={{
+          <div className="plt-design-status" style={{
             display: 'flex', alignItems: 'center', gap: '0.6rem',
             padding: '0.65rem 0.9rem', borderRadius: '10px', marginBottom: '1rem',
             background: (design.front || design.back) ? 'rgba(74,222,128,0.08)' : 'rgba(255,255,255,0.03)',
@@ -243,7 +243,7 @@ export default function ProductPage() {
               {loading ? t.cart.redirecting : `${t.product.buyNow} — €${unitPrice.toFixed(2)}`}
             </button>
             <p style={{ color: '#666', fontSize: '0.72rem', textAlign: 'center', marginTop: '0.6rem', lineHeight: 1.5 }}>{t.shop.legal}</p>
-            <button type="button" onClick={addToCart} disabled={addLoading} className="plt-btn-secondary" style={{ width: '100%', padding: '0.9rem', color: added ? '#4ade80' : '#fff' }}>
+            <button type="button" onClick={addToCart} disabled={addLoading} className={`plt-btn-secondary${added ? ' plt-btn-cart-added' : ''}`} style={{ width: '100%', padding: '0.9rem', color: added ? '#4ade80' : '#fff' }}>
               {addLoading ? '...' : added ? `✓ ${t.product.added}` : `+ ${t.product.addCart}`}
             </button>
           </div>

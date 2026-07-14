@@ -199,11 +199,13 @@ input, select, textarea {
   background: var(--plt-surface);
   border: 1px solid var(--plt-border);
   border-radius: var(--plt-r-lg);
-  transition: border-color var(--plt-t-base), box-shadow var(--plt-t-base);
+  transition: border-color var(--plt-t-base), box-shadow var(--plt-t-base), transform var(--plt-t-base);
 }
 
 .plt-card:hover {
   border-color: var(--plt-brand-muted);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
 }
 
 .plt-btn-primary {
@@ -228,7 +230,13 @@ input, select, textarea {
 .plt-btn-primary:hover:not(:disabled) {
   background: var(--plt-brand-hover);
   transform: translateY(-2px);
+  box-shadow: 0 12px 28px var(--plt-brand-glow);
   opacity: 1;
+}
+
+.plt-btn-primary:active:not(:disabled) {
+  transform: scale(0.97) translateY(0);
+  box-shadow: 0 2px 8px var(--plt-brand-glow);
 }
 
 .plt-btn-primary:disabled {
@@ -331,11 +339,34 @@ input, select, textarea {
   transition: all var(--plt-t-fast);
 }
 
+.plt-size-btn:hover:not(.plt-size-btn-active) {
+  border-color: rgba(255, 255, 255, 0.28);
+  color: var(--plt-text);
+  transform: translateY(-1px);
+  opacity: 1;
+}
+
+.plt-size-btn:active:not(.plt-size-btn-active) {
+  transform: scale(0.96);
+}
+
 .plt-size-btn-active {
   background: var(--plt-brand);
   color: var(--plt-text);
   border-color: var(--plt-brand);
   box-shadow: 0 4px 12px var(--plt-brand-dim);
+  animation: plt-size-pop 0.18s ease;
+}
+
+@keyframes plt-size-pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* design status indicator — transition on inline style changes */
+.plt-design-status {
+  transition: background var(--plt-t-base), border-color var(--plt-t-base), color var(--plt-t-base);
 }
 
 /* ── Layout Utilities ── */
@@ -409,4 +440,25 @@ input, select, textarea {
 .plt-nav-link:hover {
   color: var(--plt-text);
   opacity: 1;
+}
+
+/* ── Micro-animation helpers ── */
+@keyframes plt-cart-success {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.05); }
+  60%  { transform: scale(0.97); }
+  100% { transform: scale(1); }
+}
+
+.plt-btn-cart-added {
+  animation: plt-cart-success 0.35s ease;
+}
+
+@keyframes plt-fadeInUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.plt-fade-in-up {
+  animation: plt-fadeInUp 0.3s ease both;
 }
