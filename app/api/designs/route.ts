@@ -9,6 +9,10 @@ async function getSql() {
 
 export async function POST(request: NextRequest) {
   try {
+    const contentLength = request.headers.get('content-length');
+    const sizeMb = contentLength ? (parseInt(contentLength) / 1024 / 1024).toFixed(2) : '?';
+    console.log('[designs POST] content-length:', sizeMb, 'MB');
+
     const body = await request.json();
     const sql = await getSql();
     if (!sql) return NextResponse.json({ error: 'no db' }, { status: 500 });
@@ -20,7 +24,9 @@ export async function POST(request: NextRequest) {
     );
     return NextResponse.json({ id, success: true });
   } catch (err: unknown) {
-    return NextResponse.json({ error: err instanceof Error ? err.message : 'Fehler' }, { status: 500 });
+    const msg = err instanceof Error ? err.message : 'Fehler';
+    console.error('[designs POST] Fehler:', msg);
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
 

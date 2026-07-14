@@ -46,15 +46,20 @@ export default function ProductPage() {
     if (!design.front && !design.back) return null;
     try {
       const [front, back] = await Promise.all([
-        design.front ? renderPrintSheet(design.front, design.frontTransform) : Promise.resolve(null),
-        design.back ? renderPrintSheet(design.back, design.backTransform) : Promise.resolve(null),
+        design.front ? renderPrintSheet(design.front, design.frontTransform, { format: 'jpeg', quality: 0.92 }) : Promise.resolve(null),
+        design.back ? renderPrintSheet(design.back, design.backTransform, { format: 'jpeg', quality: 0.92 }) : Promise.resolve(null),
       ]);
+      const payload = JSON.stringify({ front, back, productId: id });
+      console.log('[saveDesign] payload', (payload.length / 1024 / 1024).toFixed(2), 'MB');
       const res = await fetch('/api/designs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ front, back, productId: id }),
+        body: payload,
       });
-      if (!res.ok) throw new Error(`/api/designs ${res.status}`);
+      if (!res.ok) {
+        const errText = await res.text().catch(() => `HTTP ${res.status}`);
+        throw new Error(`/api/designs ${res.status}: ${errText}`);
+      }
       const data = await res.json();
       if (!data.id) throw new Error('Kein Design-ID erhalten');
       return data.id;

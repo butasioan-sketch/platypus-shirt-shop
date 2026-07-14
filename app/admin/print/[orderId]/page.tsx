@@ -73,7 +73,7 @@ export default async function PrintView({ params }: { params: Promise<{ orderId:
                 <p style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.6rem' }}>VORNE — {PRINT_SPEC.widthPx} × {PRINT_SPEC.heightPx} px</p>
                 <a
                   href={d.front_image}
-                  download={`${order.id}-front.png`}
+                  download={`${order.id}-front.jpg`}
                   style={{
                     display: 'inline-block',
                     background: '#e2001a',
@@ -96,7 +96,7 @@ export default async function PrintView({ params }: { params: Promise<{ orderId:
                 <p style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.6rem' }}>HINTEN — {PRINT_SPEC.widthPx} × {PRINT_SPEC.heightPx} px</p>
                 <a
                   href={d.back_image}
-                  download={`${order.id}-back.png`}
+                  download={`${order.id}-back.jpg`}
                   style={{
                     display: 'inline-block',
                     background: '#e2001a',
