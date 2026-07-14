@@ -12,23 +12,32 @@ const STATUS_TEXTS: Record<string, Record<string, { subject: string; title: stri
     en: { subject: 'Your order is on its way', title: 'Shipped!', body: 'Your package is on its way. You can track the status anytime.' },
   },
   delivered: {
-    de: { subject: 'Deine Bestellung wurde zugestellt', title: 'Angekommen!', body: 'Dein Shirt wurde zugestellt. Viel Freude damit — words are not just words.' },
-    ro: { subject: 'Comanda ta a fost livrată', title: 'A ajuns!', body: 'Tricoul tău a fost livrat. Bucură-te de el — words are not just words.' },
-    en: { subject: 'Your order was delivered', title: 'Delivered!', body: 'Your shirt has been delivered. Enjoy it — words are not just words.' },
+    de: { subject: 'Deine Bestellung wurde zugestellt', title: 'Angekommen!', body: 'Dein Shirt wurde zugestellt. Viel Freude damit — words are not just words.<br/><br/>Wie war deine Erfahrung? Deine Meinung hilft anderen.' },
+    ro: { subject: 'Comanda ta a fost livrată', title: 'A ajuns!', body: 'Tricoul tău a fost livrat. Bucură-te de el — words are not just words.<br/><br/>Cum a fost experiența ta? Părerea ta îi ajută pe alții.' },
+    en: { subject: 'Your order was delivered', title: 'Delivered!', body: 'Your shirt has been delivered. Enjoy it — words are not just words.<br/><br/>How was your experience? Your review helps others.' },
   },
 };
 
-function buildStatusHtml(title: string, body: string, orderId: string): string {
+function buildStatusHtml(title: string, body: string, orderId: string, isDelivered = false): string {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://platypus-shirt-shop.vercel.app';
+  const reviewCta = isDelivered ? `
+    <a href="${siteUrl}/bewertungen" style="display:inline-block;background:#e2001a;color:#fff;text-decoration:none;padding:12px 24px;border-radius:10px;font-weight:700;font-size:14px;margin-bottom:20px">
+      Bewertung schreiben / Leave a review
+    </a><br/>` : '';
   return `
   <div style="background:#0a0a0a;color:#fff;font-family:system-ui,sans-serif;padding:40px 20px;max-width:600px;margin:0 auto">
-    <h1 style="font-size:24px;letter-spacing:0.15em;margin-bottom:32px">PLATYPUS</h1>
-    <h2 style="font-size:20px;margin-bottom:8px">${title}</h2>
-    <p style="color:#888;margin-bottom:24px">${body}</p>
-    <div style="background:#111;border:1px solid #222;border-radius:12px;padding:20px;margin-bottom:24px">
-      <p style="color:#555;font-size:12px;margin:0">Order ${orderId}</p>
+    <p style="font-size:13px;letter-spacing:0.2em;color:#e2001a;margin-bottom:8px;font-weight:700">PLATYPUS</p>
+    <h1 style="font-size:22px;font-weight:900;margin-bottom:8px;letter-spacing:-0.02em">${title}</h1>
+    <p style="color:#888;margin-bottom:28px;line-height:1.6">${body}</p>
+    ${reviewCta}
+    <div style="background:#111;border:1px solid #222;border-radius:12px;padding:16px 20px;margin-bottom:24px">
+      <p style="color:#555;font-size:11px;margin:0 0 4px;letter-spacing:0.1em;text-transform:uppercase">Bestellnummer</p>
+      <p style="color:#ccc;font-size:14px;font-weight:600;margin:0">${orderId}</p>
     </div>
-    <p style="color:#555;font-size:13px">
-      <a href="https://platypus-shirt-shop.vercel.app/tracking" style="color:#e2001a">Sendungsverfolgung / Track order</a>
+    <p style="color:#444;font-size:12px;line-height:1.6">
+      <a href="${siteUrl}/tracking" style="color:#888;text-decoration:none">Sendungsverfolgung</a>
+      &nbsp;·&nbsp;
+      <a href="mailto:butasioan@googlemail.com" style="color:#888;text-decoration:none">Kontakt</a>
     </p>
   </div>`;
 }
@@ -157,7 +166,7 @@ export async function POST(request: NextRequest) {
     const statusSet = data.type && data.type !== 'confirmation' ? STATUS_TEXTS[data.type] : null;
     const template = statusSet
       ? (() => { const t = statusSet[data.locale] || statusSet.de;
-          return { subject: `PLATYPUS — ${t.subject} (${data.orderId})`, html: buildStatusHtml(t.title, t.body, data.orderId) }; })()
+          return { subject: `PLATYPUS — ${t.subject} (${data.orderId})`, html: buildStatusHtml(t.title, t.body, data.orderId, data.type === 'delivered') }; })()
       : buildConfirmationEmail(data, designPreview);
 
     if (!apiKey) {
