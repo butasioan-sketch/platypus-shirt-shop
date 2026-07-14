@@ -48,10 +48,10 @@ export const translations = {
       ],
     },
     trust: [
-      { icon: '🔒', label: 'Stripe Checkout', sub: 'Sichere Zahlung' },
-      { icon: '📦', label: 'Print-on-Demand', sub: 'Auf Bestellung' },
-      { icon: '✅', label: 'Qualitätsgarantie', sub: 'Ersatz bei Mängeln' },
-      { icon: '🚚', label: 'Versand DE & RO', sub: '3–7 Werktage' },
+      { key: 'stripe', label: 'Stripe Checkout', sub: 'Sichere Zahlung' },
+      { key: 'pod', label: 'Print-on-Demand', sub: 'Auf Bestellung' },
+      { key: 'quality', label: 'Qualitätsgarantie', sub: 'Ersatz bei Mängeln' },
+      { key: 'shipping', label: 'Versand DE & RO', sub: '3–7 Werktage' },
     ],
     ai: {
       placeholder: 'Frag mich etwas über Größen, Versand oder Produkte...',
@@ -107,10 +107,10 @@ export const translations = {
       ],
     },
     trust: [
-      { icon: '🔒', label: 'Stripe Checkout', sub: 'Plată securizată' },
-      { icon: '📦', label: 'Print-on-Demand', sub: 'La comandă' },
-      { icon: '✅', label: 'Garanție de calitate', sub: 'Înlocuire la defecte' },
-      { icon: '🚚', label: 'Livrare DE & RO', sub: '3–7 zile lucrătoare' },
+      { key: 'stripe', label: 'Stripe Checkout', sub: 'Plată securizată' },
+      { key: 'pod', label: 'Print-on-Demand', sub: 'La comandă' },
+      { key: 'quality', label: 'Garanție de calitate', sub: 'Înlocuire la defecte' },
+      { key: 'shipping', label: 'Livrare DE & RO', sub: '3–7 zile lucrătoare' },
     ],
     ai: {
       placeholder: 'Întreabă-mă despre mărimi, livrare sau produse...',
@@ -166,10 +166,10 @@ export const translations = {
       ],
     },
     trust: [
-      { icon: '🔒', label: 'Stripe Checkout', sub: 'Secure payment' },
-      { icon: '📦', label: 'Print-on-Demand', sub: 'Made to order' },
-      { icon: '✅', label: 'Quality guarantee', sub: 'Free replacement for defects' },
-      { icon: '🚚', label: 'Shipping EU', sub: '5–10 working days' },
+      { key: 'stripe', label: 'Stripe Checkout', sub: 'Secure payment' },
+      { key: 'pod', label: 'Print-on-Demand', sub: 'Made to order' },
+      { key: 'quality', label: 'Quality guarantee', sub: 'Free replacement for defects' },
+      { key: 'shipping', label: 'Shipping EU', sub: '5–10 working days' },
     ],
     ai: {
       placeholder: 'Ask me about sizes, shipping or products...',

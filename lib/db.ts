@@ -3,7 +3,7 @@
 
 import { Order } from './types';
 
-let memoryStore: Order[] = [];
+const memoryStore: Order[] = [];
 let pgClient: unknown = null;
 
 async function getPg() {
@@ -36,8 +36,32 @@ export async function initDb() {
         items JSONB DEFAULT '[]',
         locale TEXT DEFAULT 'de',
         shipping_country TEXT DEFAULT 'DE',
+        design_id TEXT,
+        shipping_method TEXT,
         created_at TIMESTAMPTZ DEFAULT NOW(),
         updated_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+    await sql.query(`ALTER TABLE orders ADD COLUMN IF NOT EXISTS design_id TEXT`);
+    await sql.query(`ALTER TABLE orders ADD COLUMN IF NOT EXISTS shipping_method TEXT`);
+    await sql.query(`
+      CREATE TABLE IF NOT EXISTS designs (
+        id TEXT PRIMARY KEY,
+        front_image TEXT,
+        back_image TEXT,
+        product_id TEXT,
+        created_at TIMESTAMPTZ DEFAULT NOW()
+      )
+    `);
+    await sql.query(`
+      CREATE TABLE IF NOT EXISTS analytics_events (
+        id BIGSERIAL PRIMARY KEY,
+        type TEXT NOT NULL,
+        page TEXT,
+        product_id TEXT,
+        locale TEXT,
+        value NUMERIC,
+        created_at TIMESTAMPTZ DEFAULT NOW()
       )
     `);
     return true;
@@ -140,6 +164,95 @@ export async function getOrderStats() {
       acc[o.shippingCountry] = (acc[o.shippingCountry] || 0) + 1;
       return acc;
     }, {} as Record<string, number>),
+  };
+}
+
+export interface AnalyticsEvent {
+  type: string;
+  page?: string;
+  productId?: string;
+  locale?: string;
+  value?: number;
+  timestamp: string;
+}
+
+const memoryAnalytics: AnalyticsEvent[] = [];
+
+export async function trackAnalyticsEvent(event: Omit<AnalyticsEvent, 'timestamp'>): Promise<void> {
+  const full: AnalyticsEvent = { ...event, timestamp: new Date().toISOString() };
+  const sql = await getPg() as { query: (q: string, p?: unknown[]) => Promise<unknown> } | null;
+
+  if (!sql) {
+    memoryAnalytics.unshift(full);
+    if (memoryAnalytics.length > 1000) memoryAnalytics.pop();
+    return;
+  }
+
+  try {
+    await sql.query(
+      `INSERT INTO analytics_events (type, page, product_id, locale, value) VALUES ($1,$2,$3,$4,$5)`,
+      [event.type, event.page || null, event.productId || null, event.locale || null, event.value ?? null]
+    );
+  } catch (err) {
+    console.error('trackAnalyticsEvent error:', err);
+    memoryAnalytics.unshift(full);
+  }
+}
+
+export async function getAnalyticsSummary() {
+  const sql = await getPg() as { query: (q: string, p?: unknown[]) => Promise<Record<string, unknown>[]> } | null;
+
+  if (!sql) {
+    const now = Date.now();
+    const last24h = memoryAnalytics.filter(e => now - new Date(e.timestamp).getTime() < 86400000);
+    return buildAnalyticsSummary(memoryAnalytics, last24h);
+  }
+
+  try {
+    const rows = await sql.query(
+      `SELECT type, page, product_id, locale, value, created_at
+       FROM analytics_events
+       WHERE created_at > NOW() - INTERVAL '7 days'
+       ORDER BY created_at DESC
+       LIMIT 1000`
+    );
+    const events: AnalyticsEvent[] = rows.map((r) => ({
+      type: r.type as string,
+      page: r.page as string | undefined,
+      productId: r.product_id as string | undefined,
+      locale: r.locale as string | undefined,
+      value: r.value != null ? Number(r.value) : undefined,
+      timestamp: new Date(r.created_at as string).toISOString(),
+    }));
+    const now = Date.now();
+    const last24h = events.filter(e => now - new Date(e.timestamp).getTime() < 86400000);
+    return buildAnalyticsSummary(events, last24h);
+  } catch (err) {
+    console.error('getAnalyticsSummary error:', err);
+    const now = Date.now();
+    const last24h = memoryAnalytics.filter(e => now - new Date(e.timestamp).getTime() < 86400000);
+    return buildAnalyticsSummary(memoryAnalytics, last24h);
+  }
+}
+
+function buildAnalyticsSummary(events: AnalyticsEvent[], last24h: AnalyticsEvent[]) {
+  const byType: Record<string, number> = {};
+  const byLocale: Record<string, number> = {};
+  const byProduct: Record<string, number> = {};
+
+  for (const e of last24h) {
+    byType[e.type] = (byType[e.type] || 0) + 1;
+    if (e.locale) byLocale[e.locale] = (byLocale[e.locale] || 0) + 1;
+    if (e.productId) byProduct[e.productId] = (byProduct[e.productId] || 0) + 1;
+  }
+
+  return {
+    total: events.length,
+    last24h: last24h.length,
+    byType,
+    byLocale,
+    byProduct,
+    recent: events.slice(0, 20),
   };
 }
 
