@@ -14,6 +14,7 @@ export default function Footer() {
             { label: 'Datenschutz', href: '/datenschutz' },
             { label: 'Versand & Reklamation', href: '/versand' },
             { label: 'FAQ', href: '/faq' },
+            { label: 'Bewertungen', href: '/bewertungen' },
             { label: 'Sendungsverfolgung', href: '/tracking' },
           ].map(({ label, href }) => (
             <Link key={href} href={href} style={{

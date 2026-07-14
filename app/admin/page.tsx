@@ -8,6 +8,7 @@ export default function AdminPage() {
   const [orderCount, setOrderCount] = useState(0);
   const [pageviews24h, setPageviews24h] = useState(0);
   const [stripeStatus, setStripeStatus] = useState<'loading' | 'ok' | 'demo'>('loading');
+  const [pendingReviews, setPendingReviews] = useState(0);
   const productCount = getAllProducts().length;
 
   useEffect(() => {
@@ -25,6 +26,11 @@ export default function AdminPage() {
       .then(r => r.json())
       .then(d => setStripeStatus(d.stripeKeyConfigured ? 'ok' : 'demo'))
       .catch(() => setStripeStatus('demo'));
+
+    fetch('/api/reviews?stats=true')
+      .then(r => r.json())
+      .then(s => setPendingReviews(s.pending ?? 0))
+      .catch(() => setPendingReviews(0));
   }, []);
 
   const cards = [
@@ -32,6 +38,7 @@ export default function AdminPage() {
     { label: 'Analytics', value: `${pageviews24h} / 24h`, href: '/admin/analytics', color: '#f472b6', icon: '📊' },
     { label: 'Stripe', value: stripeStatus === 'loading' ? '...' : stripeStatus === 'ok' ? 'Aktiv' : 'Demo', href: '/admin/tests', color: stripeStatus === 'ok' ? '#4ade80' : '#facc15', icon: '💳' },
     { label: 'Inventory', value: `${productCount} Produkt${productCount !== 1 ? 'e' : ''}`, href: '/admin/inventory', color: '#60a5fa', icon: '👕' },
+    { label: 'Bewertungen', value: pendingReviews > 0 ? `${pendingReviews} neu` : 'Moderation', href: '/admin/reviews', color: pendingReviews > 0 ? '#facc15' : '#a78bfa', icon: '⭐' },
   ];
 
   const links = [

@@ -71,10 +71,10 @@ export default function CartPage() {
         localStorage.removeItem('platypus_cart');
         window.location.href = data.redirectUrl;
       } else {
-        setError('Checkout Fehler. Bitte erneut versuchen.');
+        setError(t.errors.checkout);
       }
     } catch {
-      setError('Verbindungsfehler.');
+      setError(t.errors.connection);
     } finally {
       setLoading(false);
     }
@@ -99,7 +99,7 @@ export default function CartPage() {
                 <div key={i} className="plt-card" style={{ padding: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
                     <p style={{ fontWeight: 700, marginBottom: '0.25rem' }}>{item.name}</p>
-                    <p style={{ color: '#999', fontSize: '0.8rem' }}>Größe: {item.size}{item.color ? ' | Farbe: ' + item.color : ''} | {item.fit || 'Unisex'} | Menge: {item.quantity}</p>
+                    <p style={{ color: '#999', fontSize: '0.8rem' }}>{t.product.size}: {item.size}{item.color ? ' | ' + t.product.color + ': ' + item.color : ''} | {item.fit || t.product.unisex} | {t.cart.qty}: {item.quantity}</p>
                     <p style={{ color: '#666', fontSize: '0.72rem', marginTop: '0.2rem' }}>
                       {item.price > BASE_PRICE
                         ? <>Basis €{BASE_PRICE.toFixed(2)} + Druck €{(item.price - BASE_PRICE).toFixed(2)}</>
@@ -116,7 +116,7 @@ export default function CartPage() {
 
             {/* VERSAND-AUSWAHL */}
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1.5rem', marginBottom: '1.5rem' }}>
-              <p style={{ fontSize: '0.8rem', color: '#888', marginBottom: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Lieferland</p>
+              <p style={{ fontSize: '0.8rem', color: '#888', marginBottom: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.cart.deliveryCountry}</p>
               <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
                 {COUNTRIES.map((c) => (
                   <button key={c.code} onClick={() => setCountry(c.code)} style={{
@@ -127,7 +127,7 @@ export default function CartPage() {
                   }}>{c.label}</button>
                 ))}
               </div>
-              <p style={{ fontSize: '0.8rem', color: '#888', marginBottom: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Versanddienst</p>
+              <p style={{ fontSize: '0.8rem', color: '#888', marginBottom: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{t.cart.shippingService}</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                 {SHIPPING_OPTIONS.map((o) => (
                   <button key={o.id} onClick={() => setShipId(o.id)} style={{
@@ -162,7 +162,7 @@ export default function CartPage() {
               {loading ? t.cart.redirecting : `${t.cart.checkout} — €${total.toFixed(2)}`}
             </button>
             <p style={{ color: '#666', fontSize: '0.72rem', textAlign: 'center', marginTop: '0.6rem', lineHeight: 1.5 }}>
-              Individuell bedruckte Ware — kein Widerrufsrecht gem. § 312g Abs. 2 Nr. 1 BGB. Kostenloser Ersatz bei Mängeln.
+              {t.shop.legal}
             </p>
 
             <p style={{ textAlign: 'center', color: '#888', fontSize: '0.75rem', marginTop: '1rem' }}>

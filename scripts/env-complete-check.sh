@@ -7,7 +7,7 @@ echo "=========================================="
 
 [ -f ".env.local" ] && echo "✅ .env.local vorhanden" || echo "❌ .env.local fehlt"
 [ -f "proxy.ts" ] && echo "✅ proxy.ts vorhanden" || echo "❌ proxy.ts fehlt"
-[ -f "app/lib/products.ts" ] && echo "✅ app/lib/products.ts vorhanden" || echo "❌ app/lib/products.ts fehlt"
+[ -f "lib/products.ts" ] && echo "✅ lib/products.ts vorhanden" || echo "❌ lib/products.ts fehlt"
 [ -f "app/api/webhooks/stripe/route.ts" ] && echo "✅ Stripe Webhook Route vorhanden" || echo "❌ Stripe Webhook Route fehlt"
 
 if [ -f ".env.local" ]; then

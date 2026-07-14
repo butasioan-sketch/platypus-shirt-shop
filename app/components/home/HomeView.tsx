@@ -2,6 +2,7 @@ import React from 'react';
 import { Locale, getTranslation } from '@/lib/i18n';
 import ProductHeroSection from './ProductHeroSection';
 import TrustIcon from '@/app/components/TrustIcon';
+import ReviewsSection from '@/app/components/reviews/ReviewsSection';
 
 const outdoorIcons: Record<string, React.ReactNode> = {
   climb: <path d="M4 26 L14 8 L20 18 L26 6 L30 26 Z" fill="none" stroke="#e2001a" strokeWidth="2" strokeLinejoin="round" />,
@@ -33,7 +34,11 @@ export default function HomeView({ locale }: { locale: Locale }) {
         </div>
       </section>
 
-      <section style={{ padding: '5rem 2rem', borderTop: '1px solid rgba(255,255,255,0.08)', maxWidth: '1000px', margin: '0 auto' }}>
+      <section style={{ padding: '5rem 2rem 2rem', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+        <ReviewsSection locale={locale} compact />
+      </section>
+
+      <section style={{ padding: '3rem 2rem 5rem', borderTop: '1px solid rgba(255,255,255,0.08)', maxWidth: '1000px', margin: '0 auto' }}>
         <div className="trust-grid">
           {t.trust.map((item) => (
             <div key={item.key} className="plt-card" style={{

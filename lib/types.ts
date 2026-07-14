@@ -9,6 +9,20 @@ export interface OrderItem {
   price: number;
 }
 
+export type ReviewStatus = 'pending' | 'approved' | 'rejected';
+
+export interface Review {
+  id: string;
+  name: string;
+  rating: number;
+  comment: string;
+  orderId?: string | null;
+  locale: string;
+  status: ReviewStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Order {
   id: string;
   stripeSessionId?: string;

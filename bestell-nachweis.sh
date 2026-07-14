@@ -25,7 +25,7 @@ sql.query("SELECT id, amount_total, status, items, shipping_country, created_at 
   .hinweis{margin-top:24px;font-size:10px;color:#666;border-top:1px solid #ccc;padding-top:10px}
   </style></head><body>
   <h1>PLATYPUS Shirt Shop &mdash; Bestell&uuml;bersicht</h1>
-  <div class="sub">On Me &mdash; Print-on-Demand T-Shirts &middot; Interner Systemtest-Nachweis</div>
+  <div class="sub">On Me &mdash; Maßanfertigung T-Shirts &middot; Interner Systemtest-Nachweis</div>
   <div class="meta"><strong>Betreiber:</strong> Jonny (butasioan@googlemail.com)<br>
   <strong>Online-Shop:</strong> https://platypus-shirt-shop.vercel.app<br>
   <strong>Erstellt am:</strong> ${fmt(new Date())}<br>

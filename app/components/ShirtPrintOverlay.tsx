@@ -2,6 +2,7 @@
 
 import { PRINT_SPEC } from '@/lib/print-spec';
 import { getPrintImageStyle, getPrintZoneStyle } from '@/lib/print-position';
+import { useLocale } from '@/app/components/LocaleProvider';
 
 interface ShirtPrintOverlayProps {
   side: 'front' | 'back';
@@ -22,6 +23,7 @@ export default function ShirtPrintOverlay({
   onPointerDown,
   interactive = false,
 }: ShirtPrintOverlayProps) {
+  const { t } = useLocale();
   const zoneStyle = {
     ...getPrintZoneStyle(side),
     cursor: interactive && imageSrc ? 'grab' : 'default',
@@ -40,7 +42,7 @@ export default function ShirtPrintOverlay({
       {showGuide && !imageSrc && (
         <div className="plt-print-guide">
           <span className="plt-print-guide-text">
-            Druckfläche<br />
+            {t.studio.printZoneLabel}<br />
             {PRINT_SPEC.widthMm} × {PRINT_SPEC.heightMm} mm
           </span>
         </div>
@@ -48,7 +50,7 @@ export default function ShirtPrintOverlay({
       {imageSrc && (
         <img
           src={imageSrc}
-          alt={side === 'front' ? 'Motiv Vorderseite' : 'Motiv Rückseite'}
+          alt={side === 'front' ? t.studio.front : t.studio.back}
           style={getPrintImageStyle(scale, pos)}
           draggable={false}
         />
