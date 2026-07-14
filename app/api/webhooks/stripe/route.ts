@@ -33,12 +33,14 @@ export async function POST(request: NextRequest) {
     try {
       const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://platypus-shirt-shop.vercel.app';
       const parsedItems = (() => { try { return JSON.parse(session.metadata?.items || "[]"); } catch { return []; } })();
+      const customerEmail = session.customer_details?.email ?? session.customer_email;
+
       const orderRes = await fetch(`${siteUrl}/api/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-internal-key': process.env.INTERNAL_API_KEY || '' },
         body: JSON.stringify({
           stripeSessionId: session.id,
-          customerEmail: session.customer_details?.email ?? session.customer_email,
+          customerEmail,
           amountTotal: (session.amount_total || 0) / 100,
           currency: session.currency?.toUpperCase() || 'EUR',
           locale: session.metadata?.locale || 'de',
@@ -49,13 +51,19 @@ export async function POST(request: NextRequest) {
           status: 'paid',
         }),
       });
+
+      if (!orderRes.ok) {
+        const errText = await orderRes.text().catch(() => `HTTP ${orderRes.status}`);
+        await notifyAdminWebhookError(session.id, new Error(`/api/orders ${orderRes.status}: ${errText}`)).catch(() => {});
+        return NextResponse.json({ error: 'Order creation failed' }, { status: 500 });
+      }
+
       console.log('Order erstellt für Session:', session.id);
 
       // Bestätigungs-E-Mail senden (fehlertolerant - darf Bestellung nie kaputtmachen)
       try {
         const orderData = await orderRes.json().catch(() => ({}));
         const orderId = orderData?.order?.id || orderData?.id || session.id;
-        const customerEmail = session.customer_email;
         if (customerEmail) {
           await fetch(`${siteUrl}/api/email`, {
             method: 'POST',
