@@ -38,11 +38,14 @@ echo "Erforderlich:"
 check_var "STRIPE_SECRET_KEY" true
 check_var "NEXT_PUBLIC_SITE_URL" true
 check_var "ADMIN_PASSWORD" true
+check_var "ADMIN_ALERT_EMAIL" true
 
 echo ""
 echo "Optional / Für später:"
 check_var "STRIPE_WEBHOOK_SECRET" false
 check_var "DATABASE_URL" false
+check_var "RESEND_API_KEY" false
+check_var "ADMIN_EMAIL" false
 
 echo ""
 echo "=========================================="

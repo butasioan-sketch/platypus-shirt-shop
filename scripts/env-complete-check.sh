@@ -15,5 +15,7 @@ if [ -f ".env.local" ]; then
   grep -q "STRIPE_SECRET_KEY" .env.local && echo "✅ STRIPE_SECRET_KEY gesetzt" || echo "❌ STRIPE_SECRET_KEY fehlt"
   grep -q "STRIPE_WEBHOOK_SECRET" .env.local && echo "✅ STRIPE_WEBHOOK_SECRET gesetzt" || echo "❌ STRIPE_WEBHOOK_SECRET fehlt"
   grep -q "NEXT_PUBLIC_SITE_URL" .env.local && echo "✅ NEXT_PUBLIC_SITE_URL gesetzt" || echo "❌ NEXT_PUBLIC_SITE_URL fehlt"
+  grep -q "ADMIN_ALERT_EMAIL" .env.local && echo "✅ ADMIN_ALERT_EMAIL gesetzt" || echo "❌ ADMIN_ALERT_EMAIL fehlt"
+  grep -q "RESEND_API_KEY" .env.local && echo "✅ RESEND_API_KEY gesetzt" || echo "⚠️  RESEND_API_KEY fehlt (lokal)"
 fi
 echo "=========================================="

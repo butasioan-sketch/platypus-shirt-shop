@@ -56,20 +56,25 @@ export default function AdminTestsPage() {
       },
       async (i: number) => {
         update(i, { status: 'running' });
+        const designRes = await fetch('/api/designs?id=DSGN-1784029264490-Q1Z80').catch(() => null);
+        let designId = 'DSGN-1784029264490-Q1Z80';
+        if (designRes?.ok) {
+          const dd = await designRes.json();
+          if (dd.design?.id) designId = dd.design.id;
+        }
         const r = await fetch('/api/payments/create-checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             paymentMethod: 'card',
             reference: 'ADMIN-TEST',
-            shipping: 4.99,
-            total: 34.98,
-            items: [{ name: 'Test Shirt', size: 'M', price: 39.99, quantity: 1 }],
+            country: 'DE',
+            items: [{ name: 'AirFit Pro', size: 'M', color: 'Weiß', quantity: 1, designId }],
           }),
         });
         const d = await r.json();
-        const ok = d.status === 'stripe_checkout_created';
-        update(i, { status: ok ? 'ok' : 'fail', detail: d.status || d.error || '' });
+        const ok = d.status === 'stripe_checkout_created' && d.redirectUrl?.includes('checkout.stripe.com');
+        update(i, { status: ok ? 'ok' : 'fail', detail: ok ? 'Stripe Checkout URL' : (d.error || d.status || '') });
       },
       async (i: number) => {
         update(i, { status: 'running' });

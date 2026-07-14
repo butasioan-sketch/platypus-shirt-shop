@@ -56,6 +56,9 @@ case "${1:-help}" in
     echo "=== Aktive Platypus-Scripts ==="
     grep -v '^#' scripts/ACTIVE_SCRIPTS.txt | grep -v '^$'
     ;;
+  p2)
+    bash scripts/p2-verify.sh "${2:-}"
+    ;;
   *)
     echo "PLATYPUS Helfer:"
     echo "  ./p tools              - Pflicht/Nice-to-have Toolchain pruefen"
@@ -66,5 +69,6 @@ case "${1:-help}" in
     echo "  ./p gh                 - GitHub Status (nice-to-have)"
     echo "  ./p scripts            - Liste aktiver Scripts"
     echo "  ./p status             - git status"
+    echo "  ./p p2 [designId]      - P2 Verify (Stripe, Env)"
     ;;
 esac
