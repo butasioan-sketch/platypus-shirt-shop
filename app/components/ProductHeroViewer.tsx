@@ -1,21 +1,14 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { BRAND_DEMO_PRINT, VIEWER_DEFAULTS } from '@/lib/print-spec';
-import ShirtFlip from './ShirtFlip';
+import { BRAND_DEMO_PRINT } from '@/lib/print-spec';
+import StaticShirtPreview from './StaticShirtPreview';
 
 const Shirt3D = dynamic(() => import('./Shirt3D'), {
   ssr: false,
   loading: () => (
-    <ShirtFlip
-      autoRotateSpeed={VIEWER_DEFAULTS.autoRotateSpeed2D}
-      idleDelayMs={VIEWER_DEFAULTS.idleDelayMs}
-      dragSensitivity={0.55}
-      inertiaFriction={0.91}
-      showControls={false}
-      showHint={false}
-      frontPrint={BRAND_DEMO_PRINT.front}
-      backPrint={BRAND_DEMO_PRINT.back}
+    <StaticShirtPreview
+      print={BRAND_DEMO_PRINT.front}
       shadow="0 12px 32px rgba(0,0,0,0.55)"
     />
   ),
@@ -32,6 +25,7 @@ export default function ProductHeroViewer({ height = 400 }: { height?: number })
       <div style={{ position: 'relative', zIndex: 1, width: '100%', height: '100%' }}>
         <Shirt3D
           enableTouch={false}
+          fallback="static"
           frontPrint={BRAND_DEMO_PRINT.front}
           backPrint={BRAND_DEMO_PRINT.back}
         />

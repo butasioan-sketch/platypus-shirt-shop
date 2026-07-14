@@ -4,6 +4,7 @@ import { Canvas, createPortal } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Decal, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import ShirtFlip from './ShirtFlip';
+import StaticShirtPreview from './StaticShirtPreview';
 import { PRINT_SPEC, VIEWER_DEFAULTS, BRAND_DEMO_PRINT } from '@/lib/print-spec';
 
 interface PrintData { src: string; x: number; y: number; scale: number; }
@@ -13,6 +14,8 @@ interface Shirt3DProps {
   shirtColor?: string;
   enableTouch?: boolean;
   autoRotateSpeed?: number;
+  /** static = statisches Bild (Startseite), flip = 2D-Editor-Fallback (Design-Studio) */
+  fallback?: 'static' | 'flip';
 }
 
 const MODEL_PATH = '/models/shirt-white-v2.glb';
@@ -101,7 +104,12 @@ function ShirtModel({ frontPrint, backPrint, shirtColor = '#ffffff' }: Shirt3DPr
 }
 
 // === HAUPTKOMPONENTE ===
-export default function Shirt3D({ enableTouch = true, autoRotateSpeed = VIEWER_DEFAULTS.autoRotateSpeed3D, ...props }: Shirt3DProps) {
+export default function Shirt3D({
+  enableTouch = true,
+  autoRotateSpeed = VIEWER_DEFAULTS.autoRotateSpeed3D,
+  fallback = 'flip',
+  ...props
+}: Shirt3DProps) {
   const [modelExists, setModelExists] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -114,6 +122,9 @@ export default function Shirt3D({ enableTouch = true, autoRotateSpeed = VIEWER_D
   const demoBack = props.backPrint ?? BRAND_DEMO_PRINT.back;
 
   if (modelExists === null || !modelExists) {
+    if (fallback === 'static') {
+      return <StaticShirtPreview print={demoFront} shadow="0 12px 32px rgba(0,0,0,0.55)" />;
+    }
     return (
       <ShirtFlip
         frontPrint={demoFront}
