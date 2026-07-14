@@ -15,6 +15,35 @@ interface CartItem {
   fit?: string;
   color?: string;
   quantity: number;
+  designId?: string;
+}
+
+function DesignThumb({ designId }: { designId?: string }) {
+  const [src, setSrc] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!designId) return;
+    fetch(`/api/designs?id=${designId}`)
+      .then(r => r.json())
+      .then(data => { if (data.design?.front_image) setSrc(data.design.front_image); })
+      .catch(() => {});
+  }, [designId]);
+
+  const baseStyle: React.CSSProperties = {
+    width: 48, height: 64, borderRadius: 8,
+    border: '1px solid rgba(255,255,255,0.10)',
+    flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center',
+  };
+
+  if (!designId) return (
+    <div style={{ ...baseStyle, background: '#1a1a1a', color: '#444', fontSize: '1.1rem' }}>🎨</div>
+  );
+  if (!src) return (
+    <div style={{ ...baseStyle, background: '#1a1a1a' }} />
+  );
+  return (
+    <img src={src} alt="Design-Vorschau" style={{ ...baseStyle, objectFit: 'cover', background: '#1a1a1a' }} />
+  );
 }
 
 export default function CartPage() {
@@ -44,7 +73,7 @@ export default function CartPage() {
 
   const checkout = async () => {
     if (items.length === 0) return;
-    const missingDesign = items.some((i) => !(i as CartItem & { designId?: string }).designId);
+    const missingDesign = items.some((i) => !i.designId);
     if (missingDesign) {
       setError(t.cart.needDesign);
       return;
@@ -63,7 +92,7 @@ export default function CartPage() {
           total,
           country,
           shippingMethod: SHIPPING_OPTIONS.find(o => o.id === shipId)?.carrier || 'DHL',
-          items: items.map(i => ({ name: i.name, size: i.size, color: i.color, price: i.price, quantity: i.quantity, designId: (i as any).designId })),
+          items: items.map(i => ({ name: i.name, size: i.size, color: i.color, price: i.price, quantity: i.quantity, designId: i.designId })),
         }),
       });
       const data = await res.json();
@@ -96,8 +125,9 @@ export default function CartPage() {
           <>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
               {items.map((item, i) => (
-                <div key={i} className="plt-card" style={{ padding: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div>
+                <div key={i} className="plt-card" style={{ padding: '1.25rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                  <DesignThumb designId={item.designId} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontWeight: 700, marginBottom: '0.25rem' }}>{item.name}</p>
                     <p style={{ color: '#999', fontSize: '0.8rem' }}>{t.product.size}: {item.size}{item.color ? ' | ' + t.product.color + ': ' + item.color : ''} | {item.fit || t.product.unisex} | {t.cart.qty}: {item.quantity}</p>
                     <p style={{ color: '#666', fontSize: '0.72rem', marginTop: '0.2rem' }}>
@@ -106,7 +136,7 @@ export default function CartPage() {
                         : <>Basis €{BASE_PRICE.toFixed(2)}</>} je Stück
                     </p>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexShrink: 0 }}>
                     <p style={{ fontWeight: 700 }}>€{(item.price * item.quantity).toFixed(2)}</p>
                     <button onClick={() => remove(i)} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '1.25rem' }}>×</button>
                   </div>

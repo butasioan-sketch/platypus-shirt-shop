@@ -13,6 +13,7 @@ import ChatWidgetWrapper from './components/ChatWidgetWrapper';
 import RegisterSW from './components/RegisterSW';
 import Footer from './components/Footer';
 import Analytics from './components/Analytics';
+import CookieBanner from './components/CookieBanner';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://platypus-shirt-shop.vercel.app';
 
@@ -46,6 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {children}
           <RegisterSW />
           <ChatWidgetWrapper />
+          <CookieBanner />
           <Footer />
         </LocaleProvider>
       </body>
