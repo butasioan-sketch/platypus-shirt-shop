@@ -56,10 +56,17 @@ export default function CartPage() {
 
   useEffect(() => {
     try {
-      const cart = JSON.parse(localStorage.getItem('platypus_cart') || '[]');
-      setItems(cart);
+      const raw: CartItem[] = JSON.parse(localStorage.getItem('platypus_cart') || '[]');
+      const valid = raw.filter(i => i.designId);
+      const removed = raw.length - valid.length;
+      if (removed > 0) {
+        localStorage.setItem('platypus_cart', JSON.stringify(valid));
+        setError(t.cart.purgedNotice(removed));
+        setTimeout(() => setError(''), 6000);
+      }
+      setItems(valid);
     } catch { setItems([]); }
-  }, []);
+  }, [t.cart]);
 
   const remove = (index: number) => {
     const updated = items.filter((_, i) => i !== index);
@@ -140,8 +147,8 @@ export default function CartPage() {
                   </div>
                   {!item.designId && (
                     <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '8px', padding: '0.6rem 0.85rem', fontSize: '0.78rem', color: '#fca5a5', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
-                      <span>⚠ Kein Motiv — Piece kann nicht bestellt werden.</span>
-                      <a href={`/product/${item.id}`} style={{ color: '#e2001a', fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap' }}>Motiv im Atelier ergänzen →</a>
+                      <span>{t.cart.noDesignItem}</span>
+                      <a href={`/product/${item.id}`} style={{ color: '#e2001a', fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap' }}>{t.cart.addDesignLink}</a>
                     </div>
                   )}
                 </div>

@@ -38,10 +38,36 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image', images: ['/og.png'] },
 };
 
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${siteUrl}/#organization`,
+      name: 'PLATYPUS',
+      url: siteUrl,
+      logo: `${siteUrl}/logo.jpeg`,
+      email: 'butasioan@googlemail.com',
+      telephone: '+491577728353',
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}/#website`,
+      url: siteUrl,
+      name: 'PLATYPUS — On Me.',
+      publisher: { '@id': `${siteUrl}/#organization` },
+    },
+  ],
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="de">
       <body style={{ margin: 0, padding: 0, background: '#0a0a0a', color: '#fff' }}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
         <LocaleProvider>
           <Analytics />
           {children}

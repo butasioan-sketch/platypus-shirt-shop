@@ -1,5 +1,11 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Logo from '@/app/components/Logo';
+
+export const metadata: Metadata = {
+  title: 'AGB | PLATYPUS',
+  description: 'Allgemeine Geschäftsbedingungen von PLATYPUS — Maßgefertigte Premium-Shirts, Einzelanfertigung auf Bestellung.',
+};
 
 const S = { h2: { fontSize: '1.1rem', fontWeight: 700, marginTop: '2rem', marginBottom: '0.5rem' } as const, p: { color: '#aaa', marginTop: '0.5rem' } as const };
 

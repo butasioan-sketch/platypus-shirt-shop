@@ -1,5 +1,11 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Logo from '@/app/components/Logo';
+
+export const metadata: Metadata = {
+  title: 'Datenschutz | PLATYPUS',
+  description: 'Datenschutzerklärung von PLATYPUS — Wie wir deine Daten schützen und verarbeiten.',
+};
 
 export default function DatenschutzPage() {
   return (

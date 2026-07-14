@@ -1,5 +1,11 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import Logo from '@/app/components/Logo';
+
+export const metadata: Metadata = {
+  title: 'Impressum | PLATYPUS',
+  description: 'Impressum und Kontaktdaten von PLATYPUS — I. Butas, Premium Custom Shirts.',
+};
 
 const OPERATOR = {
   name: 'I. Butas',

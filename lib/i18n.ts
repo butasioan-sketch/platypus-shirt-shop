@@ -85,6 +85,9 @@ export const translations = {
       shippingService: 'Versanddienst',
       qty: 'Menge',
       vatNote: 'Alle Preise in EUR. Kein MwSt.-Ausweis gem. §19 UStG (Kleinunternehmerregelung).',
+      noDesignItem: '⚠ Kein Motiv — Piece kann nicht bestellt werden.',
+      addDesignLink: 'Motiv im Atelier ergänzen →',
+      purgedNotice: (n: number) => `${n} ältere${n > 1 ? ' Pieces' : 's Piece'} ohne Motiv wurde${n > 1 ? 'n' : ''} entfernt.`,
     },
     cookie: {
       text: 'Wir nutzen Cookies für Betrieb & Analyse. Nach Einwilligung auch Tracking-Pixel.',
@@ -226,6 +229,9 @@ export const translations = {
       shippingService: 'Serviciu de livrare',
       qty: 'Cantitate',
       vatNote: 'Toate prețurile în EUR. Fără TVA conform §19 UStG.',
+      noDesignItem: '⚠ Fără motiv — Pieced nu poate fi comandat.',
+      addDesignLink: 'Adaugă motiv în Atelier →',
+      purgedNotice: (n: number) => `${n} piece${n > 1 ? 'uri' : ''} fără motiv ${n > 1 ? 'au fost eliminate' : 'a fost eliminat'}.`,
     },
     cookie: {
       text: 'Folosim cookies pentru funcționare & analiză. Cu acordul tău, și pixeli de tracking.',
@@ -367,6 +373,9 @@ export const translations = {
       shippingService: 'Shipping service',
       qty: 'Qty',
       vatNote: 'All prices in EUR. No VAT shown — small business rule §19 UStG.',
+      noDesignItem: '⚠ No design — this piece cannot be ordered.',
+      addDesignLink: 'Add design in Studio →',
+      purgedNotice: (n: number) => `${n} older piece${n > 1 ? 's' : ''} without a design ${n > 1 ? 'were' : 'was'} removed.`,
     },
     cookie: {
       text: 'We use cookies for operation & analytics. Tracking pixels only with your consent.',
