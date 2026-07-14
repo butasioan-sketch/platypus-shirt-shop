@@ -66,20 +66,52 @@ export default async function PrintView({ params }: { params: Promise<{ orderId:
 
       {designs.map((d) => (
         <div key={d.id} style={{ marginBottom: '2.5rem', pageBreakInside: 'avoid' }}>
-          <p style={{ fontSize: '0.8rem', color: '#666', marginBottom: '0.5rem' }}>Design {d.id}</p>
-          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap' }}>
+          <p style={{ fontSize: '0.8rem', color: '#666', marginBottom: '1rem' }}>Design {d.id}</p>
+          <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'flex-start' }}>
             {d.front_image && (
               <div>
-                <p style={{ fontSize: '0.8rem', fontWeight: 700 }}>VORNE — {PRINT_SPEC.widthPx} × {PRINT_SPEC.heightPx} px</p>
-                <a href={d.front_image} download={`${order.id}-front.png`} style={{ fontSize: '0.75rem', color: '#e2001a' }}>↓ Download</a>
-                <img src={d.front_image} alt="front" style={{ display: 'block', maxWidth: 360, marginTop: 8, border: '1px solid #ccc' }} />
+                <p style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.6rem' }}>VORNE — {PRINT_SPEC.widthPx} × {PRINT_SPEC.heightPx} px</p>
+                <a
+                  href={d.front_image}
+                  download={`${order.id}-front.png`}
+                  style={{
+                    display: 'inline-block',
+                    background: '#e2001a',
+                    color: '#fff',
+                    padding: '0.6rem 1.25rem',
+                    borderRadius: '8px',
+                    fontWeight: 700,
+                    fontSize: '0.875rem',
+                    textDecoration: 'none',
+                    marginBottom: '0.75rem',
+                  }}
+                >
+                  ↓ VORNE drucken
+                </a>
+                <img src={d.front_image} alt="front" style={{ display: 'block', maxWidth: 320, border: '1px solid #ccc' }} />
               </div>
             )}
             {d.back_image && (
               <div>
-                <p style={{ fontSize: '0.8rem', fontWeight: 700 }}>HINTEN — {PRINT_SPEC.widthPx} × {PRINT_SPEC.heightPx} px</p>
-                <a href={d.back_image} download={`${order.id}-back.png`} style={{ fontSize: '0.75rem', color: '#e2001a' }}>↓ Download</a>
-                <img src={d.back_image} alt="back" style={{ display: 'block', maxWidth: 360, marginTop: 8, border: '1px solid #ccc' }} />
+                <p style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.6rem' }}>HINTEN — {PRINT_SPEC.widthPx} × {PRINT_SPEC.heightPx} px</p>
+                <a
+                  href={d.back_image}
+                  download={`${order.id}-back.png`}
+                  style={{
+                    display: 'inline-block',
+                    background: '#e2001a',
+                    color: '#fff',
+                    padding: '0.6rem 1.25rem',
+                    borderRadius: '8px',
+                    fontWeight: 700,
+                    fontSize: '0.875rem',
+                    textDecoration: 'none',
+                    marginBottom: '0.75rem',
+                  }}
+                >
+                  ↓ HINTEN drucken
+                </a>
+                <img src={d.back_image} alt="back" style={{ display: 'block', maxWidth: 320, border: '1px solid #ccc' }} />
               </div>
             )}
           </div>
