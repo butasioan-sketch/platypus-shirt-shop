@@ -33,8 +33,8 @@ test.describe('PLATYPUS — Checkout-Flow', () => {
 
   test('Produkt-Seite lädt korrekt', async ({ page }) => {
     await page.goto(`${BASE_URL}/product/1`);
-    await expect(page.locator('h1')).toContainText('AirFit Pro');
-    await expect(page.locator('text=Größe')).toBeVisible();
+    await expect(page.locator('h1').first()).toContainText('AirFit Pro');
+    await expect(page.locator('.plt-size-btn').first()).toBeVisible();
   });
 
   test('Motiv hochladen → Größe wählen → In den Warenkorb', async ({ page }) => {
@@ -101,16 +101,16 @@ test.describe('PLATYPUS — Checkout-Flow', () => {
   test('Homepage lädt (smoke test)', async ({ page }) => {
     await page.goto(BASE_URL);
     await expect(page).toHaveTitle(/PLATYPUS/);
-    await expect(page.locator('text=PLATYPUS')).toBeVisible();
+    await expect(page.locator('.brand-text').first()).toBeVisible();
   });
 
   test('Tracking-Seite akzeptiert Bestellnummer', async ({ page }) => {
     await page.goto(`${BASE_URL}/tracking`);
     await page.locator('input').fill('PLT-123456789');
-    await page.locator('button[type="submit"], button:has-text("Verfolgen")').first().click();
+    await page.locator('button:has-text("Suchen")').click();
     // Erwartet Fehler "nicht gefunden" — kein Crash
     await page.waitForTimeout(2000);
-    await expect(page.locator('text=PLT-123456789')).toBeVisible().catch(() => {});
+    await expect(page.locator('text=Keine Bestellung').first()).toBeVisible();
   });
 });
 
