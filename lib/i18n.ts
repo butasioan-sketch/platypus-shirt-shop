@@ -88,6 +88,16 @@ export const translations = {
       noDesignItem: '⚠ Kein Motiv — Piece kann nicht bestellt werden.',
       addDesignLink: 'Motiv im Atelier ergänzen →',
       purgedNotice: (n: number) => `${n} ältere${n > 1 ? ' Pieces' : 's Piece'} ohne Motiv wurde${n > 1 ? 'n' : ''} entfernt.`,
+      printedSides: (n: number) => `${n} Seite${n > 1 ? 'n' : ''} bedruckt`,
+    },
+    howItWorks: {
+      title: 'SO FUNKTIONIERT\'S',
+      sub: 'Drei Schritte bis dein Statement auf dem Shirt sitzt.',
+      steps: [
+        { num: '01', label: 'Motiv hochladen', desc: 'JPG, PNG oder SVG — Vorder- und/oder Rückseite. Was du siehst, wird gedruckt.' },
+        { num: '02', label: 'Größe & Versand wählen', desc: 'S bis XXL, Unisex-Schnitt. Lieferung nach Deutschland und Rumänien.' },
+        { num: '03', label: 'Maßgefertigt geliefert', desc: 'Sublimiert in die Faser nach deiner Bestellung. Kein Aufkleber, kein Verblassen.' },
+      ],
     },
     cookie: {
       text: 'Wir nutzen Cookies für Betrieb & Analyse. Nach Einwilligung auch Tracking-Pixel.',
@@ -232,6 +242,16 @@ export const translations = {
       noDesignItem: '⚠ Fără motiv — Pieced nu poate fi comandat.',
       addDesignLink: 'Adaugă motiv în Atelier →',
       purgedNotice: (n: number) => `${n} piece${n > 1 ? 'uri' : ''} fără motiv ${n > 1 ? 'au fost eliminate' : 'a fost eliminat'}.`,
+      printedSides: (n: number) => `${n} față${n > 1 ? '' : ''} imprimat${n > 1 ? 'e' : 'ă'}`,
+    },
+    howItWorks: {
+      title: 'CUM FUNCȚIONEAZĂ',
+      sub: 'Trei pași până când statement-ul tău ajunge pe tricou.',
+      steps: [
+        { num: '01', label: 'Încarcă motivul', desc: 'JPG, PNG sau SVG — față și/sau spate. Ce vezi, se imprimă.' },
+        { num: '02', label: 'Alege mărimea & livrarea', desc: 'S până la XXL, croială unisex. Livrare în Germania și România.' },
+        { num: '03', label: 'Livrat la comandă', desc: 'Sublimat în fibră după comanda ta. Fără autocolant, fără decolorare.' },
+      ],
     },
     cookie: {
       text: 'Folosim cookies pentru funcționare & analiză. Cu acordul tău, și pixeli de tracking.',
@@ -376,6 +396,16 @@ export const translations = {
       noDesignItem: '⚠ No design — this piece cannot be ordered.',
       addDesignLink: 'Add design in Studio →',
       purgedNotice: (n: number) => `${n} older piece${n > 1 ? 's' : ''} without a design ${n > 1 ? 'were' : 'was'} removed.`,
+      printedSides: (n: number) => `${n} side${n > 1 ? 's' : ''} printed`,
+    },
+    howItWorks: {
+      title: 'HOW IT WORKS',
+      sub: 'Three steps until your statement is on the shirt.',
+      steps: [
+        { num: '01', label: 'Upload your design', desc: 'JPG, PNG or SVG — front and/or back. What you see is what prints.' },
+        { num: '02', label: 'Choose size & shipping', desc: 'S to XXL, unisex fit. Delivery to Germany and Romania.' },
+        { num: '03', label: 'Made to order & delivered', desc: 'Sublimated into the fiber after your order. No sticker, no fading.' },
+      ],
     },
     cookie: {
       text: 'We use cookies for operation & analytics. Tracking pixels only with your consent.',

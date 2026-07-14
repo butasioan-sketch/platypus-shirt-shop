@@ -77,10 +77,11 @@ export default function ProductPage() {
     try {
       const designId = await saveDesign();
       if (!designId) { setError(t.errors.saveDesign); return; }
+      const pages = (design.front ? 1 : 0) + (design.back ? 1 : 0);
       const cart = JSON.parse(localStorage.getItem('platypus_cart') || '[]');
       cart.push({
         id, name: productName, price: unitPrice, size,
-        fit: t.product.unisex, color: colorLabel, quantity: 1, designId,
+        fit: t.product.unisex, color: colorLabel, quantity: 1, designId, pages,
       });
       localStorage.setItem('platypus_cart', JSON.stringify(cart));
       trackAddToCart({ id, name: productName, price: unitPrice, size, color: colorLabel, quantity: 1 });

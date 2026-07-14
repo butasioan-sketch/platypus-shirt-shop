@@ -16,6 +16,7 @@ interface CartItem {
   color?: string;
   quantity: number;
   designId?: string;
+  pages?: number;
 }
 
 function DesignThumb({ designId }: { designId?: string }) {
@@ -70,6 +71,16 @@ export default function CartPage() {
 
   const remove = (index: number) => {
     const updated = items.filter((_, i) => i !== index);
+    setItems(updated);
+    localStorage.setItem('platypus_cart', JSON.stringify(updated));
+  };
+
+  const updateQty = (index: number, delta: number) => {
+    const updated = items.map((item, i) => {
+      if (i !== index) return item;
+      const qty = Math.max(1, Math.min(9, item.quantity + delta));
+      return { ...item, quantity: qty };
+    });
     setItems(updated);
     localStorage.setItem('platypus_cart', JSON.stringify(updated));
   };
@@ -133,16 +144,19 @@ export default function CartPage() {
                     <DesignThumb designId={item.designId} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <p style={{ fontWeight: 700, marginBottom: '0.25rem' }}>{item.name}</p>
-                      <p style={{ color: '#999', fontSize: '0.8rem' }}>{t.product.size}: {item.size}{item.color ? ' | ' + t.product.color + ': ' + item.color : ''} | {item.fit || t.product.unisex} | {t.cart.qty}: {item.quantity}</p>
+                      <p style={{ color: '#999', fontSize: '0.8rem' }}>{t.product.size}: {item.size}{item.color ? ' | ' + t.product.color + ': ' + item.color : ''} | {item.fit || t.product.unisex}</p>
                       <p style={{ color: '#666', fontSize: '0.72rem', marginTop: '0.2rem' }}>
-                        {item.price > BASE_PRICE
-                          ? <>Basis €{BASE_PRICE.toFixed(2)} + Druck €{(item.price - BASE_PRICE).toFixed(2)}</>
-                          : <>Basis €{BASE_PRICE.toFixed(2)}</>} je Stück
+                        €{BASE_PRICE.toFixed(2)}{item.pages ? ` · ${t.cart.printedSides(item.pages)}` : ''} je Stück
                       </p>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexShrink: 0 }}>
-                      <p style={{ fontWeight: 700 }}>€{(item.price * item.quantity).toFixed(2)}</p>
-                      <button onClick={() => remove(i)} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '1.25rem' }}>×</button>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.4rem', flexShrink: 0 }}>
+                      <p style={{ fontWeight: 700, margin: 0 }}>€{(item.price * item.quantity).toFixed(2)}</p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <button onClick={() => updateQty(i, -1)} disabled={item.quantity <= 1} style={{ width: 26, height: 26, borderRadius: '6px', border: '1px solid rgba(255,255,255,0.15)', background: '#1a1a1a', color: item.quantity <= 1 ? '#444' : '#fff', cursor: item.quantity <= 1 ? 'not-allowed' : 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
+                        <span style={{ minWidth: '1.2rem', textAlign: 'center', fontSize: '0.875rem', fontWeight: 600 }}>{item.quantity}</span>
+                        <button onClick={() => updateQty(i, +1)} disabled={item.quantity >= 9} style={{ width: 26, height: 26, borderRadius: '6px', border: '1px solid rgba(255,255,255,0.15)', background: '#1a1a1a', color: item.quantity >= 9 ? '#444' : '#fff', cursor: item.quantity >= 9 ? 'not-allowed' : 'pointer', fontSize: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                        <button onClick={() => remove(i)} style={{ background: 'none', border: 'none', color: '#555', cursor: 'pointer', fontSize: '1.1rem', padding: '0 0.1rem' }}>×</button>
+                      </div>
                     </div>
                   </div>
                   {!item.designId && (

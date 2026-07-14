@@ -18,6 +18,22 @@ export default function HomeView({ locale }: { locale: Locale }) {
     <>
       <ProductHeroSection locale={locale} />
 
+      <section style={{ padding: '4rem 2rem 2rem', borderTop: '1px solid rgba(255,255,255,0.08)', maxWidth: '900px', margin: '0 auto' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+          <h2 style={{ fontSize: '1.9rem', fontWeight: 800, color: '#fff', marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>{t.howItWorks.title}</h2>
+          <p style={{ color: '#999', fontSize: '0.95rem', maxWidth: '520px', margin: '0 auto', lineHeight: 1.6 }}>{t.howItWorks.sub}</p>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
+          {t.howItWorks.steps.map((step) => (
+            <div key={step.num} className="plt-card" style={{ padding: '1.75rem 1.5rem', position: 'relative', overflow: 'hidden' }}>
+              <div style={{ fontSize: '3rem', fontWeight: 900, color: 'rgba(226,0,26,0.12)', lineHeight: 1, marginBottom: '0.75rem', letterSpacing: '-0.04em' }}>{step.num}</div>
+              <p style={{ color: '#fff', fontWeight: 700, fontSize: '1.0rem', marginBottom: '0.5rem' }}>{step.label}</p>
+              <p style={{ color: '#888', fontSize: '0.82rem', lineHeight: 1.6 }}>{step.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       <section style={{ padding: '4rem 2rem 1rem', maxWidth: '1000px', margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <h2 style={{ fontSize: '1.9rem', fontWeight: 800, color: '#fff', marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>{t.outdoor.title}</h2>
