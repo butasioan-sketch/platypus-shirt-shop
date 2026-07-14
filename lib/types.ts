@@ -1,4 +1,5 @@
 export interface OrderItem {
+  pages?: number;
   designId?: string;
   name: string;
   size: string;
