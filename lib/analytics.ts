@@ -1,8 +1,20 @@
 "use client";
 
+function postAnalytics(type: string, data?: Record<string, unknown>) {
+  try {
+    fetch('/api/analytics', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, ...data }),
+      keepalive: true,
+    }).catch(() => {});
+  } catch { /* ignore */ }
+}
+
 export function trackEvent(eventName: string, data?: Record<string, any>) {
   if (typeof window === "undefined") return;
 
+  postAnalytics(eventName.toLowerCase(), data);
   console.log("[PLATYPUS EVENT]", eventName, data || {});
 
   const w = window as any;

@@ -46,7 +46,7 @@ export default function AdminOrdersPage() {
       body: JSON.stringify({
         customerEmail: 'test@platypus.de',
         amountTotal: 34.98,
-        items: [{ name: 'AirFit Pro', size: 'M', quantity: 1, price: 29.99 }],
+        items: [{ name: 'AirFit Pro', size: 'M', quantity: 1, price: 39.99 }],
         locale: 'de', shippingCountry: 'DE', status: 'paid',
       }),
     });

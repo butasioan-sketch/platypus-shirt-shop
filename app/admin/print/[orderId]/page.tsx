@@ -1,4 +1,5 @@
 import { getOrderById } from '@/lib/db';
+import { PRINT_SPEC } from '@/lib/print-spec';
 
 async function getDesign(id: string) {
   const url = process.env.DATABASE_URL || process.env.POSTGRES_URL;
@@ -51,7 +52,7 @@ export default async function PrintView({ params }: { params: Promise<{ orderId:
         </div>
       ))}
       <p style={{ fontSize: '0.75rem', color: '#999', borderTop: '1px solid #ddd', paddingTop: '1rem' }}>
-        Sublimationsdruck · B&C TM062 · Motive in Originalauflösung (Rechtsklick → Bild speichern). Diese Seite als PDF drucken für den Dienstleister.
+        {PRINT_SPEC.method} · {PRINT_SPEC.blank} · {PRINT_SPEC.format} {PRINT_SPEC.orientation === 'portrait' ? 'Hochformat' : ''} ({PRINT_SPEC.widthMm}×{PRINT_SPEC.heightMm} mm, {PRINT_SPEC.dpi} dpi = {PRINT_SPEC.widthPx}×{PRINT_SPEC.heightPx} px). Motive in Originalauflösung — Rechtsklick → Bild speichern → Epson SC-F100.
       </p>
     </div>
   );

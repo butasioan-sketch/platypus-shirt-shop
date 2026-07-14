@@ -7,21 +7,20 @@ import Image from 'next/image';
 import { useLocale } from './components/LocaleProvider';
 import LocaleSwitcher from './components/LocaleSwitcher';
 import CartCount from '@/app/components/CartCount';
+import ProductHeroViewer from '@/app/components/ProductHeroViewer';
 import ShirtFlip from '@/app/components/ShirtFlip';
 import dynamic from 'next/dynamic';
+import { BRAND_DEMO_PRINT, VIEWER_DEFAULTS } from '@/lib/print-spec';
 
-// 3D lazy: Seite steht sofort, 3D laedt nach; solange dreht das 2D-Shirt
 const Shirt3D = dynamic(() => import('@/app/components/Shirt3D'), {
   ssr: false,
   loading: () => (
     <ShirtFlip
-      autoRotateSpeed={0.022}
-      dragSensitivity={0.55}
-      idleDelayMs={3800}
-      inertiaFriction={0.91}
+      autoRotateSpeed={VIEWER_DEFAULTS.autoRotateSpeed2D}
       showControls={false}
       showHint={false}
-      shadow="0 12px 32px rgba(0,0,0,0.55)"
+      frontPrint={BRAND_DEMO_PRINT.front}
+      backPrint={BRAND_DEMO_PRINT.back}
     />
   ),
 });
@@ -64,12 +63,22 @@ export default function HomePage() {
         .btn-primary:hover { background: #ff1a33 !important; transform: translateY(-2px); }
         .btn-primary { transition: background 0.2s, transform 0.2s; }
         .btn-ghost:hover { border-color: #e2001a !important; color: #fff !important; }
+        .trust-grid, .outdoor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+        @media (min-width: 768px) {
+          .trust-grid { grid-template-columns: repeat(4, 1fr); }
+          .outdoor-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        @media (max-width: 640px) {
+          .site-header { padding: 0.85rem 1rem !important; }
+          .site-header nav { gap: 0.75rem !important; }
+          .brand-text { display: none; }
+        }
       `}</style>
 
-      <header style={{ padding: '1.1rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, background: 'rgba(10,10,10,0.75)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', zIndex: 100 }}>
+      <header className="site-header" style={{ padding: '1.1rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, background: 'rgba(10,10,10,0.75)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', zIndex: 100 }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
           <Image src="/logo.jpeg" alt="PLATYPUS" width={56} height={56} style={{ borderRadius: '10px', marginRight: '0.75rem' }} priority />
-          <span style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '0.15em', color: '#fff' }}>PLATYPUS</span>
+          <span className="brand-text" style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '0.15em', color: '#fff' }}>PLATYPUS</span>
         </Link>
         <nav style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
           <Link href="/versand" style={{ color: '#888', textDecoration: 'none', fontSize: '0.875rem' }}>{t.nav.shipping}</Link>
@@ -78,27 +87,19 @@ export default function HomePage() {
         </nav>
       </header>
 
-      <section style={{ padding: '5rem 2rem 7rem', textAlign: 'center', maxWidth: '820px', margin: '0 auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.75rem', position: 'relative' }}>
-          <div style={{ position: 'absolute', width: '320px', height: '320px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(226,0,26,0.28), transparent 65%)', filter: 'blur(20px)', zIndex: 0 }} />
-          <Image src="/logo.jpeg" alt="PLATYPUS" width={240} height={240} style={{ borderRadius: '28px', boxShadow: '0 24px 70px rgba(226,0,26,0.30)', position: 'relative', zIndex: 1 }} priority />
-        </div>
-        <p style={{ color: '#e2001a', fontSize: '0.72rem', letterSpacing: '0.32em', marginBottom: '1.5rem', textTransform: 'uppercase', fontWeight: 600 }}>{t.hero.badge}</p>
-        <h1 style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', fontWeight: 900, lineHeight: 0.95, marginBottom: '1.75rem', letterSpacing: '-0.03em' }}>
+      <section style={{ padding: '3rem 2rem 5rem', textAlign: 'center', maxWidth: '900px', margin: '0 auto' }}>
+        <ProductHeroViewer height={400} />
+        <p style={{ color: '#e2001a', fontSize: '0.72rem', letterSpacing: '0.28em', margin: '1.5rem 0 1rem', textTransform: 'uppercase', fontWeight: 600 }}>{t.hero.badge}</p>
+        <h1 style={{ fontSize: 'clamp(2.2rem, 6vw, 4.2rem)', fontWeight: 900, lineHeight: 1.05, marginBottom: '1.25rem', letterSpacing: '-0.03em' }}>
           {t.hero.headline1}<br />
           <span style={{ background: 'linear-gradient(90deg, #e2001a, #ff5577)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{t.hero.headline2}</span>
         </h1>
-        <p style={{ color: '#9a9a9a', fontSize: '1.15rem', lineHeight: 1.6, maxWidth: '520px', margin: '0 auto 3rem' }}>
+        <p style={{ color: '#9a9a9a', fontSize: '1.05rem', lineHeight: 1.65, maxWidth: '540px', margin: '0 auto 2rem' }}>
           {t.hero.sub}
         </p>
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link href="/product/1" className="btn-primary" style={{ background: '#e2001a', color: '#fff', padding: '0.95rem 2.75rem', borderRadius: '999px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '0.05em', boxShadow: '0 8px 24px rgba(226,0,26,0.35)' }}>
-            {t.hero.cta}
-          </Link>
-          <Link href="/product/1" className="btn-ghost" style={{ background: 'rgba(255,255,255,0.03)', color: '#ccc', padding: '0.95rem 2.75rem', borderRadius: '999px', textDecoration: 'none', fontWeight: 600, fontSize: '0.9rem', border: '1px solid #2a2a2a', transition: 'all 0.2s' }}>
-            {t.hero.viewer}
-          </Link>
-        </div>
+        <Link href="/product/1" className="btn-primary" style={{ display: 'inline-block', background: '#e2001a', color: '#fff', padding: '0.95rem 2.75rem', borderRadius: '999px', textDecoration: 'none', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '0.05em', boxShadow: '0 8px 24px rgba(226,0,26,0.35)' }}>
+          {t.hero.cta}
+        </Link>
       </section>
 
       <section style={{ padding: '3rem 2rem 4rem', maxWidth: '1000px', margin: '0 auto' }}>
@@ -114,7 +115,7 @@ Oder endlich: dich selbst.</p>
                 <div style={{ height: '340px', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
                   {/* Shirt-Flip-Animation */}
                   <div style={{ width: '100%', height: '340px' }}>
-                    <Shirt3D enableTouch={false} />
+                    <Shirt3D enableTouch={false} frontPrint={BRAND_DEMO_PRINT.front} backPrint={BRAND_DEMO_PRINT.back} />
                   </div>
                   <span style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(226,0,26,0.9)', color: '#fff', fontSize: '0.6rem', fontWeight: 700, padding: '0.3rem 0.7rem', borderRadius: '999px', letterSpacing: '0.1em' }}>SELBST GESTALTEN</span>
                 </div>
@@ -141,7 +142,7 @@ Oder endlich: dich selbst.</p>
           <h2 style={{ fontSize: '1.9rem', fontWeight: 800, color: '#fff', marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>{t.outdoor.title}</h2>
           <p style={{ color: '#999', fontSize: '0.95rem', maxWidth: '620px', margin: '0 auto', lineHeight: 1.6 }}>{t.outdoor.sub}</p>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
+        <div className="outdoor-grid">
           {t.outdoor.cards.map((c) => (
             <div key={c.key} style={{ background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px', padding: '1.75rem 1.25rem', textAlign: 'center', transition: 'border-color 0.2s' }}>
               <svg viewBox="0 0 32 32" width="44" height="44" style={{ marginBottom: '1rem' }}>{outdoorIcons[c.key]}</svg>
@@ -153,7 +154,7 @@ Oder endlich: dich selbst.</p>
       </section>
 
       <section style={{ padding: '5rem 2rem', borderTop: '1px solid rgba(255,255,255,0.08)', maxWidth: '1000px', margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
+        <div className="trust-grid">
           {t.trust.map((item) => (
             <div key={item.label} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '0.85rem', padding: '1.5rem 1rem', background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px' }}>
               <div style={{ width: '52px', height: '52px', borderRadius: '50%', background: '#141414', border: '1px solid rgba(226,0,26,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.4rem' }}>

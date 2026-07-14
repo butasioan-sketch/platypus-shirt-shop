@@ -18,7 +18,8 @@ export default function Analytics() {
   const pathname = usePathname();
 
   useEffect(() => {
-    track('pageview', { page: pathname });
+    const locale = localStorage.getItem('platypus_locale') || 'de';
+    track('pageview', { page: pathname, locale });
   }, [pathname]);
 
   return null;

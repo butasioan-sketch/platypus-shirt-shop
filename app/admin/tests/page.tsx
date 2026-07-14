@@ -64,7 +64,7 @@ export default function AdminTestsPage() {
             reference: 'ADMIN-TEST',
             shipping: 4.99,
             total: 34.98,
-            items: [{ name: 'Test Shirt', size: 'M', price: 29.99, quantity: 1 }],
+            items: [{ name: 'Test Shirt', size: 'M', price: 39.99, quantity: 1 }],
           }),
         });
         const d = await r.json();

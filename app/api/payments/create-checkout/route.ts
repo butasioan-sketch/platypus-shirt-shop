@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getPaymentMethod } from "../../../../data/payments";
 import { getProviderMode } from "../../../../lib/paymentProviders";
 import { calcUnitPrice } from "../../../../lib/pricing";
+import { checkRateLimit, clientIp } from "../../../../lib/rate-limit";
 import { SHIPPING_OPTIONS, DEFAULT_SHIPPING_ID, type Country } from "../../../../lib/shipping";
 
 type CheckoutItem = {
@@ -54,6 +55,14 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const rl = checkRateLimit(`checkout:${clientIp(request)}`, 8, 60_000);
+    if (!rl.ok) {
+      return NextResponse.json(
+        { ok: false, error: "Too many checkout attempts. Please wait." },
+        { status: 429, headers: { "Retry-After": String(rl.retryAfter) } },
+      );
+    }
+
     const body = await request.json();
     const paymentMethod = body.paymentMethod || "card";
     const method = getPaymentMethod(paymentMethod);

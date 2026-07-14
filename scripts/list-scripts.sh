@@ -1,13 +1,14 @@
 #!/bin/bash
-echo "=== PLATYPUS Eigene Bash-Skripte ==="
+echo "=== PLATYPUS — Aktive Scripts ==="
+echo "(Vollstaendige Liste: scripts/ACTIVE_SCRIPTS.txt)"
 echo ""
-echo "Order System:"
-ls scripts/orders-*.sh scripts/simulate-*.sh 2>/dev/null | sort
-
+while IFS= read -r line; do
+  [[ "$line" =~ ^# ]] && continue
+  [[ -z "$line" ]] && continue
+  if [ -f "scripts/$line" ] || [ -f "scripts/${line%.mjs}.mjs" ]; then
+    echo "  scripts/$line"
+  fi
+done < scripts/ACTIVE_SCRIPTS.txt
 echo ""
-echo "Git Helper:"
-ls scripts/git/*.sh 2>/dev/null | sort
-
-echo ""
-echo "Project Control:"
-ls scripts/project.sh scripts/list-scripts.sh 2>/dev/null
+ARCHIVED=$(find scripts/_archive -maxdepth 1 -name '*.sh' 2>/dev/null | wc -l)
+echo "Archiviert: $ARCHIVED Scripts in scripts/_archive/"

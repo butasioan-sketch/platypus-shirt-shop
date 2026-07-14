@@ -1,0 +1,64 @@
+# Platypus — aktive Scripts (Pflicht + Nice-to-have)
+# Alles andere liegt unter scripts/_archive/
+
+# Kern
+p
+project.sh
+project-status.sh
+list-scripts.sh
+tools-check.sh
+archive-legacy.sh
+
+# Env & Deploy
+env.sh
+env-check.sh
+env-complete-check.sh
+env-pull.sh
+env-add.sh
+quick-deploy.sh
+quick-push.sh
+clean-build.sh
+diagnose-git.sh
+
+# Dev
+dev-start.sh
+kill-dev.sh
+health-all.sh
+integration-status.sh
+
+# Stripe / Checkout / Webhook
+real-checkout-test.sh
+simulate-stripe-webhook.sh
+test-webhook-local.sh
+test-webhook.sh
+webhook-helper.sh
+webhook-status.sh
+stripe-checkout-open.sh
+create-order-from-payment.sh
+simulate-successful-payment.sh
+stripe-env-doctor.sh
+stripe-live-ready-report.sh
+
+# Orders
+orders-live-healthcheck.sh
+orders-stats.sh
+orders-show.sh
+orders-export-txt.sh
+orders-change-status.sh
+orders-today.sh
+orders-menu.sh
+orders-help.sh
+orders-add.sh
+orders-doctor.sh
+backup-orders-local.sh
+
+# Launch & Audit
+launch-readiness-final.sh
+live-launch-check.sh
+product-page-audit.sh
+viewer-audit.sh
+
+# DB & Setup
+setup-database.sh
+setup-aliases.sh
+db-check.mjs

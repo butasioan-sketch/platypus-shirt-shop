@@ -2,15 +2,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { calcUnitPrice } from '@/lib/pricing';
+import { PRINT_SPEC, getPrintOverlayBox } from '@/lib/print-spec';
 const Shirt3D = dynamic(() => import('./Shirt3D'), { ssr: false });
 
 interface DesignStudioProps {
   shirtColor?: string;
   onDesignChange?: (data: { front: string | null; back: string | null }) => void;
 }
-
-// Druckfläche relativ zum Foto (in Prozent der Bildgröße)
-const PRINT_AREA = { top: 18, left: 28, width: 44, height: 52 };
 
 export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
   const [side, setSide] = useState<'front' | 'back'>('front');
@@ -23,6 +21,7 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
   const [frontPos, setFrontPos] = useState({ x: 0, y: 0 });
   const [backPos, setBackPos] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
+  const [uploadHint, setUploadHint] = useState('');
   const fileRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const dragStart = useRef<{ mx: number; my: number; px: number; py: number } | null>(null);
@@ -47,9 +46,29 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
     const reader = new FileReader();
     reader.onload = (ev) => {
       const dataUrl = ev.target?.result as string;
-      if (side === 'front') setFrontImg(dataUrl);
-      else setBackImg(dataUrl);
-      setCurrentScale(1); setCurrentPos({ x: 0, y: 0 });
+      const probe = new window.Image();
+      probe.onload = () => {
+        const short = Math.min(probe.width, probe.height);
+        const ratio = probe.width / probe.height;
+        const a4 = PRINT_SPEC.aspectRatio;
+        if (short < PRINT_SPEC.minUploadPx) {
+          setUploadHint(`Auflösung niedrig (${probe.width}×${probe.height}). Empfohlen: ${PRINT_SPEC.widthPx}×${PRINT_SPEC.heightPx} px.`);
+        } else if (Math.abs(ratio - a4) > 0.25 && Math.abs(ratio - 1 / a4) > 0.25) {
+          setUploadHint(`Seitenverhältnis weicht von DIN A4 ab. Hochformat (${PRINT_SPEC.widthMm}×${PRINT_SPEC.heightMm} mm) liefert das beste Ergebnis.`);
+        } else {
+          setUploadHint('');
+        }
+        if (side === 'front') setFrontImg(dataUrl);
+        else setBackImg(dataUrl);
+        setCurrentScale(1); setCurrentPos({ x: 0, y: 0 });
+      };
+      probe.onerror = () => {
+        setUploadHint('');
+        if (side === 'front') setFrontImg(dataUrl);
+        else setBackImg(dataUrl);
+        setCurrentScale(1); setCurrentPos({ x: 0, y: 0 });
+      };
+      probe.src = dataUrl;
     };
     reader.readAsDataURL(file);
     e.target.value = '';
@@ -74,7 +93,7 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
     const scaleY = 100 / rect.height;
     const dx = (clientX - dragStart.current.mx) * scaleX;
     const dy = (clientY - dragStart.current.my) * scaleY;
-    const limit = 20;
+    const limit = PRINT_SPEC.maxOffsetPercent;
     setCurrentPos({
       x: Math.max(-limit, Math.min(limit, dragStart.current.px + dx)),
       y: Math.max(-limit, Math.min(limit, dragStart.current.py + dy)),
@@ -83,14 +102,8 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
 
   const endDrag = () => { setDragging(false); dragStart.current = null; };
 
-  // Print-Fläche berechnen
   const printStyle: React.CSSProperties = {
-    position: 'absolute',
-    top: `${PRINT_AREA.top}%`,
-    left: `${PRINT_AREA.left}%`,
-    width: `${PRINT_AREA.width}%`,
-    height: `${PRINT_AREA.height}%`,
-    overflow: 'hidden',
+    ...getPrintOverlayBox(),
     cursor: currentImg ? (dragging ? 'grabbing' : 'grab') : 'default',
   };
 
@@ -187,7 +200,9 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
               borderRadius: '4px',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
-              <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Druckfläche</span>
+              <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', textAlign: 'center', lineHeight: 1.4 }}>
+                DIN A4 · Hochformat<br />{PRINT_SPEC.widthMm}×{PRINT_SPEC.heightMm} mm
+              </span>
             </div>
           )}
 
@@ -232,7 +247,7 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
                 <label style={{ color: '#666', fontSize: '0.7rem', letterSpacing: '0.08em', textTransform: 'uppercase' }}>Größe</label>
                 <span style={{ color: '#555', fontSize: '0.7rem' }}>{Math.round(currentScale * 100)}%</span>
               </div>
-              <input type="range" min="0.3" max="2" step="0.05" value={currentScale}
+              <input type="range" min={PRINT_SPEC.scaleMin} max={PRINT_SPEC.scaleMax} step="0.05" value={currentScale}
                 onChange={(e) => setCurrentScale(Number(e.target.value))}
                 style={{ width: '100%', accentColor: '#e2001a', cursor: 'pointer' }} />
             </div>
@@ -241,6 +256,11 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
               <button onClick={() => fileRef.current?.click()} style={{ flex: 1, background: '#111', color: '#fff', border: '1px solid #222', borderRadius: '10px', padding: '0.5rem', fontSize: '0.72rem', cursor: 'pointer', fontWeight: 600 }}>Ändern</button>
               <button onClick={removeImg} style={{ flex: 1, background: '#111', color: '#f87171', border: '1px solid #222', borderRadius: '10px', padding: '0.5rem', fontSize: '0.72rem', cursor: 'pointer', fontWeight: 600 }}>Entfernen</button>
             </div>
+            {uploadHint && (
+              <p style={{ textAlign: 'center', color: '#fbbf24', fontSize: '0.68rem', lineHeight: 1.45, margin: 0 }}>
+                ⚠ {uploadHint}
+              </p>
+            )}
             <p style={{ textAlign: 'center', color: '#444', fontSize: '0.65rem', letterSpacing: '0.08em' }}>
               ✋ Motiv auf dem Shirt ziehen zum Positionieren
             </p>

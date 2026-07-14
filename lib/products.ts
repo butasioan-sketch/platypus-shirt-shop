@@ -46,9 +46,9 @@ export const PRODUCTS: Product[] = [
       en: 'AirFit Pro',
     },
     description: {
-      de: 'B&C TM062 · 100% Polyester · 140g/m² · Sublimationsdruck · Unisex',
-      ro: 'Poliester premium deschis, unisex, ideal pentru sublimare vibrantă',
-      en: 'Light premium polyester, unisex, ideal for vibrant sublimation print',
+      de: 'B&C TM062 · 100% Polyester · 140g/m² · Sublimation DIN A4 · Unisex',
+      ro: 'B&C TM062 · 100% Poliester · 140g/m² · Sublimare DIN A4 · Unisex',
+      en: 'B&C TM062 · 100% Polyester · 140g/m² · DIN A4 sublimation · Unisex',
     },
     tags: ['essential', 'polyester', 'sublimation', 'hell', 'basic'],
     active: true,

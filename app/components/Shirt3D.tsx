@@ -4,6 +4,7 @@ import { Canvas, createPortal } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Decal, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import ShirtFlip from './ShirtFlip';
+import { PRINT_SPEC, VIEWER_DEFAULTS, BRAND_DEMO_PRINT } from '@/lib/print-spec';
 
 interface PrintData { src: string; x: number; y: number; scale: number; }
 interface Shirt3DProps {
@@ -11,6 +12,7 @@ interface Shirt3DProps {
   backPrint?: PrintData;
   shirtColor?: string;
   enableTouch?: boolean;
+  autoRotateSpeed?: number;
 }
 
 const MODEL_PATH = '/models/shirt-white-v2.glb';
@@ -34,10 +36,11 @@ function CustomerPrint({ mesh, print, front }:
     const x = c.x + dirX * (print.x / 100) * s.x;
     const y = chestY - (print.y / 100) * s.y;
     const z = c.z + (front ? 1 : -1) * (s.z / 2);
-    const w = s.x * 0.5 * (print.scale || 1);    // Basis = 50 % Shirtbreite
+    const h = s.y * 0.52 * (print.scale || 1);
+    const w = h * PRINT_SPEC.aspectRatio;
     return {
       pos: [x, y, z] as [number, number, number],
-      size: [w, w, Math.max(s.z * 1.5, 0.1)] as [number, number, number],
+      size: [w, h, Math.max(s.z * 1.5, 0.1)] as [number, number, number],
     };
   }, [mesh, print.x, print.y, print.scale, front]);
   return (
@@ -98,7 +101,7 @@ function ShirtModel({ frontPrint, backPrint, shirtColor = '#ffffff' }: Shirt3DPr
 }
 
 // === HAUPTKOMPONENTE ===
-export default function Shirt3D({ enableTouch = true, ...props }: Shirt3DProps) {
+export default function Shirt3D({ enableTouch = true, autoRotateSpeed = VIEWER_DEFAULTS.autoRotateSpeed3D, ...props }: Shirt3DProps) {
   const [modelExists, setModelExists] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -107,17 +110,20 @@ export default function Shirt3D({ enableTouch = true, ...props }: Shirt3DProps) 
       .catch(() => setModelExists(false));
   }, []);
 
-  if (modelExists === null) {
-    return (
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',
-        height: '100%', color: '#888', fontSize: 13 }}>
-        LADE 3D-ANSICHT…
-      </div>
-    );
-  }
+  const demoFront = props.frontPrint ?? BRAND_DEMO_PRINT.front;
+  const demoBack = props.backPrint ?? BRAND_DEMO_PRINT.back;
 
-  if (!modelExists) {
-    return <ShirtFlip frontPrint={props.frontPrint} backPrint={props.backPrint} />;
+  if (modelExists === null || !modelExists) {
+    return (
+      <ShirtFlip
+        frontPrint={demoFront}
+        backPrint={demoBack}
+        autoRotateSpeed={VIEWER_DEFAULTS.autoRotateSpeed2D}
+        idleDelayMs={VIEWER_DEFAULTS.idleDelayMs}
+        showControls={false}
+        showHint={false}
+      />
+    );
   }
   return (
     <Canvas
@@ -135,7 +141,7 @@ export default function Shirt3D({ enableTouch = true, ...props }: Shirt3DProps) 
           minDistance={0.3}
           maxDistance={2}
           autoRotate
-          autoRotateSpeed={0.8}
+          autoRotateSpeed={autoRotateSpeed}
           target={[0, 0.53, 0]}
           enableRotate={enableTouch}
           enableZoom={enableTouch}
