@@ -79,3 +79,166 @@ input, select, textarea {
 @media (min-width: 769px) {
   .mobile-only { display: none !important; }
 }
+
+/* ── PLATYPUS Design System ── */
+.plt-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #888;
+  font-weight: 600;
+}
+
+.plt-badge {
+  display: inline-block;
+  background: rgba(226, 0, 26, 0.92);
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  letter-spacing: 0.1em;
+}
+
+.plt-card {
+  background: #121212;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.plt-card:hover {
+  border-color: rgba(226, 0, 26, 0.28);
+}
+
+.plt-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #e2001a;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 0.9rem 1.5rem;
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(226, 0, 26, 0.32);
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+
+.plt-btn-primary:hover:not(:disabled) {
+  background: #ff1a33;
+  transform: translateY(-2px);
+  opacity: 1;
+}
+
+.plt-btn-primary:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.plt-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #141414;
+  color: #ccc;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 0.55rem 1rem;
+  font-weight: 600;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.plt-btn-secondary:hover:not(:disabled) {
+  border-color: rgba(226, 0, 26, 0.45);
+  color: #fff;
+  opacity: 1;
+}
+
+.plt-tab-group {
+  display: flex;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  padding: 0.3rem;
+}
+
+.plt-tab {
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: #777;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.plt-tab-active {
+  background: #e2001a;
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(226, 0, 26, 0.35);
+}
+
+.plt-print-zone {
+  background: rgba(226, 0, 26, 0.04);
+}
+
+.plt-print-guide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px dashed rgba(255, 255, 255, 0.22);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.12);
+}
+
+.plt-print-guide-text {
+  color: rgba(255, 255, 255, 0.35);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.plt-price-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 0.7rem 1rem;
+}
+
+.plt-size-btn {
+  padding: 0.55rem 0.95rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #141414;
+  color: #888;
+  transition: all 0.15s;
+}
+
+.plt-size-btn-active {
+  background: #e2001a;
+  color: #fff;
+  border-color: #e2001a;
+  box-shadow: 0 4px 12px rgba(226, 0, 26, 0.3);
+}

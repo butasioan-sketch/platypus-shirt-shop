@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { getPrintOverlayBox } from '@/lib/print-spec';
+import { getPrintImageStyle } from '@/lib/print-position';
 
 interface ShirtFlipProps {
   frontSrc?: string;
@@ -201,7 +202,7 @@ export default function ShirtFlip({
   const printBox: React.CSSProperties = { ...getPrintOverlayBox(), pointerEvents: 'none', zIndex: 2, opacity: 0.98 };
   const renderPrint = (pr?: { src: string; x?: number; y?: number; scale?: number }) => pr ? (
     <div style={printBox}>
-      <img src={pr.src} alt="" draggable={false} style={{ position: 'absolute', width: `${(pr.scale ?? 1) * 100}%`, height: `${(pr.scale ?? 1) * 100}%`, objectFit: 'contain', top: `${50 + (pr.y ?? 0)}%`, left: `${50 + (pr.x ?? 0)}%`, transform: 'translate(-50%, -50%)', pointerEvents: 'none' }} />
+      <img src={pr.src} alt="" draggable={false} style={getPrintImageStyle(pr.scale ?? 1, { x: pr.x ?? 0, y: pr.y ?? 0 })} />
     </div>
   ) : null;
   const ctrlBtn: React.CSSProperties = {

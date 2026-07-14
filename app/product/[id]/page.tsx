@@ -4,8 +4,8 @@ import { getShipping, DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY } from '@/lib/shippin
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import Logo from '@/app/components/Logo';
-import CartCount from '@/app/components/CartCount';
+import SiteHeader from '@/app/components/SiteHeader';
+import TrustIcon from '@/app/components/TrustIcon';
 
 const DesignStudio = dynamic(() => import('@/app/components/DesignStudio'), { ssr: false });
 import { calcUnitPrice } from '@/lib/pricing';
@@ -106,37 +106,29 @@ export default function ProductPage() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0a0a', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
-
-      {/* HEADER */}
-      <header style={{ padding: '1rem 1.25rem', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Logo size={40} />
-        <CartCount />
-      </header>
+    <div style={{ minHeight: '100vh', background: 'radial-gradient(1000px 500px at 50% -10%, rgba(226,0,26,0.08), transparent 60%), linear-gradient(180deg, #0c0c0d 0%, #0a0a0a 100%)', color: '#fff', fontFamily: 'system-ui, sans-serif' }}>
+      <SiteHeader />
 
       {/* LAYOUT: Mobile einspaltig, Desktop zweispaltig */}
       <div className="product-grid" style={{ maxWidth: '1100px', margin: '0 auto', padding: '1.5rem 1rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '3rem' }}>
 
         {/* DESIGN-EDITOR */}
         <div className="editor-col" style={{ position: 'sticky', top: '5rem', alignSelf: 'start' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
-            <span style={{ background: '#e2001a', color: '#fff', fontSize: '0.65rem', fontWeight: 700, padding: '0.25rem 0.6rem', borderRadius: '999px', letterSpacing: '0.05em' }}>NEU</span>
-            <span style={{ color: '#888', fontSize: '0.8rem' }}>{PRINT_SPEC.widthMm} × {PRINT_SPEC.heightMm} mm · vorne & hinten</span>
-          </div>
-          <div style={{ borderRadius: '16px', overflow: 'visible', background: 'transparent' }}>
-            <DesignStudio shirtColor={activeColor.hex} onDesignChange={setDesign} />
-          </div>
+          <p className="plt-label" style={{ marginBottom: '0.75rem', color: '#aaa' }}>
+            Druckfläche {PRINT_SPEC.widthMm} × {PRINT_SPEC.heightMm} mm · vorne & hinten
+          </p>
+          <DesignStudio shirtColor={activeColor.hex} onDesignChange={setDesign} />
         </div>
 
         {/* KAUFBEREICH */}
         <div>
-          <p style={{ color: '#e2001a', fontSize: '0.72rem', letterSpacing: '0.22em', marginBottom: '0.5rem', textTransform: 'uppercase', fontWeight: 600 }}>Premium T-Shirt</p>
+          <p className="plt-label" style={{ color: '#e2001a', marginBottom: '0.5rem' }}>Premium T-Shirt</p>
           <h1 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '0.5rem', color: '#fff', letterSpacing: '-0.02em', lineHeight: 1.1 }}>{product.name}</h1>
           <p style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '1.5rem', color: '#fff' }}>€{unitPrice.toFixed(2)}</p>
 
           {/* FARBE */}
           <div style={{ marginBottom: '1.25rem' }}>
-            <p style={{ fontSize: '0.75rem', color: '#888', marginBottom: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Farbe: {activeColor.label}</p>
+            <p className="plt-label" style={{ marginBottom: '0.6rem' }}>Farbe: {activeColor.label}</p>
             <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
               {COLORS.map((c) => (
                 <button key={c.key} onClick={() => setColorKey(c.key)} title={c.label} style={{
@@ -152,16 +144,10 @@ export default function ProductPage() {
 
           {/* GRÖSSE */}
           <div style={{ marginBottom: '1.25rem' }}>
-            <p style={{ fontSize: '0.75rem', color: '#888', marginBottom: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Größe wählen</p>
+            <p className="plt-label" style={{ marginBottom: '0.6rem' }}>Größe wählen</p>
             <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
               {product.sizes.map((s) => (
-                <button key={s} onClick={() => setSize(s)} style={{
-                  padding: '0.5rem 0.9rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.875rem', fontWeight: 600,
-                  background: size === s ? '#e2001a' : '#121212',
-                  color: size === s ? '#fff' : '#888',
-                  border: size === s ? '1px solid #e2001a' : '1px solid rgba(255,255,255,0.10)',
-                  transition: 'all 0.15s',
-                }}>
+                <button key={s} type="button" onClick={() => setSize(s)} className={`plt-size-btn${size === s ? ' plt-size-btn-active' : ''}`}>
                   {s}
                 </button>
               ))}
@@ -192,7 +178,7 @@ export default function ProductPage() {
 
           {/* SCHNITT */}
           <div style={{ marginBottom: '1.5rem' }}>
-            <p style={{ fontSize: '0.75rem', color: '#888', marginBottom: '0.4rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Schnitt</p>
+            <p className="plt-label" style={{ marginBottom: '0.4rem' }}>Schnitt</p>
             <p style={{ fontSize: '0.95rem', color: '#fff', fontWeight: 600 }}>Unisex</p>
           </div>
 
@@ -200,21 +186,13 @@ export default function ProductPage() {
 
           {/* BUTTONS */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
-            <button onClick={buyNow} disabled={loading} style={{
-              background: '#e2001a', color: '#fff', padding: '1rem', borderRadius: '12px',
-              fontWeight: 800, fontSize: '1rem', cursor: loading ? 'not-allowed' : 'pointer',
-              border: 'none', letterSpacing: '0.05em', opacity: loading ? 0.7 : 1,
-            }}>
+            <button type="button" onClick={buyNow} disabled={loading} className="plt-btn-primary" style={{ width: '100%', fontSize: '1rem', padding: '1rem' }}>
               {loading ? 'Weiterleitung...' : `JETZT KAUFEN — €${unitPrice.toFixed(2)}`}
             </button>
             <p style={{ color: '#666', fontSize: '0.72rem', textAlign: 'center', marginTop: '0.6rem', lineHeight: 1.5 }}>
               Individuell bedruckte Ware — kein Widerrufsrecht gem. § 312g Abs. 2 Nr. 1 BGB. Kostenloser Ersatz bei Mängeln.
             </p>
-            <button onClick={addToCart} style={{
-              background: '#121212', color: added ? '#4ade80' : '#fff', padding: '0.9rem', borderRadius: '12px',
-              fontWeight: 700, fontSize: '0.9rem', cursor: 'pointer',
-              border: '1px solid rgba(255,255,255,0.10)', letterSpacing: '0.05em',
-            }}>
+            <button type="button" onClick={addToCart} className="plt-btn-secondary" style={{ width: '100%', padding: '0.9rem', color: added ? '#4ade80' : '#fff' }}>
               {added ? '✓ Im Warenkorb' : '+ In den Warenkorb'}
             </button>
           </div>
@@ -222,13 +200,13 @@ export default function ProductPage() {
           {/* INFO */}
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1.25rem' }}>
             {[
-              ['🔒', 'Sichere Zahlung via Stripe'],
-              ['📦', 'Print-on-Demand — Produktion nach Bestellung'],
-              ['🚚', 'Versand wählbar (DHL/Hermes/DPD) — DE & RO'],
-              ['↩️', 'Qualitätsgarantie'],
-            ].map(([icon, text]) => (
+              { key: 'stripe', text: 'Sichere Zahlung via Stripe' },
+              { key: 'pod', text: 'Print-on-Demand — Produktion nach Bestellung' },
+              { key: 'shipping', text: 'Versand wählbar (DHL/Hermes/DPD) — DE & RO' },
+              { key: 'quality', text: 'Qualitätsgarantie' },
+            ].map(({ key, text }) => (
               <div key={text} style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.6rem', alignItems: 'center' }}>
-                <span style={{ fontSize: '1rem' }}>{icon}</span>
+                <TrustIcon name={key} size={20} />
                 <span style={{ color: '#666', fontSize: '0.78rem' }}>{text}</span>
               </div>
             ))}

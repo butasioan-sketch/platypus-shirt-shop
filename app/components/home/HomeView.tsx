@@ -24,10 +24,7 @@ export default function HomeView({ locale }: { locale: Locale }) {
         </div>
         <div className="outdoor-grid">
           {t.outdoor.cards.map((c) => (
-            <div key={c.key} style={{
-              background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px',
-              padding: '1.75rem 1.25rem', textAlign: 'center',
-            }}>
+            <div key={c.key} className="plt-card" style={{ padding: '1.75rem 1.25rem', textAlign: 'center' }}>
               <svg viewBox="0 0 32 32" width="44" height="44" style={{ marginBottom: '1rem' }}>{outdoorIcons[c.key]}</svg>
               <p style={{ color: '#fff', fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.35rem' }}>{c.label}</p>
               <p style={{ color: '#888', fontSize: '0.82rem', fontStyle: 'italic' }}>{c.line}</p>
@@ -39,10 +36,9 @@ export default function HomeView({ locale }: { locale: Locale }) {
       <section style={{ padding: '5rem 2rem', borderTop: '1px solid rgba(255,255,255,0.08)', maxWidth: '1000px', margin: '0 auto' }}>
         <div className="trust-grid">
           {t.trust.map((item) => (
-            <div key={item.key} style={{
+            <div key={item.key} className="plt-card" style={{
               display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
-              gap: '0.85rem', padding: '1.5rem 1rem', background: '#121212',
-              border: '1px solid rgba(255,255,255,0.08)', borderRadius: '14px',
+              gap: '0.85rem', padding: '1.5rem 1rem',
             }}>
               <div style={{
                 width: '52px', height: '52px', borderRadius: '50%', background: '#141414',

@@ -5,7 +5,8 @@ import { OrbitControls, useGLTF, Decal, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import ShirtFlip from './ShirtFlip';
 import StaticShirtPreview from './StaticShirtPreview';
-import { PRINT_SPEC, VIEWER_DEFAULTS } from '@/lib/print-spec';
+import { VIEWER_DEFAULTS } from '@/lib/print-spec';
+import { getDecalDimensions, getDecalPosition } from '@/lib/print-position';
 
 interface PrintData { src: string; x: number; y: number; scale: number; }
 interface Shirt3DProps {
@@ -34,15 +35,15 @@ function CustomerPrint({ mesh, print, front }:
     const bb = mesh.geometry.boundingBox as THREE.Box3;
     const c = new THREE.Vector3(); bb.getCenter(c);
     const s = new THREE.Vector3(); bb.getSize(s);
-    const chestY = c.y + s.y * 0.08;             // Brusthoehe: knapp ueber Mitte
-    const dirX = front ? 1 : -1;                 // Rueckseite: X spiegeln
-    const x = c.x + dirX * (print.x / 100) * s.x;
-    const y = chestY - (print.y / 100) * s.y;
-    const z = c.z + (front ? 1 : -1) * (s.z / 2);
-    const h = s.y * 0.52 * (print.scale || 1);
-    const w = h * PRINT_SPEC.aspectRatio;
+    const { w, h } = getDecalDimensions({ x: s.x, y: s.y, z: s.z }, print.scale || 1);
+    const position = getDecalPosition(
+      { x: c.x, y: c.y, z: c.z },
+      { x: s.x, y: s.y, z: s.z },
+      { scale: print.scale || 1, x: print.x, y: print.y },
+      front,
+    );
     return {
-      pos: [x, y, z] as [number, number, number],
+      pos: position,
       size: [w, h, Math.max(s.z * 1.5, 0.1)] as [number, number, number],
     };
   }, [mesh, print.x, print.y, print.scale, front]);

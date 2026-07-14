@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import Logo from '@/app/components/Logo';
-import CartCount from '@/app/components/CartCount';
+import SiteHeader from '@/app/components/SiteHeader';
 import { SHIPPING_OPTIONS, COUNTRIES, DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY, getShipping, type Country } from '@/lib/shipping';
 import { BASE_PRICE } from '@/lib/pricing';
 
@@ -76,10 +75,7 @@ export default function CartPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'radial-gradient(1000px 500px at 50% -10%, rgba(226,0,26,0.08), transparent 60%), linear-gradient(180deg, #0c0c0d 0%, #0a0a0a 100%)', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-      <header style={{ padding: '1.1rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Logo size={44} />
-        <CartCount />
-      </header>
+      <SiteHeader />
 
       <div style={{ maxWidth: '700px', margin: '3rem auto', padding: '0 2rem 6rem' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '2rem' }}>Warenkorb</h1>
@@ -93,7 +89,7 @@ export default function CartPage() {
           <>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
               {items.map((item, i) => (
-                <div key={i} style={{ background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div key={i} className="plt-card" style={{ padding: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
                     <p style={{ fontWeight: 700, marginBottom: '0.25rem' }}>{item.name}</p>
                     <p style={{ color: '#999', fontSize: '0.8rem' }}>Größe: {item.size}{item.color ? ' | Farbe: ' + item.color : ''} | {item.fit || 'Unisex'} | Menge: {item.quantity}</p>
@@ -155,12 +151,7 @@ export default function CartPage() {
 
             {error && <p style={{ color: '#f87171', marginBottom: '1rem', fontSize: '0.875rem' }}>{error}</p>}
 
-            <button onClick={checkout} disabled={loading} style={{
-              width: '100%', background: '#e2001a', color: '#fff', padding: '1.1rem',
-              borderRadius: '12px', fontWeight: 800, fontSize: '1rem',
-              border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.7 : 1, letterSpacing: '0.05em',
-            }}>
+            <button type="button" onClick={checkout} disabled={loading} className="plt-btn-primary" style={{ width: '100%', padding: '1.1rem', fontSize: '1rem' }}>
               {loading ? 'Weiterleitung zu Stripe...' : `JETZT BEZAHLEN — €${total.toFixed(2)}`}
             </button>
             <p style={{ color: '#666', fontSize: '0.72rem', textAlign: 'center', marginTop: '0.6rem', lineHeight: 1.5 }}>
