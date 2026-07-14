@@ -90,6 +90,46 @@ a:hover {
   border-radius: 12px;
 }
 
+/* ── Accessibility ── */
+:focus-visible {
+  outline: 2px solid rgba(226, 0, 26, 0.7);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid rgba(226, 0, 26, 0.7);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Skip-to-content for screen readers */
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 1rem;
+  padding: 0.5rem 1rem;
+  background: var(--plt-brand);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 0 0 8px 8px;
+  text-decoration: none;
+  z-index: 9999;
+  transition: top 0.1s;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 input, select, textarea {
   font-family: inherit;
 }

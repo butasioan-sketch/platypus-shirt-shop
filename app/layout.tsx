@@ -64,6 +64,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="de">
       <body style={{ margin: 0, padding: 0, background: '#0a0a0a', color: '#fff' }}>
+        <a href="#main-content" className="skip-to-content">Zum Inhalt springen</a>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
