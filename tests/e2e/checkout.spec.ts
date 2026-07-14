@@ -106,7 +106,7 @@ test.describe('PLATYPUS — Checkout-Flow', () => {
 
   test('Tracking-Seite akzeptiert Bestellnummer', async ({ page }) => {
     await page.goto(`${BASE_URL}/tracking`);
-    await page.locator('input').fill('PLT-123456789');
+    await page.locator('input[placeholder="PLT-..."]').fill('PLT-123456789');
     await page.locator('button:has-text("Suchen")').click();
     // Erwartet Fehler "nicht gefunden" — kein Crash
     await page.waitForTimeout(2000);
