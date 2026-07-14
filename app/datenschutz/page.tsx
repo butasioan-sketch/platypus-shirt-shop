@@ -11,6 +11,8 @@ export default function DatenschutzPage() {
       <div style={{ maxWidth: '700px', margin: '3rem auto', padding: '0 2rem' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '2rem' }}>Datenschutz</h1>
         <div dangerouslySetInnerHTML={{ __html: `<p>Wir nehmen den Schutz deiner Daten ernst.</p>
+        <h2 style='margin-top:2rem;font-size:1.25rem'>Verantwortlicher</h2>
+        <p style='margin-top:0.75rem;color:#888'>I. Butas · PLATYPUS · On Me<br/>E-Mail: butasioan@googlemail.com · Tel. +49 157 77283535</p>
         <h2 style='margin-top:2rem;font-size:1.25rem'>Datenerhebung</h2>
         <p style='margin-top:0.75rem;color:#888'>Beim Kauf werden deine Daten ausschließlich zur Bestellabwicklung via Stripe verarbeitet. Wir speichern keine Zahlungsdaten.</p>
         <h2 style='margin-top:2rem;font-size:1.25rem'>Stripe</h2>
