@@ -32,7 +32,22 @@ export async function POST(request: NextRequest) {
 
     try {
       const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://platypus-shirt-shop.vercel.app';
-      const parsedItems = (() => { try { return JSON.parse(session.metadata?.items || "[]"); } catch { return []; } })();
+      const parsedItems = (() => {
+        try {
+          const raw = JSON.parse(session.metadata?.items || '[]');
+          if (!Array.isArray(raw)) return [];
+          // Unterstützt altes Format {name,size,...} und neues abgekürztes Format {n,s,...}
+          return raw.map((i: Record<string, unknown>) => ({
+            name: String(i.name ?? i.n ?? 'AirFit Pro'),
+            size: String(i.size ?? i.s ?? ''),
+            color: String(i.color ?? i.c ?? ''),
+            quantity: Number(i.quantity ?? i.q ?? 1),
+            price: Number(i.price ?? i.pr ?? 39.99),
+            pages: Number(i.pages ?? i.pg ?? 1),
+            designId: String(i.designId ?? i.d ?? ''),
+          }));
+        } catch { return []; }
+      })();
       const customerEmail = session.customer_details?.email ?? session.customer_email;
 
       const orderRes = await fetch(`${siteUrl}/api/orders`, {

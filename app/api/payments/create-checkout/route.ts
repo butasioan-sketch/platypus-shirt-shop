@@ -136,6 +136,21 @@ export async function POST(request: Request) {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://platypus-shirt-shop.vercel.app";
 
+    // Serialisiert Items mit abgekürzten Keys (~87 Zeichen/Item statt ~130).
+    // Stripe-Limit: 500 Zeichen pro Metadata-Value. .slice() würde JSON brechen.
+    const itemsAbbrev = priced.map((p) => ({
+      n: p.name.slice(0, 20), s: p.size ?? '', c: p.color ?? '',
+      q: p.qty, pr: p.unitPrice, pg: p.pages, d: p.designId ?? '',
+    }));
+    let itemsMeta = JSON.stringify(itemsAbbrev);
+    if (itemsMeta.length > 490) {
+      for (let count = itemsAbbrev.length - 1; count >= 1; count--) {
+        const partial = JSON.stringify(itemsAbbrev.slice(0, count));
+        if (partial.length <= 490) { itemsMeta = partial; break; }
+        if (count === 1) itemsMeta = '[]';
+      }
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       allow_promotion_codes: true,
@@ -163,12 +178,9 @@ export async function POST(request: Request) {
       metadata: {
         reference: body.reference || "",
         paymentMethod,
-        items: JSON.stringify(priced.map((p) => ({
-          name: p.name, size: p.size, color: p.color,
-          quantity: p.qty, price: p.unitPrice, pages: p.pages, designId: p.designId,
-        }))).slice(0, 480),
+        items: itemsMeta,
         designId: priced.find((p) => p.designId)?.designId || "",
-        designIds: priced.map((p) => p.designId).filter(Boolean).join(",").slice(0, 200),
+        designIds: priced.map((p) => p.designId).filter(Boolean).join(",").slice(0, 490),
         shippingCountry: country,
         shippingMethod: shipOpt.carrier,
         locale: body.locale || "de",
