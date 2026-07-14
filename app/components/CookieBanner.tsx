@@ -1,8 +1,10 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useLocale } from '@/app/components/LocaleProvider';
 
 export default function CookieBanner() {
+  const { t } = useLocale();
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -11,6 +13,7 @@ export default function CookieBanner() {
 
   const accept = () => {
     localStorage.setItem('platypus_cookie_consent', 'accepted');
+    window.dispatchEvent(new Event('cookieconsent'));
     setVisible(false);
   };
 
@@ -31,8 +34,8 @@ export default function CookieBanner() {
       boxShadow: '0 8px 32px rgba(0,0,0,0.6)',
     }}>
       <p style={{ color: '#aaa', fontSize: '0.82rem', flex: 1, margin: 0, lineHeight: 1.5, minWidth: 200 }}>
-        Wir nutzen Cookies für Betrieb & Analyse. Nach Einwilligung auch Tracking-Pixel.{' '}
-        <Link href="/datenschutz" style={{ color: '#e2001a', textDecoration: 'none' }}>Datenschutz</Link>
+        {t.cookie.text}{' '}
+        <Link href="/datenschutz" style={{ color: '#e2001a', textDecoration: 'none' }}>{t.cookie.privacy}</Link>
       </p>
       <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
         <button
@@ -43,7 +46,7 @@ export default function CookieBanner() {
             color: '#888', fontSize: '0.82rem', fontWeight: 600,
           }}
         >
-          Ablehnen
+          {t.cookie.decline}
         </button>
         <button
           onClick={accept}
@@ -53,7 +56,7 @@ export default function CookieBanner() {
             color: '#fff', fontSize: '0.82rem', fontWeight: 700,
           }}
         >
-          Alle akzeptieren
+          {t.cookie.accept}
         </button>
       </div>
     </div>

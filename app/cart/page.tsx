@@ -184,6 +184,9 @@ export default function CartPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 800, fontSize: '1.25rem' }}>
                 <span>{t.cart.total}</span><span>€{total.toFixed(2)}</span>
               </div>
+              <p style={{ color: '#555', fontSize: '0.7rem', marginTop: '0.5rem', lineHeight: 1.4 }}>
+                {t.cart.vatNote}
+              </p>
             </div>
 
             {error && <p style={{ color: '#f87171', marginBottom: '1rem', fontSize: '0.875rem' }}>{error}</p>}

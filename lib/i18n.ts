@@ -83,6 +83,13 @@ export const translations = {
       deliveryCountry: 'Lieferland',
       shippingService: 'Versanddienst',
       qty: 'Menge',
+      vatNote: 'Alle Preise in EUR. Kein MwSt.-Ausweis gem. §19 UStG (Kleinunternehmerregelung).',
+    },
+    cookie: {
+      text: 'Wir nutzen Cookies für Betrieb & Analyse. Nach Einwilligung auch Tracking-Pixel.',
+      decline: 'Ablehnen',
+      accept: 'Alle akzeptieren',
+      privacy: 'Datenschutz',
     },
     outdoor: {
       title: 'GEMACHT FÜR DRAUSSEN.',
@@ -216,6 +223,13 @@ export const translations = {
       deliveryCountry: 'Țara de livrare',
       shippingService: 'Serviciu de livrare',
       qty: 'Cantitate',
+      vatNote: 'Toate prețurile în EUR. Fără TVA conform §19 UStG.',
+    },
+    cookie: {
+      text: 'Folosim cookies pentru funcționare & analiză. Cu acordul tău, și pixeli de tracking.',
+      decline: 'Refuză',
+      accept: 'Acceptă tot',
+      privacy: 'Confidențialitate',
     },
     outdoor: {
       title: 'CREAT PENTRU AFARĂ.',
@@ -349,6 +363,13 @@ export const translations = {
       deliveryCountry: 'Delivery country',
       shippingService: 'Shipping service',
       qty: 'Qty',
+      vatNote: 'All prices in EUR. No VAT shown — small business rule §19 UStG.',
+    },
+    cookie: {
+      text: 'We use cookies for operation & analytics. Tracking pixels only with your consent.',
+      decline: 'Decline',
+      accept: 'Accept all',
+      privacy: 'Privacy',
     },
     outdoor: {
       title: 'BUILT FOR THE OUTSIDE.',
