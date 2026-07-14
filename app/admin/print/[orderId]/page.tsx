@@ -18,7 +18,8 @@ export default async function PrintView({ params }: { params: Promise<{ orderId:
     ...(order.items || []).map((i: { designId?: string }) => i.designId),
     order.designId,
   ].filter(Boolean))) as string[];
-  const designs = await Promise.all(ids.map(async (id) => ({ id, ...(await getDesign(id)) })));
+  type DesignRow = { id: string; front_image?: string; back_image?: string };
+  const designs: DesignRow[] = await Promise.all(ids.map(async (id) => ({ id, ...(await getDesign(id)) })));
 
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', padding: '2rem', maxWidth: 900, margin: '0 auto', color: '#111' }}>

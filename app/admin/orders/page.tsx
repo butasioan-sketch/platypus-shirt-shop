@@ -112,6 +112,7 @@ export default function AdminOrdersPage() {
                     ))}
                   </div>
                 )}
+                <a href={`/admin/print/${order.id}`} target="_blank" rel="noreferrer" style={{ background: '#1a1a1a', border: '1px solid #333', padding: '0.35rem 0.8rem', borderRadius: '8px', color: '#fff', fontSize: '0.75rem', textDecoration: 'none', marginRight: '0.4rem', display: 'inline-block' }}>🖨 Druckauftrag</a>
                 {Array.from(new Set(
                   [...(order.items || []).map((it) => it.designId), order.designId]
                     .filter((d): d is string => Boolean(d))
@@ -119,8 +120,6 @@ export default function AdminOrdersPage() {
                   <DesignPreview key={did} designId={did} />
                 ))}
                 {STATUS_FLOW.indexOf(order.status) < STATUS_FLOW.length - 1 && STATUS_FLOW.includes(order.status) && (
-                  <a href={`/admin/print/${order.id}`} target="_blank" rel="noreferrer" style={{ background: '#1a1a1a', border: '1px solid #333', padding: '0.35rem 0.8rem', borderRadius: '8px', color: '#fff', fontSize: '0.75rem', textDecoration: 'none', marginRight: '0.4rem' }}>🖨 Druckauftrag</a>
-                  <a href={`/admin/print/${order.id}`} target="_blank" rel="noreferrer" style={{ background: '#1a1a1a', border: '1px solid #333', padding: '0.35rem 0.8rem', borderRadius: '8px', color: '#fff', fontSize: '0.75rem', textDecoration: 'none', marginRight: '0.4rem' }}>🖨 Druckauftrag</a>
                   <button onClick={() => advance(order)} style={{
                     background: '#1a1a1a', border: '1px solid #333', color: '#fff',
                     padding: '0.4rem 1rem', borderRadius: '8px', cursor: 'pointer', fontSize: '0.8rem',
