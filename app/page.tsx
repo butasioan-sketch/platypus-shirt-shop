@@ -13,10 +13,27 @@ export default function HomePage() {
     }}>
       <PaymentSuccessBanner />
       <style>{`
-        .produkt-karte:hover { transform: translateY(-6px); border-color: #e2001a !important; box-shadow: 0 16px 40px rgba(226,0,26,0.12); }
-        .produkt-karte { transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease; }
+        .hero-product-grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 2rem;
+          align-items: center;
+        }
+        @media (min-width: 900px) {
+          .hero-product-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+          }
+          .hero-product-info { text-align: left; }
+        }
+        @media (max-width: 899px) {
+          .hero-product-info { text-align: center; }
+          .hero-product-viewer { max-width: 360px; margin: 0 auto; }
+        }
         .btn-primary:hover { background: #ff1a33 !important; transform: translateY(-2px); }
         .btn-primary { transition: background 0.2s, transform 0.2s; }
+        .hero-product-card:hover { border-color: rgba(226,0,26,0.35) !important; }
+        .hero-product-card { transition: border-color 0.2s ease; }
         .trust-grid, .outdoor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
         @media (min-width: 768px) {
           .trust-grid { grid-template-columns: repeat(4, 1fr); }

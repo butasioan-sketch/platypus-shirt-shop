@@ -16,7 +16,7 @@ const Shirt3D = dynamic(() => import('./Shirt3D'), {
 
 export default function ProductHeroViewer({ height = 400 }: { height?: number }) {
   return (
-    <div style={{ width: '100%', maxWidth: 340, height, margin: '0 auto', position: 'relative' }}>
+    <div style={{ width: '100%', maxWidth: 400, height, margin: '0 auto', position: 'relative' }}>
       <div style={{
         position: 'absolute', width: 280, height: 280, borderRadius: '50%',
         background: 'radial-gradient(circle, rgba(226,0,26,0.18), transparent 70%)',
