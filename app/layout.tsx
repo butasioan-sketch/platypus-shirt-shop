@@ -18,9 +18,9 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://platypus-shirt-shop
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: 'On Me — Custom Sublimation T-Shirts | 210 × 297 mm',
-  description: 'B&C TM062 Polyester-Shirt mit deinem Motiv — vorne & hinten (210 × 297 mm). Sublimationsdruck in der Faser. Versand DE & RO.',
-  keywords: 'platypus, t-shirt, print on demand, custom shirt, eigenes design, motiv hochladen, tricouri, romania',
+  title: 'PLATYPUS — On Me. | Premium Custom Shirts',
+  description: 'Dein Motiv auf Performance-Polyester — sublimiert in die Faser, vorne und hinten. Maßgefertigt auf Bestellung. Versand DE & RO.',
+  keywords: 'platypus, on me, premium t-shirt, sublimation, custom shirt, eigenes design, performance polyester',
   icons: {
     icon: [{ url: '/icon-192.png', sizes: '192x192' }, { url: '/icon-512.png', sizes: '512x512' }],
     apple: '/apple-touch-icon.png',
@@ -28,8 +28,8 @@ export const metadata: Metadata = {
   appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'PLATYPUS' },
   manifest: '/manifest.json',
   openGraph: {
-    title: 'On Me — Dein Motiv auf Premium Polyester',
-    description: 'Sublimationsdruck 210 × 297 mm — vorne & hinten. B&C TM062, 39,99 €.',
+    title: 'PLATYPUS — On Me. | Dein Motiv. Dein Statement.',
+    description: 'Premium-Shirt mit Vollflächendruck — sublimiert in die Faser. Maßgefertigt auf Bestellung.',
     type: 'website',
     url: siteUrl,
     images: [{ url: '/og.png', width: 1200, height: 630 }],

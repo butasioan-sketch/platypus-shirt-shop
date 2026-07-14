@@ -3,15 +3,22 @@
 import React, { useState, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { calcUnitPrice } from '@/lib/pricing';
-import { PRINT_SPEC } from '@/lib/print-spec';
-import { defaultPrintTransform } from '@/lib/print-position';
+import { PRINT_SPEC, SHIRT_VIEWER_ASPECT } from '@/lib/print-spec';
+import { defaultPrintTransform, type PrintTransform } from '@/lib/print-position';
 import ShirtPrintOverlay from './ShirtPrintOverlay';
 
 const Shirt3D = dynamic(() => import('./Shirt3D'), { ssr: false });
 
+export interface DesignState {
+  front: string | null;
+  back: string | null;
+  frontTransform: PrintTransform;
+  backTransform: PrintTransform;
+}
+
 interface DesignStudioProps {
   shirtColor?: string;
-  onDesignChange?: (data: { front: string | null; back: string | null }) => void;
+  onDesignChange?: (data: DesignState) => void;
 }
 
 export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
@@ -30,7 +37,14 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const dragStart = useRef<{ mx: number; my: number; px: number; py: number } | null>(null);
 
-  useEffect(() => { onDesignChange?.({ front: frontImg, back: backImg }); }, [frontImg, backImg, onDesignChange]);
+  useEffect(() => {
+    onDesignChange?.({
+      front: frontImg,
+      back: backImg,
+      frontTransform: { scale: frontScale, x: frontPos.x, y: frontPos.y },
+      backTransform: { scale: backScale, x: backPos.x, y: backPos.y },
+    });
+  }, [frontImg, backImg, frontScale, backScale, frontPos, backPos, onDesignChange]);
 
   const currentImg = side === 'front' ? frontImg : backImg;
   const currentScale = side === 'front' ? frontScale : backScale;
@@ -126,7 +140,7 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
       </div>
 
       {preview360 ? (
-        <div style={{ width: '100%', aspectRatio: '4/5', marginBottom: '1rem' }}>
+        <div style={{ width: '100%', aspectRatio: SHIRT_VIEWER_ASPECT, marginBottom: '1rem' }}>
           <Shirt3D
             frontPrint={printData(frontImg, frontScale, frontPos)}
             backPrint={printData(backImg, backScale, backPos)}
@@ -136,7 +150,7 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
         <div
           ref={containerRef}
           style={{
-            position: 'relative', width: '100%', aspectRatio: '4/5', marginBottom: '1rem',
+            position: 'relative', width: '100%', aspectRatio: SHIRT_VIEWER_ASPECT, marginBottom: '1rem',
             opacity: flipping ? 0.4 : 1, transform: flipping ? 'scale(0.98)' : 'scale(1)',
             transition: 'opacity 0.28s, transform 0.28s',
           }}

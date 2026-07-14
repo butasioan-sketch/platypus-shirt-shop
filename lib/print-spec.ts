@@ -1,5 +1,17 @@
 // Einzige Wahrheit: Druckfläche, Maße, Viewer-Drehgeschwindigkeit
-// overlay-Werte nach physischem Testdruck kalibrieren (Phase 0)
+// Overlay kalibriert auf B&C TM062 (Gr. L) + Shirt-Fotos 1024×1536 px
+
+export const SHIRT_PHOTO = {
+  width: 1024,
+  height: 1536,
+  aspectRatio: 1024 / 1536, // 2:3 — Container muss gleiches Verhältnis haben
+} as const;
+
+export type PrintSide = 'front' | 'back';
+
+/** Prozent der Shirt-Fotos — exakt A4 (210:297) auf Körperfläche Gr. L */
+const OVERLAY_FRONT = { top: 26.3, left: 34.7, width: 30.9, height: 29.2 };
+const OVERLAY_BACK = { top: 29.9, left: 34.5, width: 28.9, height: 27.3 };
 
 export const PRINT_SPEC = {
   orientation: 'portrait' as const,
@@ -13,13 +25,23 @@ export const PRINT_SPEC = {
   sides: ['front', 'back'] as const,
   method: 'sublimation' as const,
   blank: 'B&C TM062',
-  overlay: { top: 18, left: 32, width: 37, height: 52 },
+  shirtSizeRef: 'L' as const,
+  shirtLengthMm: 740,
+  collarOffsetMm: 110,
+  overlay: {
+    front: OVERLAY_FRONT,
+    back: OVERLAY_BACK,
+  },
   maxOffsetPercent: 20,
   scaleMin: 0.3,
   scaleMax: 2.0,
 } as const;
 
 export type PrintLocale = 'de' | 'ro' | 'en';
+
+export function getPrintOverlay(side: PrintSide = 'front') {
+  return PRINT_SPEC.overlay[side];
+}
 
 /** 210 × 297 mm */
 export function formatSizeMm(): string {
@@ -50,8 +72,8 @@ export const VIEWER_DEFAULTS = {
   idleDelayMs: 2800,
 } as const;
 
-export function getPrintOverlayBox() {
-  const o = PRINT_SPEC.overlay;
+export function getPrintOverlayBox(side: PrintSide = 'front') {
+  const o = getPrintOverlay(side);
   return {
     position: 'absolute' as const,
     top: `${o.top}%`,
@@ -61,3 +83,6 @@ export function getPrintOverlayBox() {
     overflow: 'hidden' as const,
   };
 }
+
+/** CSS aspect-ratio Wert für Shirt-Viewer (kein Letterboxing) */
+export const SHIRT_VIEWER_ASPECT = `${SHIRT_PHOTO.width} / ${SHIRT_PHOTO.height}`;

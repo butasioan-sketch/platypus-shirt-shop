@@ -1,7 +1,9 @@
 import Link from 'next/link';
 import { Locale, getTranslation } from '@/lib/i18n';
-import { getAllProducts, getProductName, getProductDescription } from '@/lib/products';
+import { getAllProducts, getProductName } from '@/lib/products';
 import ProductHeroViewer from '@/app/components/ProductHeroViewer';
+
+const SHOP_HREF = '/product/1';
 
 export default function ProductHeroSection({ locale }: { locale: Locale }) {
   const t = getTranslation(locale);
@@ -11,12 +13,17 @@ export default function ProductHeroSection({ locale }: { locale: Locale }) {
   return (
     <section className="hero-product" style={{ padding: '2.5rem 2rem 4rem', maxWidth: '1100px', margin: '0 auto' }}>
       <div className="hero-product-grid">
-        <div className="hero-product-viewer" style={{ position: 'relative' }}>
+        <Link
+          href={SHOP_HREF}
+          className="hero-product-viewer"
+          style={{ position: 'relative', display: 'block', textDecoration: 'none', cursor: 'pointer' }}
+          aria-label={t.hero.viewer}
+        >
           <ProductHeroViewer height={420} />
-          <span className="plt-badge" style={{ position: 'absolute', top: '1rem', right: '1rem', zIndex: 2 }}>
-            SELBST GESTALTEN
+          <span className="plt-badge" style={{ position: 'absolute', top: '1rem', right: '1rem', zIndex: 2, pointerEvents: 'none' }}>
+            {t.hero.viewer}
           </span>
-        </div>
+        </Link>
 
         <div className="hero-product-info" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <p className="plt-label hero-badge" style={{ color: '#e2001a', margin: '0 0 1rem' }}>
@@ -41,18 +48,16 @@ export default function ProductHeroSection({ locale }: { locale: Locale }) {
           </p>
 
           <div className="plt-card hero-product-card" style={{ padding: '1.5rem', marginBottom: '0.5rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', marginBottom: '0.5rem' }}>
-              <p style={{ color: '#fff', fontWeight: 700, fontSize: '1.2rem', margin: 0 }}>
-                {getProductName(product, locale)}
-              </p>
-              <p style={{ color: '#fff', fontWeight: 800, fontSize: '1.35rem', margin: 0, whiteSpace: 'nowrap' }}>
-                €{product.price}
-              </p>
-            </div>
-            <p style={{ color: '#888', fontSize: '0.82rem', lineHeight: 1.55, margin: '0 0 1.25rem' }}>
-              {getProductDescription(product, locale)}
+            <p style={{ color: '#888', fontSize: '0.72rem', letterSpacing: '0.12em', textTransform: 'uppercase', margin: '0 0 0.35rem' }}>
+              {t.brand.collection}
             </p>
-            <Link href={`/product/${product.id}`} className="plt-btn-primary" style={{ width: '100%' }}>
+            <p style={{ color: '#fff', fontWeight: 700, fontSize: '1.2rem', margin: '0 0 0.35rem' }}>
+              {getProductName(product, locale)}
+            </p>
+            <p style={{ color: '#888', fontSize: '0.82rem', lineHeight: 1.55, margin: '0 0 1.25rem' }}>
+              {t.hero.productHint}
+            </p>
+            <Link href={SHOP_HREF} className="plt-btn-primary" style={{ width: '100%' }}>
               {t.hero.cta}
             </Link>
           </div>

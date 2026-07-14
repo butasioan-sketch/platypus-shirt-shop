@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { getPrintOverlayBox } from '@/lib/print-spec';
+import { getPrintOverlayBox, SHIRT_VIEWER_ASPECT, type PrintSide } from '@/lib/print-spec';
 import { getPrintImageStyle } from '@/lib/print-position';
 
 interface ShirtFlipProps {
@@ -198,10 +198,10 @@ export default function ShirtFlip({
     width: '100%', height: '100%', objectFit: 'contain',
     pointerEvents: 'none', filter: `drop-shadow(${shadow})`,
   };
-  const wrapStyle: React.CSSProperties = { position: 'relative', height: '100%', aspectRatio: '4/5', maxWidth: '100%' };
-  const printBox: React.CSSProperties = { ...getPrintOverlayBox(), pointerEvents: 'none', zIndex: 2, opacity: 0.98 };
-  const renderPrint = (pr?: { src: string; x?: number; y?: number; scale?: number }) => pr ? (
-    <div style={printBox}>
+  const wrapStyle: React.CSSProperties = { position: 'relative', height: '100%', aspectRatio: SHIRT_VIEWER_ASPECT, maxWidth: '100%' };
+  const printBox = (side: PrintSide): React.CSSProperties => ({ ...getPrintOverlayBox(side), pointerEvents: 'none', zIndex: 2, opacity: 0.98 });
+  const renderPrint = (side: PrintSide, pr?: { src: string; x?: number; y?: number; scale?: number }) => pr ? (
+    <div style={printBox(side)}>
       <img src={pr.src} alt="" draggable={false} style={getPrintImageStyle(pr.scale ?? 1, { x: pr.x ?? 0, y: pr.y ?? 0 })} />
     </div>
   ) : null;
@@ -220,7 +220,7 @@ export default function ShirtFlip({
     >
       {!imagesLoaded && (
         <div style={{ position: 'absolute', inset: 0, zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: '70%', maxWidth: '300px', aspectRatio: '4/5', borderRadius: '16px', background: 'rgba(255,255,255,0.04)' }} />
+          <div style={{ width: '70%', maxWidth: '300px', aspectRatio: SHIRT_VIEWER_ASPECT, borderRadius: '16px', background: 'rgba(255,255,255,0.04)' }} />
         </div>
       )}
 
@@ -237,13 +237,13 @@ export default function ShirtFlip({
           <div style={faceStyle}>
             <div style={wrapStyle}>
               <img src={frontSrc} alt={altFront} draggable={false} onLoad={handleImageLoad} onError={handleImageError} style={imgStyle} />
-              {renderPrint(frontPrint)}
+              {renderPrint('front', frontPrint)}
             </div>
           </div>
           <div style={{ ...faceStyle, transform: 'rotateY(180deg)' }}>
             <div style={wrapStyle}>
               <img src={backSrc} alt={altBack} draggable={false} onLoad={handleImageLoad} onError={handleImageError} style={imgStyle} />
-              {renderPrint(backPrint)}
+              {renderPrint('back', backPrint)}
             </div>
           </div>
         </div>

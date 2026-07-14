@@ -46,9 +46,9 @@ export const PRODUCTS: Product[] = [
       en: 'AirFit Pro',
     },
     description: {
-      de: 'B&C TM062 · 100% Polyester · 140g/m² · Sublimation 210×297 mm · Unisex',
-      ro: 'B&C TM062 · 100% Poliester · 140g/m² · Sublimare 210×297 mm · Unisex',
-      en: 'B&C TM062 · 100% Polyester · 140g/m² · 210×297 mm sublimation · Unisex',
+      de: 'Performance-Polyester · 140 g/m² · Vollflächiger Sublimationsdruck 210 × 297 mm · Unisex',
+      ro: 'Poliester performance · 140 g/m² · Sublimare integrală 210 × 297 mm · Unisex',
+      en: 'Performance polyester · 140 gsm · Full-area sublimation 210 × 297 mm · Unisex',
     },
     tags: ['essential', 'polyester', 'sublimation', 'hell', 'basic'],
     active: true,

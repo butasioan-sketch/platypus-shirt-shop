@@ -16,7 +16,7 @@ export interface Order {
   customerEmail?: string;
   amountTotal: number;
   currency: string;
-  status: 'pending' | 'paid' | 'production' | 'shipped' | 'delivered' | 'cancelled';
+  status: 'pending' | 'paid' | 'on_hold' | 'production' | 'shipped' | 'delivered' | 'cancelled';
   items: OrderItem[];
   locale: string;
   shippingCountry: string;

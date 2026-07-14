@@ -1,5 +1,6 @@
 import Image from 'next/image';
-import { getPrintOverlayBox } from '@/lib/print-spec';
+import { getPrintOverlayBox, SHIRT_VIEWER_ASPECT } from '@/lib/print-spec';
+import { getPrintImageStyle } from '@/lib/print-position';
 
 interface PrintData { src: string; x?: number; y?: number; scale?: number }
 
@@ -23,7 +24,7 @@ export default function StaticShirtPreview({
       position: 'relative', width: '100%', height: '100%',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
     }}>
-      <div style={{ position: 'relative', height: '100%', aspectRatio: '4/5', maxWidth: '100%' }}>
+      <div style={{ position: 'relative', height: '100%', aspectRatio: SHIRT_VIEWER_ASPECT, maxWidth: '100%' }}>
         <Image
           src={shirtSrc}
           alt={alt}
@@ -38,16 +39,7 @@ export default function StaticShirtPreview({
               src={print.src}
               alt=""
               draggable={false}
-              style={{
-                position: 'absolute',
-                width: `${(print.scale ?? 1) * 100}%`,
-                height: `${(print.scale ?? 1) * 100}%`,
-                objectFit: 'contain',
-                top: `${50 + (print.y ?? 0)}%`,
-                left: `${50 + (print.x ?? 0)}%`,
-                transform: 'translate(-50%, -50%)',
-                pointerEvents: 'none',
-              }}
+              style={getPrintImageStyle(print.scale ?? 1, { x: print.x ?? 0, y: print.y ?? 0 })}
             />
           </div>
         )}

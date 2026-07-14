@@ -23,7 +23,7 @@ export default function ShirtPrintOverlay({
   interactive = false,
 }: ShirtPrintOverlayProps) {
   const zoneStyle = {
-    ...getPrintZoneStyle(),
+    ...getPrintZoneStyle(side),
     cursor: interactive && imageSrc ? 'grab' : 'default',
     boxShadow: imageSrc
       ? 'inset 0 0 0 1px rgba(226,0,26,0.25)'

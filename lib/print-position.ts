@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { PRINT_SPEC, getPrintOverlayBox } from './print-spec';
+import { PRINT_SPEC, getPrintOverlayBox, type PrintSide } from './print-spec';
 
 export interface PrintTransform {
   scale: number;
@@ -31,9 +31,9 @@ export function getPrintImageStyle(
   };
 }
 
-export function getPrintZoneStyle(): CSSProperties {
+export function getPrintZoneStyle(side: PrintSide = 'front'): CSSProperties {
   return {
-    ...getPrintOverlayBox(),
+    ...getPrintOverlayBox(side),
     pointerEvents: 'auto',
     zIndex: 2,
     borderRadius: '3px',
@@ -45,8 +45,9 @@ export function getPrintZoneStyle(): CSSProperties {
 export function getDecalDimensions(
   bboxSize: { x: number; y: number; z: number },
   scale: number,
+  side: PrintSide = 'front',
 ): { w: number; h: number } {
-  const o = PRINT_SPEC.overlay;
+  const o = PRINT_SPEC.overlay[side];
   const h = bboxSize.y * (o.height / 100) * scale;
   const w = h * PRINT_SPEC.aspectRatio;
   return { w, h };
@@ -59,7 +60,8 @@ export function getDecalPosition(
   print: PrintTransform,
   front: boolean,
 ): [number, number, number] {
-  const o = PRINT_SPEC.overlay;
+  const side: PrintSide = front ? 'front' : 'back';
+  const o = PRINT_SPEC.overlay[side];
   const dirX = front ? 1 : -1;
   const zoneCenterY = center.y + bboxSize.y * (0.5 - (o.top + o.height / 2) / 100);
   const zoneCenterX = center.x + dirX * bboxSize.x * ((o.left + o.width / 2 - 50) / 100);

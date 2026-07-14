@@ -15,8 +15,11 @@ export default function ProductHeroViewer({ height = 400 }: { height?: number })
         position: 'absolute', width: 280, height: 280, borderRadius: '50%',
         background: 'radial-gradient(circle, rgba(226,0,26,0.18), transparent 70%)',
         filter: 'blur(24px)', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', zIndex: 0,
+        pointerEvents: 'none',
       }} />
-      <div style={{ position: 'relative', zIndex: 1, width: '100%', height: '100%' }}>
+      <div style={{ position: 'relative', zIndex: 1, width: '100%', height: '100%', transition: 'transform 0.2s ease' }}
+        className="hero-shirt-viewer"
+      >
         <Shirt3D enableTouch={false} fallback="static" />
       </div>
     </div>

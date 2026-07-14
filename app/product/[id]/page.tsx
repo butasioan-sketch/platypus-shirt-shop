@@ -6,10 +6,14 @@ import { useParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import SiteHeader from '@/app/components/SiteHeader';
 import TrustIcon from '@/app/components/TrustIcon';
+import { useLocale } from '@/app/components/LocaleProvider';
+import { formatSizeMm } from '@/lib/print-spec';
 
 const DesignStudio = dynamic(() => import('@/app/components/DesignStudio'), { ssr: false });
+import type { DesignState } from '@/app/components/DesignStudio';
 import { calcUnitPrice } from '@/lib/pricing';
 import { PRINT_SPEC } from '@/lib/print-spec';
+import { renderPrintSheet } from '@/lib/print-export';
 import { trackAddToCart } from '@/lib/analytics';
 
 const COLORS = [
@@ -22,6 +26,7 @@ const PRODUCTS: Record<string, { name: string; price: number; color: string; siz
 };
 
 export default function ProductPage() {
+  const { t } = useLocale();
   const params = useParams();
   const id = params?.id as string;
   const product = PRODUCTS[id] || PRODUCTS['1'];
@@ -33,16 +38,25 @@ export default function ProductPage() {
   const [loading, setLoading] = useState(false);
   const [added, setAdded] = useState(false);
   const [error, setError] = useState('');
-  const [design, setDesign] = useState<{ front: string | null; back: string | null }>({ front: null, back: null });
+  const [design, setDesign] = useState<DesignState>({
+    front: null,
+    back: null,
+    frontTransform: { scale: 1, x: 0, y: 0 },
+    backTransform: { scale: 1, x: 0, y: 0 },
+  });
   const unitPrice = calcUnitPrice(design?.front, design?.back);
 
   const saveDesign = async (): Promise<string | null> => {
     if (!design.front && !design.back) return null;
     try {
+      const [front, back] = await Promise.all([
+        design.front ? renderPrintSheet(design.front, design.frontTransform) : Promise.resolve(null),
+        design.back ? renderPrintSheet(design.back, design.backTransform) : Promise.resolve(null),
+      ]);
       const res = await fetch('/api/designs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ front: design.front, back: design.back, productId: id }),
+        body: JSON.stringify({ front, back, productId: id }),
       });
       const data = await res.json();
       return data.id || null;
@@ -50,7 +64,8 @@ export default function ProductPage() {
   };
 
   const addToCart = async () => {
-    if (!size) { setError('Bitte Größe wählen'); return; }
+    if (!size) { setError(t.product.selectSize); return; }
+    if (!design.front && !design.back) { setError(t.shop.needDesign); return; }
     setError('');
     const designId = await saveDesign();
     try {
@@ -74,7 +89,8 @@ export default function ProductPage() {
   };
 
   const buyNow = async () => {
-    if (!size) { setError('Bitte Größe wählen'); return; }
+    if (!size) { setError(t.product.selectSize); return; }
+    if (!design.front && !design.back) { setError(t.shop.needDesign); return; }
     setError('');
     setLoading(true);
     try {
@@ -115,14 +131,14 @@ export default function ProductPage() {
         {/* DESIGN-EDITOR */}
         <div className="editor-col" style={{ position: 'sticky', top: '5rem', alignSelf: 'start' }}>
           <p className="plt-label" style={{ marginBottom: '0.75rem', color: '#aaa' }}>
-            Druckfläche {PRINT_SPEC.widthMm} × {PRINT_SPEC.heightMm} mm · vorne & hinten
+            {t.shop.printZone.replace('{size}', formatSizeMm())}
           </p>
           <DesignStudio shirtColor={activeColor.hex} onDesignChange={setDesign} />
         </div>
 
         {/* KAUFBEREICH */}
         <div>
-          <p className="plt-label" style={{ color: '#e2001a', marginBottom: '0.5rem' }}>Premium T-Shirt</p>
+          <p className="plt-label" style={{ color: '#e2001a', marginBottom: '0.5rem' }}>{t.shop.premium}</p>
           <h1 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '0.5rem', color: '#fff', letterSpacing: '-0.02em', lineHeight: 1.1 }}>{product.name}</h1>
           <p style={{ fontSize: '1.75rem', fontWeight: 800, marginBottom: '1.5rem', color: '#fff' }}>€{unitPrice.toFixed(2)}</p>
 
@@ -144,7 +160,7 @@ export default function ProductPage() {
 
           {/* GRÖSSE */}
           <div style={{ marginBottom: '1.25rem' }}>
-            <p className="plt-label" style={{ marginBottom: '0.6rem' }}>Größe wählen</p>
+            <p className="plt-label" style={{ marginBottom: '0.6rem' }}>{t.product.size}</p>
             <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
               {product.sizes.map((s) => (
                 <button key={s} type="button" onClick={() => setSize(s)} className={`plt-size-btn${size === s ? ' plt-size-btn-active' : ''}`}>
@@ -154,7 +170,7 @@ export default function ProductPage() {
             </div>
             <details style={{ marginTop: '0.7rem' }}>
               <summary style={{ cursor: 'pointer', color: '#888', fontSize: '0.8rem', userSelect: 'none' }}>
-                📏 Größentabelle
+                📏 {t.product.sizeChart}
               </summary>
               <div style={{ marginTop: '0.6rem', background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', padding: '0.9rem', fontSize: '0.8rem' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', color: '#ccc' }}>
@@ -178,7 +194,7 @@ export default function ProductPage() {
 
           {/* SCHNITT */}
           <div style={{ marginBottom: '1.5rem' }}>
-            <p className="plt-label" style={{ marginBottom: '0.4rem' }}>Schnitt</p>
+            <p className="plt-label" style={{ marginBottom: '0.4rem' }}>{t.product.fit}</p>
             <p style={{ fontSize: '0.95rem', color: '#fff', fontWeight: 600 }}>Unisex</p>
           </div>
 
@@ -187,27 +203,22 @@ export default function ProductPage() {
           {/* BUTTONS */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
             <button type="button" onClick={buyNow} disabled={loading} className="plt-btn-primary" style={{ width: '100%', fontSize: '1rem', padding: '1rem' }}>
-              {loading ? 'Weiterleitung...' : `JETZT KAUFEN — €${unitPrice.toFixed(2)}`}
+              {loading ? t.cart.redirecting : `${t.product.buyNow} — €${unitPrice.toFixed(2)}`}
             </button>
             <p style={{ color: '#666', fontSize: '0.72rem', textAlign: 'center', marginTop: '0.6rem', lineHeight: 1.5 }}>
-              Individuell bedruckte Ware — kein Widerrufsrecht gem. § 312g Abs. 2 Nr. 1 BGB. Kostenloser Ersatz bei Mängeln.
+              {t.shop.legal}
             </p>
             <button type="button" onClick={addToCart} className="plt-btn-secondary" style={{ width: '100%', padding: '0.9rem', color: added ? '#4ade80' : '#fff' }}>
-              {added ? '✓ Im Warenkorb' : '+ In den Warenkorb'}
+              {added ? `✓ ${t.product.added}` : `+ ${t.product.addCart}`}
             </button>
           </div>
 
           {/* INFO */}
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1.25rem' }}>
-            {[
-              { key: 'stripe', text: 'Sichere Zahlung via Stripe' },
-              { key: 'pod', text: 'Print-on-Demand — Produktion nach Bestellung' },
-              { key: 'shipping', text: 'Versand wählbar (DHL/Hermes/DPD) — DE & RO' },
-              { key: 'quality', text: 'Qualitätsgarantie' },
-            ].map(({ key, text }) => (
-              <div key={text} style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.6rem', alignItems: 'center' }}>
+            {t.trust.map(({ key, label, sub }) => (
+              <div key={key} style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.6rem', alignItems: 'center' }}>
                 <TrustIcon name={key} size={20} />
-                <span style={{ color: '#666', fontSize: '0.78rem' }}>{text}</span>
+                <span style={{ color: '#666', fontSize: '0.78rem' }}>{label} — {sub}</span>
               </div>
             ))}
           </div>

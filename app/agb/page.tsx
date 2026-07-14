@@ -20,7 +20,7 @@ export default function AGBPage() {
         <p style={S.p}>Die Darstellung der Produkte im Shop stellt kein rechtlich bindendes Angebot dar, sondern eine Aufforderung zur Bestellung. Mit Abschluss des Bezahlvorgangs (Stripe Checkout) gibt der Kunde ein verbindliches Angebot ab. Der Vertrag kommt mit der Bestellbestätigung per E-Mail zustande.</p>
 
         <h2 style={S.h2}>3. Produkte &amp; Produktion</h2>
-        <p style={S.p}>Alle Shirts werden im Print-on-Demand-Verfahren nach Kundenspezifikation individuell angefertigt: Das vom Kunden hochgeladene Motiv wird per Sublimationsdruck auf das gewählte Shirt gedruckt. Eine Lagerproduktion findet nicht statt.</p>
+        <p style={S.p}>Alle Pieces werden nach Kundenspezifikation maßgefertigt: Das hochgeladene Motiv wird per Sublimationsdruck in die Faser eingebracht. Eine Lagerproduktion findet nicht statt.</p>
 
         <h2 style={S.h2}>4. Preise &amp; Zahlung</h2>
         <p style={S.p}>Alle Preise verstehen sich als Endpreise in Euro inkl. gesetzlicher Umsatzsteuer, zzgl. Versandkosten (werden im Checkout ausgewiesen). Die Zahlung erfolgt über Stripe.</p>

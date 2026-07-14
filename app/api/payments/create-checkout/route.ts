@@ -82,6 +82,14 @@ export async function POST(request: Request) {
       );
     }
 
+    const missingDesign = items.some((item) => !item.designId);
+    if (missingDesign) {
+      return NextResponse.json(
+        { ok: false, error: "Jeder Artikel benötigt ein Design (designId)." },
+        { status: 400 }
+      );
+    }
+
     // === SERVERSEITIGE PREISBERECHNUNG — Client-Beträge werden ignoriert ===
     const country: Country = body.country === "RO" ? "RO" : "DE";
     const wantedId = String(body.shippingId || "").toLowerCase();

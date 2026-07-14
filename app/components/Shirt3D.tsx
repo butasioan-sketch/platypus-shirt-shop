@@ -35,7 +35,7 @@ function CustomerPrint({ mesh, print, front }:
     const bb = mesh.geometry.boundingBox as THREE.Box3;
     const c = new THREE.Vector3(); bb.getCenter(c);
     const s = new THREE.Vector3(); bb.getSize(s);
-    const { w, h } = getDecalDimensions({ x: s.x, y: s.y, z: s.z }, print.scale || 1);
+    const { w, h } = getDecalDimensions({ x: s.x, y: s.y, z: s.z }, print.scale || 1, front ? 'front' : 'back');
     const position = getDecalPosition(
       { x: c.x, y: c.y, z: c.z },
       { x: s.x, y: s.y, z: s.z },

@@ -21,7 +21,7 @@ export default function VersandPage() {
         </div>
         <div style='background:#121212;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1.5rem'>
           <h2 style='font-size:1.125rem;margin-bottom:0.5rem'>Produktion</h2>
-          <p style='color:#888;font-size:0.875rem'>Print-on-Demand: jedes Shirt wird nach Bestellung gedruckt. Produktionszeit: 2–3 Werktage.</p>
+          <p style='color:#888;font-size:0.875rem'>Maßanfertigung: jedes Piece wird nach Bestellung gefertigt. Produktionszeit: 2–3 Werktage.</p>
         </div>
         <div style='background:#121212;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1.5rem'>
           <h2 style='font-size:1.125rem;margin-bottom:0.5rem'>Reklamation</h2>

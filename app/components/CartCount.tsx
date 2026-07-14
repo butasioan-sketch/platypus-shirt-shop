@@ -1,10 +1,13 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function CartCount() {
+  const pathname = usePathname();
   const [count, setCount] = useState(0);
   const [total, setTotal] = useState(0);
+  const showPrice = pathname?.startsWith('/product/') || pathname === '/cart';
 
   const update = () => {
     try {
@@ -36,7 +39,7 @@ export default function CartCount() {
       {count > 0 ? (
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
           <span style={{ background: '#fff', color: '#e2001a', borderRadius: '999px', fontSize: '0.7rem', fontWeight: 800, padding: '0.05rem 0.45rem' }}>{count}</span>
-          <span>€{total.toFixed(2)}</span>
+          {showPrice && <span>€{total.toFixed(2)}</span>}
         </span>
       ) : (
         <span style={{ color: '#888' }}>Warenkorb</span>

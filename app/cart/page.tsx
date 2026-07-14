@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import SiteHeader from '@/app/components/SiteHeader';
+import { useLocale } from '@/app/components/LocaleProvider';
 import { SHIPPING_OPTIONS, COUNTRIES, DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY, getShipping, type Country } from '@/lib/shipping';
 import { BASE_PRICE } from '@/lib/pricing';
 
@@ -17,6 +18,7 @@ interface CartItem {
 }
 
 export default function CartPage() {
+  const { t } = useLocale();
   const [items, setItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -42,6 +44,11 @@ export default function CartPage() {
 
   const checkout = async () => {
     if (items.length === 0) return;
+    const missingDesign = items.some((i) => !(i as CartItem & { designId?: string }).designId);
+    if (missingDesign) {
+      setError(t.cart.needDesign);
+      return;
+    }
     setLoading(true);
     setError('');
     try {
@@ -78,12 +85,12 @@ export default function CartPage() {
       <SiteHeader />
 
       <div style={{ maxWidth: '700px', margin: '3rem auto', padding: '0 2rem 6rem' }}>
-        <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '2rem' }}>Warenkorb</h1>
+        <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '2rem' }}>{t.cart.title}</h1>
 
         {items.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '4rem', color: '#888' }}>
-            <p style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Warenkorb ist leer</p>
-            <Link href="/" style={{ color: '#fff', fontSize: '0.875rem' }}>← Zurück zum Shop</Link>
+            <p style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>{t.cart.empty}</p>
+            <Link href="/product/1" style={{ color: '#fff', fontSize: '0.875rem' }}>{t.cart.back}</Link>
           </div>
         ) : (
           <>
@@ -139,20 +146,20 @@ export default function CartPage() {
 
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1.5rem', marginBottom: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', color: '#888' }}>
-                <span>Zwischensumme</span><span>€{subtotal.toFixed(2)}</span>
+                <span>{t.cart.subtotal}</span><span>€{subtotal.toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', color: '#888' }}>
-                <span>Versand</span><span>€{shipping.toFixed(2)}</span>
+                <span>{t.cart.shipping}</span><span>€{shipping.toFixed(2)}</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 800, fontSize: '1.25rem' }}>
-                <span>Gesamt</span><span>€{total.toFixed(2)}</span>
+                <span>{t.cart.total}</span><span>€{total.toFixed(2)}</span>
               </div>
             </div>
 
             {error && <p style={{ color: '#f87171', marginBottom: '1rem', fontSize: '0.875rem' }}>{error}</p>}
 
             <button type="button" onClick={checkout} disabled={loading} className="plt-btn-primary" style={{ width: '100%', padding: '1.1rem', fontSize: '1rem' }}>
-              {loading ? 'Weiterleitung zu Stripe...' : `JETZT BEZAHLEN — €${total.toFixed(2)}`}
+              {loading ? t.cart.redirecting : `${t.cart.checkout} — €${total.toFixed(2)}`}
             </button>
             <p style={{ color: '#666', fontSize: '0.72rem', textAlign: 'center', marginTop: '0.6rem', lineHeight: 1.5 }}>
               Individuell bedruckte Ware — kein Widerrufsrecht gem. § 312g Abs. 2 Nr. 1 BGB. Kostenloser Ersatz bei Mängeln.
