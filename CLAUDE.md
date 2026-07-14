@@ -1,7 +1,8 @@
 # PLATYPUS — Hinweise für Claude / AI-Assistenten
 
 **Onboarding:** `~/Schreibtisch/MeinVault/ClaudeData/PLATYPUS-ONBOARDING.md`  
-**Bug-Audit-Liste:** `~/Schreibtisch/MeinVault/ClaudeData/BUG-AUDIT-LIST.md` ← zuerst abarbeiten
+**Bug-Audit-Liste:** `~/Schreibtisch/MeinVault/ClaudeData/BUG-AUDIT-LIST.md`  
+**Roadmap Phase 2:** `~/Schreibtisch/MeinVault/ClaudeData/ROADMAP-PHASE2.md` ← Design, Marketing, Cart, Social
 
 ## Projekt
 - Pfad: `~/Schreibtisch/platypus-shirt-shop`
