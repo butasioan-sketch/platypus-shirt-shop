@@ -14,7 +14,7 @@ const DesignStudio = dynamic(() => import('@/app/components/DesignStudio'), { ss
 import type { DesignState } from '@/app/components/DesignStudio';
 import { calcUnitPrice } from '@/lib/pricing';
 import { renderPrintSheet } from '@/lib/print-export';
-import { trackAddToCart } from '@/lib/analytics';
+import { trackAddToCart, trackViewProduct } from '@/lib/analytics';
 
 export default function ProductPage() {
   const { t, locale } = useLocale();
@@ -45,6 +45,11 @@ export default function ProductPage() {
     if (preColor) setColorKey(preColor);
     if (params.has('edit')) setEditHint(true);
   }, []);
+
+  useEffect(() => {
+    if (product) trackViewProduct({ id, name: product.name?.de ?? id, price: 39.99 });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   if (!product) notFound();
 
@@ -209,6 +214,28 @@ export default function ProductPage() {
               Größe & Farbe vorausgewählt. Lade dein Motiv erneut hoch um das Piece zu aktualisieren.
             </div>
           )}
+
+          {/* Design-Status Indikator */}
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '0.6rem',
+            padding: '0.65rem 0.9rem', borderRadius: '10px', marginBottom: '1rem',
+            background: (design.front || design.back) ? 'rgba(74,222,128,0.08)' : 'rgba(255,255,255,0.03)',
+            border: `1px solid ${(design.front || design.back) ? 'rgba(74,222,128,0.25)' : 'rgba(255,255,255,0.08)'}`,
+            fontSize: '0.78rem', fontWeight: 600,
+            color: (design.front || design.back) ? '#4ade80' : '#666',
+          }}>
+            <span style={{ fontSize: '1rem' }}>{(design.front || design.back) ? '✓' : '←'}</span>
+            <span>
+              {design.front && design.back
+                ? `${t.studio.front} & ${t.studio.back} — ${t.studio.twoSides}`
+                : design.front
+                  ? `${t.studio.front} — ${t.studio.oneSide}`
+                  : design.back
+                    ? `${t.studio.back} — ${t.studio.oneSide}`
+                    : t.shop.uploadFront}
+            </span>
+          </div>
+
           {error && <p style={{ color: '#f87171', fontSize: '0.875rem', marginBottom: '1rem' }}>{error}</p>}
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>
@@ -230,6 +257,24 @@ export default function ProductPage() {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Mobile Sticky Buy Bar */}
+      <div className="mobile-sticky-cta" style={{
+        position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50,
+        background: 'rgba(10,10,10,0.96)', backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        borderTop: '1px solid rgba(255,255,255,0.08)',
+        padding: '0.85rem 1.25rem',
+        flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: '1rem',
+      }}>
+        <div>
+          <p style={{ fontSize: '0.7rem', color: '#666', margin: 0 }}>{productName}</p>
+          <p style={{ fontSize: '1.2rem', fontWeight: 800, color: '#fff', margin: 0 }}>€{unitPrice.toFixed(2)}</p>
+        </div>
+        <button type="button" onClick={buyNow} disabled={loading} className="plt-btn-primary" style={{ padding: '0.75rem 1.5rem', fontSize: '0.9rem', flexShrink: 0 }}>
+          {loading ? t.cart.redirecting : t.product.buyNow}
+        </button>
       </div>
     </div>
   );

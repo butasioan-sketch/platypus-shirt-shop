@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import SiteHeader from '@/app/components/SiteHeader';
 import { useLocale } from '@/app/components/LocaleProvider';
+import { trackCheckoutStarted } from '@/lib/analytics';
 import { SHIPPING_OPTIONS, COUNTRIES, DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY, getShipping, type Country } from '@/lib/shipping';
 import { BASE_PRICE } from '@/lib/pricing';
 
@@ -94,6 +95,8 @@ export default function CartPage() {
     if (items.length === 0 || missingDesign) return;
     setLoading(true);
     setError('');
+    trackCheckoutStarted({ items: items.reduce((s, i) => s + i.quantity, 0), total });
+    sessionStorage.setItem('plt_pending_purchase', String(total));
     try {
       const res = await fetch('/api/payments/create-checkout', {
         method: 'POST',

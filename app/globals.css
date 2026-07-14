@@ -112,9 +112,11 @@ input, select, textarea {
   border-radius: 3px;
 }
 
+.mobile-sticky-cta { display: none; }
+
 @media (max-width: 768px) {
   .desktop-only { display: none !important; }
-  .mobile-sticky-cta { display: block !important; }
+  .mobile-sticky-cta { display: flex !important; }
   .product-grid {
     grid-template-columns: 1fr !important;
     padding: 1rem !important;

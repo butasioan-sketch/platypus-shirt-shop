@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { trackPurchase } from '@/lib/analytics';
 
 export default function PaymentSuccessBanner() {
   const [visible, setVisible] = useState(false);
@@ -13,6 +14,12 @@ export default function PaymentSuccessBanner() {
     localStorage.removeItem('platypus_cart');
     window.dispatchEvent(new Event('cart-updated'));
     window.history.replaceState({}, '', '/');
+
+    const storedTotal = parseFloat(sessionStorage.getItem('plt_pending_purchase') ?? '0');
+    if (storedTotal > 0) {
+      trackPurchase({ value: storedTotal });
+      sessionStorage.removeItem('plt_pending_purchase');
+    }
 
     const timer = setTimeout(() => setVisible(false), 10000);
     return () => clearTimeout(timer);
