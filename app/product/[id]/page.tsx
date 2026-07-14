@@ -26,6 +26,7 @@ export default function ProductPage() {
   const [colorKey, setColorKey] = useState('weiss');
   const activeColor = SHIRT_COLORS.find(c => c.key === colorKey) || SHIRT_COLORS[0];
   const [loading, setLoading] = useState(false);
+  const [addLoading, setAddLoading] = useState(false);
   const [added, setAdded] = useState(false);
   const [error, setError] = useState('');
   const [design, setDesign] = useState<DesignState>({
@@ -53,35 +54,35 @@ export default function ProductPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ front, back, productId: id }),
       });
+      if (!res.ok) throw new Error(`/api/designs ${res.status}`);
       const data = await res.json();
-      return data.id || null;
-    } catch { return null; }
+      if (!data.id) throw new Error('Kein Design-ID erhalten');
+      return data.id;
+    } catch (err) {
+      console.error('[saveDesign]', err);
+      return null;
+    }
   };
 
   const addToCart = async () => {
     if (!size) { setError(t.product.selectSize); return; }
     if (!design.front && !design.back) { setError(t.shop.needDesign); return; }
     setError('');
-    const designId = await saveDesign();
+    setAddLoading(true);
     try {
+      const designId = await saveDesign();
+      if (!designId) { setError(t.errors.saveDesign); return; }
       const cart = JSON.parse(localStorage.getItem('platypus_cart') || '[]');
-      const existing = designId ? -1 : cart.findIndex(
-        (i: { id: string; size: string; designId?: string }) =>
-          i.id === id && i.size === size && !i.designId
-      );
-      if (existing >= 0) {
-        cart[existing].quantity = (cart[existing].quantity || 1) + 1;
-      } else {
-        cart.push({
-          id, name: productName, price: unitPrice, size,
-          fit: t.product.unisex, color: colorLabel, quantity: 1, designId,
-        });
-      }
+      cart.push({
+        id, name: productName, price: unitPrice, size,
+        fit: t.product.unisex, color: colorLabel, quantity: 1, designId,
+      });
       localStorage.setItem('platypus_cart', JSON.stringify(cart));
       trackAddToCart({ id, name: productName, price: unitPrice, size, color: colorLabel, quantity: 1 });
       setAdded(true);
       setTimeout(() => setAdded(false), 2000);
     } catch { setError(t.errors.addCart); }
+    finally { setAddLoading(false); }
   };
 
   const buyNow = async () => {
@@ -91,6 +92,7 @@ export default function ProductPage() {
     setLoading(true);
     try {
       const designId = await saveDesign();
+      if (!designId) { setError(t.errors.saveDesign); return; }
       const res = await fetch('/api/payments/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -193,8 +195,8 @@ export default function ProductPage() {
               {loading ? t.cart.redirecting : `${t.product.buyNow} — €${unitPrice.toFixed(2)}`}
             </button>
             <p style={{ color: '#666', fontSize: '0.72rem', textAlign: 'center', marginTop: '0.6rem', lineHeight: 1.5 }}>{t.shop.legal}</p>
-            <button type="button" onClick={addToCart} className="plt-btn-secondary" style={{ width: '100%', padding: '0.9rem', color: added ? '#4ade80' : '#fff' }}>
-              {added ? `✓ ${t.product.added}` : `+ ${t.product.addCart}`}
+            <button type="button" onClick={addToCart} disabled={addLoading} className="plt-btn-secondary" style={{ width: '100%', padding: '0.9rem', color: added ? '#4ade80' : '#fff' }}>
+              {addLoading ? '...' : added ? `✓ ${t.product.added}` : `+ ${t.product.addCart}`}
             </button>
           </div>
 

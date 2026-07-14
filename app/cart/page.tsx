@@ -70,14 +70,10 @@ export default function CartPage() {
   const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
   const shipping = items.length > 0 ? getShipping(shipId, country) : 0;
   const total = subtotal + shipping;
+  const missingDesign = items.some((i) => !i.designId);
 
   const checkout = async () => {
-    if (items.length === 0) return;
-    const missingDesign = items.some((i) => !i.designId);
-    if (missingDesign) {
-      setError(t.cart.needDesign);
-      return;
-    }
+    if (items.length === 0 || missingDesign) return;
     setLoading(true);
     setError('');
     try {
@@ -113,7 +109,7 @@ export default function CartPage() {
     <div style={{ minHeight: '100vh', background: 'radial-gradient(1000px 500px at 50% -10%, rgba(226,0,26,0.08), transparent 60%), linear-gradient(180deg, #0c0c0d 0%, #0a0a0a 100%)', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       <SiteHeader />
 
-      <div style={{ maxWidth: '700px', margin: '3rem auto', padding: '0 2rem 6rem' }}>
+      <div style={{ maxWidth: '700px', margin: '0 auto', padding: '2rem 2rem 6rem' }}>
         <h1 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '2rem' }}>{t.cart.title}</h1>
 
         {items.length === 0 ? (
@@ -125,21 +121,29 @@ export default function CartPage() {
           <>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
               {items.map((item, i) => (
-                <div key={i} className="plt-card" style={{ padding: '1.25rem', display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                  <DesignThumb designId={item.designId} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontWeight: 700, marginBottom: '0.25rem' }}>{item.name}</p>
-                    <p style={{ color: '#999', fontSize: '0.8rem' }}>{t.product.size}: {item.size}{item.color ? ' | ' + t.product.color + ': ' + item.color : ''} | {item.fit || t.product.unisex} | {t.cart.qty}: {item.quantity}</p>
-                    <p style={{ color: '#666', fontSize: '0.72rem', marginTop: '0.2rem' }}>
-                      {item.price > BASE_PRICE
-                        ? <>Basis €{BASE_PRICE.toFixed(2)} + Druck €{(item.price - BASE_PRICE).toFixed(2)}</>
-                        : <>Basis €{BASE_PRICE.toFixed(2)}</>} je Stück
-                    </p>
+                <div key={i} className="plt-card" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                    <DesignThumb designId={item.designId} />
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontWeight: 700, marginBottom: '0.25rem' }}>{item.name}</p>
+                      <p style={{ color: '#999', fontSize: '0.8rem' }}>{t.product.size}: {item.size}{item.color ? ' | ' + t.product.color + ': ' + item.color : ''} | {item.fit || t.product.unisex} | {t.cart.qty}: {item.quantity}</p>
+                      <p style={{ color: '#666', fontSize: '0.72rem', marginTop: '0.2rem' }}>
+                        {item.price > BASE_PRICE
+                          ? <>Basis €{BASE_PRICE.toFixed(2)} + Druck €{(item.price - BASE_PRICE).toFixed(2)}</>
+                          : <>Basis €{BASE_PRICE.toFixed(2)}</>} je Stück
+                      </p>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexShrink: 0 }}>
+                      <p style={{ fontWeight: 700 }}>€{(item.price * item.quantity).toFixed(2)}</p>
+                      <button onClick={() => remove(i)} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '1.25rem' }}>×</button>
+                    </div>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', flexShrink: 0 }}>
-                    <p style={{ fontWeight: 700 }}>€{(item.price * item.quantity).toFixed(2)}</p>
-                    <button onClick={() => remove(i)} style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: '1.25rem' }}>×</button>
-                  </div>
+                  {!item.designId && (
+                    <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '8px', padding: '0.6rem 0.85rem', fontSize: '0.78rem', color: '#fca5a5', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                      <span>⚠ Kein Motiv — Piece kann nicht bestellt werden.</span>
+                      <a href={`/product/${item.id}`} style={{ color: '#e2001a', fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap' }}>Motiv im Atelier ergänzen →</a>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -189,9 +193,14 @@ export default function CartPage() {
               </p>
             </div>
 
+            {missingDesign && (
+              <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '10px', padding: '0.75rem 1rem', marginBottom: '1rem', fontSize: '0.82rem', color: '#fca5a5' }}>
+                {t.cart.needDesign}
+              </div>
+            )}
             {error && <p style={{ color: '#f87171', marginBottom: '1rem', fontSize: '0.875rem' }}>{error}</p>}
 
-            <button type="button" onClick={checkout} disabled={loading} className="plt-btn-primary" style={{ width: '100%', padding: '1.1rem', fontSize: '1rem' }}>
+            <button type="button" onClick={checkout} disabled={loading || missingDesign} className="plt-btn-primary" style={{ width: '100%', padding: '1.1rem', fontSize: '1rem', opacity: missingDesign ? 0.4 : 1, cursor: missingDesign ? 'not-allowed' : 'pointer' }}>
               {loading ? t.cart.redirecting : `${t.cart.checkout} — €${total.toFixed(2)}`}
             </button>
             <p style={{ color: '#666', fontSize: '0.72rem', textAlign: 'center', marginTop: '0.6rem', lineHeight: 1.5 }}>

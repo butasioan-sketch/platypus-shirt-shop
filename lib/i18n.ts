@@ -69,6 +69,7 @@ export const translations = {
       addCart: 'Fehler beim Hinzufügen',
       checkout: 'Checkout fehlgeschlagen. Bitte erneut versuchen.',
       connection: 'Verbindungsfehler.',
+      saveDesign: 'Motiv konnte nicht gespeichert werden. Bitte erneut versuchen.',
     },
     cart: {
       title: 'Warenkorb',
@@ -209,6 +210,7 @@ export const translations = {
       addCart: 'Eroare la adăugare',
       checkout: 'Checkout eșuat. Încearcă din nou.',
       connection: 'Eroare de conexiune.',
+      saveDesign: 'Designul nu a putut fi salvat. Încearcă din nou.',
     },
     cart: {
       title: 'Coș',
@@ -349,6 +351,7 @@ export const translations = {
       addCart: 'Could not add to cart',
       checkout: 'Checkout failed. Please try again.',
       connection: 'Connection error.',
+      saveDesign: 'Design could not be saved. Please try again.',
     },
     cart: {
       title: 'Cart',
