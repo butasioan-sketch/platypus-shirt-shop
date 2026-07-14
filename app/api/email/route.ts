@@ -1,5 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+const ABANDONED_TEXTS: Record<string, { subject: string; title: string; body: string; cta: string }> = {
+  de: {
+    subject: 'Dein Warenkorb wartet noch auf dich',
+    title: 'Du hast etwas vergessen?',
+    body: 'Dein Motiv liegt noch im Warenkorb. Hol es dir, solange der Vorrat reicht — jedes Piece wird einzeln für dich gefertigt.',
+    cta: 'Zum Warenkorb',
+  },
+  ro: {
+    subject: 'Coșul tău te așteaptă',
+    title: 'Ai uitat ceva?',
+    body: 'Motivul tău mai stă în coș. Finalizează comanda — fiecare piesă este creată special pentru tine.',
+    cta: 'Mergi la coș',
+  },
+  en: {
+    subject: 'Your cart is still waiting',
+    title: 'You left something behind?',
+    body: 'Your design is still in your cart. Complete your order — every piece is made to order, just for you.',
+    cta: 'Go to cart',
+  },
+};
+
 const STATUS_TEXTS: Record<string, Record<string, { subject: string; title: string; body: string }>> = {
   production: {
     de: { subject: 'Deine Bestellung ist in Produktion', title: 'Es geht los!', body: 'Dein Shirt wird jetzt bedruckt. Wir melden uns, sobald es versendet wird.' },
@@ -60,7 +81,7 @@ interface OrderEmailData {
   locale: string;
   designId?: string;
   designIds?: string;
-  type?: 'confirmation' | 'production' | 'shipped' | 'delivered' | 'admin_alert';
+  type?: 'confirmation' | 'production' | 'shipped' | 'delivered' | 'admin_alert' | 'abandoned';
   reason?: 'missing_design' | 'on_hold';
   missingDesign?: boolean;
 }
@@ -159,6 +180,35 @@ export async function POST(request: NextRequest) {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ from: 'PLATYPUS <onboarding@resend.dev>', to: data.email, subject: template.subject, html: template.html }),
+      });
+      return NextResponse.json({ sent: res.ok });
+    }
+
+    if (data.type === 'abandoned') {
+      const t = ABANDONED_TEXTS[data.locale] || ABANDONED_TEXTS.de;
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://platypus-shirt-shop.vercel.app';
+      const html = `
+      <div style="background:#0a0a0a;color:#fff;font-family:system-ui,sans-serif;padding:40px 20px;max-width:600px;margin:0 auto">
+        <p style="font-size:13px;letter-spacing:0.2em;color:#e2001a;margin-bottom:8px;font-weight:700">PLATYPUS</p>
+        <h1 style="font-size:22px;font-weight:900;margin-bottom:12px;letter-spacing:-0.02em">${t.title}</h1>
+        <p style="color:#888;margin-bottom:28px;line-height:1.6">${t.body}</p>
+        <a href="${siteUrl}/cart" style="display:inline-block;background:#e2001a;color:#fff;text-decoration:none;padding:14px 28px;border-radius:10px;font-weight:700;font-size:14px;margin-bottom:24px">
+          ${t.cta} →
+        </a>
+        <p style="color:#444;font-size:12px;line-height:1.6;margin-top:24px">
+          <a href="mailto:butasioan@googlemail.com" style="color:#888;text-decoration:none">Kontakt</a>
+        </p>
+      </div>`;
+      const subject = `PLATYPUS — ${t.subject}`;
+
+      if (!apiKey) {
+        console.log('Abandoned (Demo):', subject, '→', data.email);
+        return NextResponse.json({ sent: false, demo: true, subject });
+      }
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ from: 'PLATYPUS <onboarding@resend.dev>', to: data.email, subject, html }),
       });
       return NextResponse.json({ sent: res.ok });
     }

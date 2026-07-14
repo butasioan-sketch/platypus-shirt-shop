@@ -104,5 +104,34 @@ export async function POST(request: NextRequest) {
     }
   }
 
+  if (event.type === 'checkout.session.expired') {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const customerEmail = session.customer_details?.email ?? session.customer_email;
+
+    if (customerEmail) {
+      try {
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://platypus-shirt-shop.vercel.app';
+        const locale = session.metadata?.locale || 'de';
+        const total = (session.amount_total || 0) / 100;
+
+        await fetch(`${siteUrl}/api/email`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'abandoned',
+            email: customerEmail,
+            orderId: session.id,
+            total,
+            locale,
+            items: [],
+          }),
+        });
+        console.log('Abandoned cart email sent to:', customerEmail);
+      } catch (err) {
+        console.error('Abandoned cart email failed:', err);
+      }
+    }
+  }
+
   return NextResponse.json({ received: true });
 }
