@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Logo from '@/app/components/Logo';
 import { useLocale } from '@/app/components/LocaleProvider';
+import SiteHeader from '@/app/components/SiteHeader';
 import { getFaqContent } from '@/lib/faq-content';
 
 export default function FaqPage() {
@@ -13,12 +13,9 @@ export default function FaqPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'radial-gradient(1000px 500px at 50% -10%, rgba(226,0,26,0.08), transparent 60%), linear-gradient(180deg, #0c0c0d 0%, #0a0a0a 100%)', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-      <header style={{ padding: '1.1rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Logo size={44} />
-        <Link href="/" style={{ color: '#888', textDecoration: 'none', fontSize: '0.875rem' }}>← Atelier</Link>
-      </header>
+      <SiteHeader />
 
-      <div style={{ maxWidth: '720px', margin: '0 auto', padding: '3rem 2rem 5rem' }}>
+      <main id="main-content" style={{ maxWidth: '720px', margin: '0 auto', padding: '3rem 2rem 5rem' }}>
         <p style={{ color: '#e2001a', fontSize: '0.72rem', letterSpacing: '0.22em', marginBottom: '0.6rem', textTransform: 'uppercase', fontWeight: 600 }}>{meta.label}</p>
         <h1 style={{ fontSize: '2.4rem', fontWeight: 900, marginBottom: '0.6rem', color: '#fff', letterSpacing: '-0.02em' }}>{meta.title}</h1>
         <p style={{ color: '#999', fontSize: '1rem', marginBottom: '2.5rem', lineHeight: 1.6 }}>{meta.sub}</p>
@@ -52,7 +49,7 @@ export default function FaqPage() {
             {meta.cta}
           </Link>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

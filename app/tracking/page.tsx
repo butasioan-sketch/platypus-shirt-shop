@@ -2,8 +2,7 @@
 import { SHIPPING_OPTIONS } from '@/lib/shipping';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import Logo from '@/app/components/Logo';
+import SiteHeader from '@/app/components/SiteHeader';
 
 interface Order {
   id: string; status: string; createdAt: string; updatedAt: string;
@@ -45,12 +44,9 @@ export default function TrackingPage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'radial-gradient(1000px 500px at 50% -10%, rgba(226,0,26,0.08), transparent 60%), linear-gradient(180deg, #0c0c0d 0%, #0a0a0a 100%)', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
-      <header style={{ padding: '1.1rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Logo size={44} />
-        <Link href="/" style={{ color: '#888', textDecoration: 'none', fontSize: '0.875rem' }}>← Shop</Link>
-      </header>
+      <SiteHeader />
 
-      <div style={{ maxWidth: '600px', margin: '0 auto', padding: '3rem 2rem' }}>
+      <main id="main-content" style={{ maxWidth: '600px', margin: '0 auto', padding: '3rem 2rem' }}>
         <p style={{ color: '#e2001a', fontSize: '0.72rem', letterSpacing: '0.22em', marginBottom: '0.6rem', textTransform: 'uppercase', fontWeight: 600 }}>Sendungsverfolgung</p>
         <h1 style={{ fontSize: '2.2rem', fontWeight: 900, marginBottom: '0.5rem', color: '#fff', letterSpacing: '-0.02em' }}>Bestellung verfolgen</h1>
         <p style={{ color: '#999', fontSize: '0.95rem', marginBottom: '2rem', lineHeight: 1.6 }}>
@@ -123,7 +119,7 @@ export default function TrackingPage() {
             </div>
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 }

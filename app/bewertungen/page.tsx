@@ -1,8 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-import Logo from '@/app/components/Logo';
 import { useLocale } from '@/app/components/LocaleProvider';
+import SiteHeader from '@/app/components/SiteHeader';
 import ReviewForm from '@/app/components/reviews/ReviewForm';
 import ReviewsSection from '@/app/components/reviews/ReviewsSection';
 
@@ -16,12 +15,9 @@ export default function BewertungenPage() {
       color: '#fff',
       fontFamily: 'system-ui, -apple-system, sans-serif',
     }}>
-      <header style={{ padding: '1.1rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Logo size={44} />
-        <Link href="/" style={{ color: '#888', textDecoration: 'none', fontSize: '0.875rem' }}>← Atelier</Link>
-      </header>
+      <SiteHeader />
 
-      <div style={{ maxWidth: '1000px', margin: '0 auto', padding: '3rem 2rem 5rem' }}>
+      <main id="main-content" style={{ maxWidth: '1000px', margin: '0 auto', padding: '3rem 2rem 5rem' }}>
         <ReviewsSection locale={locale} showLink={false} />
 
         <div style={{ marginTop: '3.5rem', display: 'grid', gap: '2rem', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', alignItems: 'start' }}>
@@ -43,7 +39,7 @@ export default function BewertungenPage() {
             <p style={{ color: '#aaa', fontSize: '0.88rem', lineHeight: 1.65, margin: 0 }}>{t.reviews.moderationNote}</p>
           </aside>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
