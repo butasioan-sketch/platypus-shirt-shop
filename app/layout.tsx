@@ -63,6 +63,10 @@ const organizationSchema = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="de">
+      <head>
+        <link rel="preconnect" href="https://js.stripe.com" />
+        <link rel="preconnect" href="https://api.resend.com" crossOrigin="anonymous" />
+      </head>
       <body style={{ margin: 0, padding: 0, background: '#0a0a0a', color: '#fff' }}>
         <a href="#main-content" className="skip-to-content">Zum Inhalt springen</a>
         <script
