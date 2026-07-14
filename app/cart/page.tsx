@@ -5,7 +5,7 @@ import Link from 'next/link';
 import SiteHeader from '@/app/components/SiteHeader';
 import { useLocale } from '@/app/components/LocaleProvider';
 import { trackCheckoutStarted } from '@/lib/analytics';
-import { SHIPPING_OPTIONS, COUNTRIES, DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY, getShipping, type Country } from '@/lib/shipping';
+import { SHIPPING_OPTIONS, COUNTRIES, DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY, getShipping, type Country, type ShippingOption } from '@/lib/shipping';
 import { BASE_PRICE } from '@/lib/pricing';
 
 interface CartItem {
@@ -90,6 +90,7 @@ export default function CartPage() {
   const shipping = items.length > 0 ? getShipping(shipId, country) : 0;
   const total = subtotal + shipping;
   const missingDesign = items.some((i) => !i.designId);
+  const selectedOption = SHIPPING_OPTIONS.find(o => o.id === shipId) ?? SHIPPING_OPTIONS[0];
 
   const checkout = async () => {
     if (items.length === 0 || missingDesign) return;
@@ -217,7 +218,12 @@ export default function CartPage() {
               <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 800, fontSize: '1.25rem' }}>
                 <span>{t.cart.total}</span><span>€{total.toFixed(2)}</span>
               </div>
-              <p style={{ color: '#555', fontSize: '0.7rem', marginTop: '0.5rem', lineHeight: 1.4 }}>
+              {items.length > 0 && (
+                <p style={{ color: '#4ade80', fontSize: '0.72rem', marginTop: '0.4rem', fontWeight: 600 }}>
+                  {t.cart.deliveryEta(selectedOption.eta[country], selectedOption.carrier)}
+                </p>
+              )}
+              <p style={{ color: '#555', fontSize: '0.7rem', marginTop: '0.4rem', lineHeight: 1.4 }}>
                 {t.cart.vatNote}
               </p>
             </div>

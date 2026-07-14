@@ -90,6 +90,7 @@ export const translations = {
       purgedNotice: (n: number) => `${n} ältere${n > 1 ? ' Pieces' : 's Piece'} ohne Motiv wurde${n > 1 ? 'n' : ''} entfernt.`,
       printedSides: (n: number) => `${n} Seite${n > 1 ? 'n' : ''} bedruckt`,
       editDesign: 'Motiv ändern →',
+      deliveryEta: (shipping: string, carrier: string) => `Lieferzeit: 2–3 Tage Produktion + ${shipping} Versand (${carrier})`,
     },
     howItWorks: {
       title: 'SO FUNKTIONIERT\'S',
@@ -245,6 +246,7 @@ export const translations = {
       purgedNotice: (n: number) => `${n} piece${n > 1 ? 'uri' : ''} fără motiv ${n > 1 ? 'au fost eliminate' : 'a fost eliminat'}.`,
       printedSides: (n: number) => `${n} față${n > 1 ? '' : ''} imprimat${n > 1 ? 'e' : 'ă'}`,
       editDesign: 'Schimbă motivul →',
+      deliveryEta: (shipping: string, carrier: string) => `Termen: 2–3 zile producție + ${shipping} livrare (${carrier})`,
     },
     howItWorks: {
       title: 'CUM FUNCȚIONEAZĂ',
@@ -400,6 +402,7 @@ export const translations = {
       purgedNotice: (n: number) => `${n} older piece${n > 1 ? 's' : ''} without a design ${n > 1 ? 'were' : 'was'} removed.`,
       printedSides: (n: number) => `${n} side${n > 1 ? 's' : ''} printed`,
       editDesign: 'Change design →',
+      deliveryEta: (shipping: string, carrier: string) => `Delivery: 2–3 days production + ${shipping} shipping (${carrier})`,
     },
     howItWorks: {
       title: 'HOW IT WORKS',
