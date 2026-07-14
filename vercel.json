@@ -7,6 +7,6 @@
     { "source": "/admin/:path*", "destination": "/admin/:path*" }
   ],
   "crons": [
-    { "path": "/api/health-cron", "schedule": "0 * * * *" }
+    { "path": "/api/health-cron", "schedule": "0 6 * * *" }
   ]
 }
