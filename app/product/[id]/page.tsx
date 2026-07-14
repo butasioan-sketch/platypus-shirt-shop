@@ -1,7 +1,7 @@
 'use client';
 
 import { getShipping, DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY } from '@/lib/shipping';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, notFound } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import SiteHeader from '@/app/components/SiteHeader';
@@ -35,6 +35,16 @@ export default function ProductPage() {
     frontTransform: { scale: 1, x: 0, y: 0 },
     backTransform: { scale: 1, x: 0, y: 0 },
   });
+  const [editHint, setEditHint] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const preSize = params.get('size');
+    const preColor = params.get('color');
+    if (preSize) setSize(preSize);
+    if (preColor) setColorKey(preColor);
+    if (params.has('edit')) setEditHint(true);
+  }, []);
 
   if (!product) notFound();
 
@@ -194,6 +204,11 @@ export default function ProductPage() {
             <p style={{ fontSize: '0.95rem', color: '#fff', fontWeight: 600 }}>{t.product.unisex}</p>
           </div>
 
+          {editHint && (
+            <div style={{ background: 'rgba(226,0,26,0.08)', border: '1px solid rgba(226,0,26,0.25)', borderRadius: '10px', padding: '0.7rem 1rem', marginBottom: '1rem', fontSize: '0.8rem', color: '#fca5a5', lineHeight: 1.5 }}>
+              Größe & Farbe vorausgewählt. Lade dein Motiv erneut hoch um das Piece zu aktualisieren.
+            </div>
+          )}
           {error && <p style={{ color: '#f87171', fontSize: '0.875rem', marginBottom: '1rem' }}>{error}</p>}
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginBottom: '1.5rem' }}>

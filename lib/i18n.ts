@@ -89,6 +89,7 @@ export const translations = {
       addDesignLink: 'Motiv im Atelier ergänzen →',
       purgedNotice: (n: number) => `${n} ältere${n > 1 ? ' Pieces' : 's Piece'} ohne Motiv wurde${n > 1 ? 'n' : ''} entfernt.`,
       printedSides: (n: number) => `${n} Seite${n > 1 ? 'n' : ''} bedruckt`,
+      editDesign: 'Motiv ändern →',
     },
     howItWorks: {
       title: 'SO FUNKTIONIERT\'S',
@@ -243,6 +244,7 @@ export const translations = {
       addDesignLink: 'Adaugă motiv în Atelier →',
       purgedNotice: (n: number) => `${n} piece${n > 1 ? 'uri' : ''} fără motiv ${n > 1 ? 'au fost eliminate' : 'a fost eliminat'}.`,
       printedSides: (n: number) => `${n} față${n > 1 ? '' : ''} imprimat${n > 1 ? 'e' : 'ă'}`,
+      editDesign: 'Schimbă motivul →',
     },
     howItWorks: {
       title: 'CUM FUNCȚIONEAZĂ',
@@ -397,6 +399,7 @@ export const translations = {
       addDesignLink: 'Add design in Studio →',
       purgedNotice: (n: number) => `${n} older piece${n > 1 ? 's' : ''} without a design ${n > 1 ? 'were' : 'was'} removed.`,
       printedSides: (n: number) => `${n} side${n > 1 ? 's' : ''} printed`,
+      editDesign: 'Change design →',
     },
     howItWorks: {
       title: 'HOW IT WORKS',

@@ -25,14 +25,23 @@ const SOCIAL_ICONS: Record<string, React.ReactNode> = {
   ),
 };
 
+const FOOTER_LINKS = [
+  { label: 'Impressum', href: '/impressum' },
+  { label: 'AGB', href: '/agb' },
+  { label: 'Datenschutz', href: '/datenschutz' },
+  { label: 'Versand & Reklamation', href: '/versand' },
+  { label: 'FAQ', href: '/faq' },
+  { label: 'Bewertungen', href: '/bewertungen' },
+  { label: 'Sendungsverfolgung', href: '/tracking' },
+];
+
 export default function Footer() {
   const activeSocial = socialChannels.filter(s => s.enabled);
 
   return (
-    <footer style={{ borderTop: '1px solid rgba(255,255,255,0.08)', marginTop: '4rem', padding: '3rem 1.5rem 2rem', background: '#0a0a0a' }}>
+    <footer className="plt-footer">
       <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
 
-        {/* Social Icons */}
         {activeSocial.length > 0 && (
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginBottom: '1.75rem' }}>
             {activeSocial.map(s => (
@@ -42,17 +51,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={s.label}
-                style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  width: 40, height: 40, borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.05)',
-                  border: '1px solid rgba(255,255,255,0.10)',
-                  color: '#888',
-                  textDecoration: 'none',
-                  transition: 'all 0.15s',
-                }}
-                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#fff'; (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(255,255,255,0.3)'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#888'; (e.currentTarget as HTMLAnchorElement).style.borderColor = 'rgba(255,255,255,0.10)'; }}
+                className="plt-footer-social-btn"
               >
                 {SOCIAL_ICONS[s.id] ?? s.label[0]}
               </a>
@@ -60,37 +59,14 @@ export default function Footer() {
           </div>
         )}
 
-        {/* Links als Buttons */}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', justifyContent: 'center', marginBottom: '2rem' }}>
-          {[
-            { label: 'Impressum', href: '/impressum' },
-            { label: 'AGB', href: '/agb' },
-            { label: 'Datenschutz', href: '/datenschutz' },
-            { label: 'Versand & Reklamation', href: '/versand' },
-            { label: 'FAQ', href: '/faq' },
-            { label: 'Bewertungen', href: '/bewertungen' },
-            { label: 'Sendungsverfolgung', href: '/tracking' },
-          ].map(({ label, href }) => (
-            <Link key={href} href={href} style={{
-              display: 'inline-block',
-              padding: '0.5rem 1.1rem',
-              borderRadius: '999px',
-              border: '1px solid rgba(255,255,255,0.15)',
-              color: '#aaa',
-              textDecoration: 'none',
-              fontSize: '0.82rem',
-              fontWeight: 500,
-              transition: 'all 0.15s',
-              background: 'rgba(255,255,255,0.03)',
-            }}>
-              {label}
-            </Link>
+          {FOOTER_LINKS.map(({ label, href }) => (
+            <Link key={href} href={href} className="plt-footer-link">{label}</Link>
           ))}
         </div>
 
-        {/* Copyright */}
-        <p style={{ textAlign: 'center', color: '#444', fontSize: '0.78rem', letterSpacing: '0.05em' }}>
-          © {new Date().getFullYear()} PLATYPUS — <span style={{ color: '#333' }}>On Me. Words are not just words.</span>
+        <p style={{ textAlign: 'center', color: 'var(--plt-text-ghost)', fontSize: '0.78rem', letterSpacing: '0.05em' }}>
+          © {new Date().getFullYear()} PLATYPUS — <span style={{ color: 'var(--plt-text-faint)' }}>On Me. Words are not just words.</span>
         </p>
 
       </div>

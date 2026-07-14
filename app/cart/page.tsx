@@ -159,10 +159,15 @@ export default function CartPage() {
                       </div>
                     </div>
                   </div>
+                  <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <a href={`/product/${item.id}?size=${encodeURIComponent(item.size)}&edit=1`} style={{ color: '#666', fontSize: '0.72rem', textDecoration: 'none', borderBottom: '1px solid #444' }}>
+                      {t.cart.editDesign}
+                    </a>
+                  </div>
                   {!item.designId && (
                     <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '8px', padding: '0.6rem 0.85rem', fontSize: '0.78rem', color: '#fca5a5', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
                       <span>{t.cart.noDesignItem}</span>
-                      <a href={`/product/${item.id}`} style={{ color: '#e2001a', fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap' }}>{t.cart.addDesignLink}</a>
+                      <a href={`/product/${item.id}?size=${encodeURIComponent(item.size)}&edit=1`} style={{ color: '#e2001a', fontWeight: 700, textDecoration: 'none', whiteSpace: 'nowrap' }}>{t.cart.addDesignLink}</a>
                     </div>
                   )}
                 </div>
