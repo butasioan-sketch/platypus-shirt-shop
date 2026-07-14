@@ -52,3 +52,4 @@ backups/
 .DS_Store
 diagnose.txt
 *.bak
+backups/
