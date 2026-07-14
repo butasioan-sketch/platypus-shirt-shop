@@ -2,8 +2,10 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useLocale } from '@/app/components/LocaleProvider';
 
 export default function CartCount() {
+  const { t } = useLocale();
   const pathname = usePathname();
   const [count, setCount] = useState(0);
   const [total, setTotal] = useState(0);
@@ -42,7 +44,7 @@ export default function CartCount() {
           {showPrice && <span>€{total.toFixed(2)}</span>}
         </span>
       ) : (
-        <span style={{ color: '#888' }}>Warenkorb</span>
+        <span style={{ color: '#888' }}>{t.nav.cart}</span>
       )}
     </Link>
   );

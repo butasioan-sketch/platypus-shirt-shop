@@ -1,10 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import { getAllProducts } from '@/lib/products';
 
-const PRODUCTS = [
-  { id: '1', name: 'AirFit Pro', price: 39.99, sizes: ['S', 'M', 'L', 'XL', 'XXL'], status: 'aktiv', color: '#f5f5f5' },
-];
+const PRODUCTS = getAllProducts();
 
 export default function InventoryPage() {
   return (
@@ -16,8 +15,8 @@ export default function InventoryPage() {
 
       <div style={{ maxWidth: '800px', margin: '3rem auto', padding: '0 2rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <h1 style={{ fontSize: '2rem', fontWeight: 800 }}>Inventory</h1>
-          <span style={{ color: '#555', fontSize: '0.875rem' }}>{PRODUCTS.length} Produkte</span>
+          <h1 style={{ fontSize: '2rem', fontWeight: 800 }}>Kollektion</h1>
+          <span style={{ color: '#555', fontSize: '0.875rem' }}>{PRODUCTS.length} Pieces</span>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -26,7 +25,7 @@ export default function InventoryPage() {
               <div style={{ width: '60px', height: '60px', background: p.color, borderRadius: '8px', flexShrink: 0, border: '1px solid #333' }} />
               <div style={{ flex: 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                  <p style={{ fontWeight: 700 }}>{p.name}</p>
+                  <p style={{ fontWeight: 700 }}>{p.name.de}</p>
                   <p style={{ fontWeight: 700 }}>€{p.price}</p>
                 </div>
                 <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
@@ -35,8 +34,8 @@ export default function InventoryPage() {
                   ))}
                 </div>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                  <span style={{ background: '#052e16', color: '#4ade80', padding: '2px 10px', borderRadius: '999px', fontSize: '0.75rem' }}>{p.status}</span>
-                  <Link href={`/product/${p.id}`} style={{ color: '#555', fontSize: '0.75rem', textDecoration: 'none' }}>Produktseite →</Link>
+                  <span style={{ background: '#052e16', color: '#4ade80', padding: '2px 10px', borderRadius: '999px', fontSize: '0.75rem' }}>aktiv</span>
+                  <Link href={`/product/${p.id}`} style={{ color: '#555', fontSize: '0.75rem', textDecoration: 'none' }}>Atelier →</Link>
                 </div>
               </div>
             </div>
@@ -44,8 +43,8 @@ export default function InventoryPage() {
         </div>
 
         <div style={{ marginTop: '2rem', background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', padding: '1.5rem' }}>
-          <p style={{ color: '#555', fontSize: '0.8rem', marginBottom: '0.5rem' }}>Print-on-Demand System</p>
-          <p style={{ color: '#888', fontSize: '0.875rem' }}>Produkte werden nach Bestellung individuell produziert. Kein Lagerbestand notwendig.</p>
+          <p style={{ color: '#555', fontSize: '0.8rem', marginBottom: '0.5rem' }}>Maßanfertigung</p>
+          <p style={{ color: '#888', fontSize: '0.875rem' }}>Pieces werden nach Bestellung gefertigt. Kein Lagerbestand — Fertigung startet nach Zahlungseingang.</p>
         </div>
       </div>
     </div>

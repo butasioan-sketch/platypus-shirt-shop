@@ -51,7 +51,9 @@ interface OrderEmailData {
   locale: string;
   designId?: string;
   designIds?: string;
-  type?: 'confirmation' | 'production' | 'shipped' | 'delivered';
+  type?: 'confirmation' | 'production' | 'shipped' | 'delivered' | 'admin_alert';
+  reason?: 'missing_design' | 'on_hold';
+  missingDesign?: boolean;
 }
 
 async function fetchDesignImages(ids: string[]) {
@@ -125,6 +127,32 @@ export async function POST(request: NextRequest) {
 
     const designs = await fetchDesignImages(designIds);
     const designPreview = buildDesignPreviewHtml(designs);
+
+    if (data.type === 'admin_alert') {
+      const reason = data.reason === 'on_hold'
+        ? 'Manuell auf On Hold gesetzt'
+        : 'Kein Motiv (designId) hinterlegt';
+      const template = {
+        subject: `⚠ PLATYPUS Admin — Bestellung ${data.orderId} prüfen`,
+        html: `
+        <div style="background:#0a0a0a;color:#fff;font-family:system-ui,sans-serif;padding:40px 20px;max-width:600px;margin:0 auto">
+          <h1 style="font-size:20px;color:#f97316;margin-bottom:16px">Bestellung benötigt Prüfung</h1>
+          <p style="color:#aaa;line-height:1.6"><strong>${data.orderId}</strong><br/>Grund: ${reason}<br/>Betrag: €${Number(data.total || 0).toFixed(2)}</p>
+          <p style="margin-top:20px"><a href="https://platypus-shirt-shop.vercel.app/admin/print/${data.orderId}" style="color:#e2001a">Druckauftrag öffnen</a> ·
+          <a href="https://platypus-shirt-shop.vercel.app/admin/orders" style="color:#e2001a;margin-left:12px">Admin Orders</a></p>
+        </div>`,
+      };
+      if (!apiKey) {
+        console.log('Admin-Alert (Demo):', template.subject);
+        return NextResponse.json({ sent: false, demo: true, subject: template.subject });
+      }
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ from: 'PLATYPUS <onboarding@resend.dev>', to: data.email, subject: template.subject, html: template.html }),
+      });
+      return NextResponse.json({ sent: res.ok });
+    }
 
     const statusSet = data.type && data.type !== 'confirmation' ? STATUS_TEXTS[data.type] : null;
     const template = statusSet

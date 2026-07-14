@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createOrder, getOrders, getOrderById, updateOrderStatus, getOrderStats, initDb } from '@/lib/db';
+import { notifyAdminOrderIssue } from '@/lib/admin-alert';
+import { orderMissingDesign } from '@/lib/order-review';
 import { Order } from '@/lib/types';
 
 let initialized = false;
@@ -36,13 +38,17 @@ export async function POST(request: NextRequest) {
   await ensureInit();
   try {
     const body = await request.json();
+    const missing = orderMissingDesign({
+      id: '', status: 'paid', items: body.items || [], designId: body.designId || null,
+      amountTotal: 0, currency: 'EUR', locale: 'de', shippingCountry: 'DE', createdAt: '', updatedAt: '',
+    });
     const order: Order = {
       id: `PLT-${Date.now()}-${Math.random().toString(36).slice(2, 7).toUpperCase()}`,
       stripeSessionId: body.stripeSessionId,
       customerEmail: body.customerEmail,
       amountTotal: body.amountTotal || 0,
       currency: body.currency || 'EUR',
-      status: body.status || 'paid',
+      status: missing ? 'on_hold' : (body.status || 'paid'),
       items: body.items || [],
       locale: body.locale || 'de',
       shippingCountry: body.shippingCountry || 'DE',
@@ -52,6 +58,9 @@ export async function POST(request: NextRequest) {
       updatedAt: new Date().toISOString(),
     };
     await createOrder(order);
+    if (missing) {
+      await notifyAdminOrderIssue(order, 'missing_design');
+    }
     return NextResponse.json({ order, success: true });
   } catch (err: unknown) {
     return NextResponse.json({ error: err instanceof Error ? err.message : 'Fehler' }, { status: 500 });
@@ -63,6 +72,11 @@ export async function PATCH(request: NextRequest) {
   try {
     const { id, status } = await request.json();
     const success = await updateOrderStatus(id, status);
+
+    if (success && status === 'on_hold') {
+      const order = await getOrderById(id);
+      if (order) await notifyAdminOrderIssue(order, 'on_hold');
+    }
 
     // Status-Mail (fehlertolerant — darf das Update nie brechen)
     if (success && ['production', 'shipped', 'delivered'].includes(status)) {

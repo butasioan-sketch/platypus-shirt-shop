@@ -3,8 +3,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { calcUnitPrice } from '@/lib/pricing';
-import { PRINT_SPEC, SHIRT_VIEWER_ASPECT } from '@/lib/print-spec';
+import { PRINT_SPEC, SHIRT_VIEWER_ASPECT, formatSizeMm } from '@/lib/print-spec';
 import { defaultPrintTransform, type PrintTransform } from '@/lib/print-position';
+import { useLocale } from '@/app/components/LocaleProvider';
 import ShirtPrintOverlay from './ShirtPrintOverlay';
 
 const Shirt3D = dynamic(() => import('./Shirt3D'), { ssr: false });
@@ -22,6 +23,7 @@ interface DesignStudioProps {
 }
 
 export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
+  const { t } = useLocale();
   const [side, setSide] = useState<'front' | 'back'>('front');
   const [preview360, setPreview360] = useState(false);
   const [flipping, setFlipping] = useState(false);
@@ -61,16 +63,21 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
   const applyUpload = (dataUrl: string, w: number, h: number) => {
     const ratio = w / h;
     const target = PRINT_SPEC.aspectRatio;
+    const sizeLabel = formatSizeMm();
     if (Math.min(w, h) < PRINT_SPEC.minUploadPx) {
-      setUploadHint(`Auflösung niedrig (${w}×${h}). Empfohlen: ${PRINT_SPEC.widthPx}×${PRINT_SPEC.heightPx} px.`);
+      setUploadHint(t.studio.lowRes
+        .replace('{w}', String(w))
+        .replace('{h}', String(h))
+        .replace('{pxW}', String(PRINT_SPEC.widthPx))
+        .replace('{pxH}', String(PRINT_SPEC.heightPx)));
     } else if (Math.abs(ratio - target) > 0.25 && Math.abs(ratio - 1 / target) > 0.25) {
-      setUploadHint(`Seitenverhältnis weicht ab. ${PRINT_SPEC.widthMm} × ${PRINT_SPEC.heightMm} mm liefert das beste Ergebnis.`);
+      setUploadHint(t.studio.badRatio.replace('{size}', sizeLabel));
     } else {
       setUploadHint('');
     }
-    const t = defaultPrintTransform();
-    if (side === 'front') { setFrontImg(dataUrl); setFrontScale(t.scale); setFrontPos({ x: t.x, y: t.y }); }
-    else { setBackImg(dataUrl); setBackScale(t.scale); setBackPos({ x: t.x, y: t.y }); }
+    const tr = defaultPrintTransform();
+    if (side === 'front') { setFrontImg(dataUrl); setFrontScale(tr.scale); setFrontPos({ x: tr.x, y: tr.y }); }
+    else { setBackImg(dataUrl); setBackScale(tr.scale); setBackPos({ x: tr.x, y: tr.y }); }
   };
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,12 +125,15 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
   const printData = (img: string | null, scale: number, pos: { x: number; y: number }) =>
     img ? { src: img, x: pos.x, y: pos.y, scale } : undefined;
 
+  const sideLabel = side === 'front' ? t.studio.front : t.studio.back;
+  const priceSuffix = frontImg && backImg ? t.studio.twoSides : (frontImg || backImg) ? t.studio.oneSide : '';
+
   return (
     <div className="plt-card" style={{ padding: '1.25rem', width: '100%', maxWidth: '440px', margin: '0 auto' }}>
       <div className="plt-tab-group" style={{ marginBottom: '1rem', flexWrap: 'wrap' }}>
         {(['front', 'back'] as const).map((s) => (
           <button key={s} type="button" onClick={() => switchSide(s)} className={`plt-tab${side === s ? ' plt-tab-active' : ''}`}>
-            {s === 'front' ? 'VORDERSEITE' : 'RÜCKSEITE'}
+            {s === 'front' ? t.studio.front.toUpperCase() : t.studio.back.toUpperCase()}
             {(s === 'front' ? frontImg : backImg) && (
               <span style={{ marginLeft: '0.35rem', width: 6, height: 6, borderRadius: '50%', background: '#4ade80', display: 'inline-block' }} />
             )}
@@ -133,9 +143,7 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
       </div>
 
       <div className="plt-price-bar" style={{ marginBottom: '1rem' }}>
-        <span className="plt-label" style={{ margin: 0 }}>
-          Preis {frontImg && backImg ? '· 2 Seiten' : (frontImg || backImg) ? '· 1 Seite' : ''}
-        </span>
+        <span className="plt-label" style={{ margin: 0 }}>{t.studio.price} {priceSuffix}</span>
         <span style={{ color: '#fff', fontWeight: 800, fontSize: '1.15rem' }}>€{calcUnitPrice(frontImg, backImg).toFixed(2)}</span>
       </div>
 
@@ -157,12 +165,12 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
           onMouseMove={(e) => moveDrag(e.clientX, e.clientY)}
           onMouseUp={endDrag}
           onMouseLeave={endDrag}
-          onTouchMove={(e) => { const t = e.touches[0]; moveDrag(t.clientX, t.clientY); }}
+          onTouchMove={(e) => { const touch = e.touches[0]; moveDrag(touch.clientX, touch.clientY); }}
           onTouchEnd={endDrag}
         >
           <img
             src={side === 'front' ? '/airfit-front-t.png' : '/airfit-back-t.png'}
-            alt={side === 'front' ? 'Vorderseite' : 'Rückseite'}
+            alt={sideLabel}
             style={{ width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none', filter: 'drop-shadow(0 10px 28px rgba(0,0,0,0.5))' }}
             draggable={false}
           />
@@ -181,13 +189,13 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
 
       {!currentImg ? (
         <button type="button" className="plt-btn-primary" style={{ width: '100%' }} onClick={() => fileRef.current?.click()}>
-          Motiv hochladen — {side === 'front' ? 'Vorderseite' : 'Rückseite'}
+          {t.studio.upload} — {sideLabel}
         </button>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
-              <span className="plt-label">Zoom</span>
+              <span className="plt-label">{t.studio.zoom}</span>
               <span style={{ color: '#666', fontSize: '0.72rem' }}>{Math.round(currentScale * 100)}%</span>
             </div>
             <input type="range" min={PRINT_SPEC.scaleMin} max={PRINT_SPEC.scaleMax} step="0.05" value={currentScale}
@@ -195,15 +203,15 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
               style={{ width: '100%', accentColor: '#e2001a', cursor: 'pointer' }} />
           </div>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <button type="button" className="plt-btn-secondary" style={{ flex: 1 }} onClick={() => setCurrentPos({ x: 0, y: 0 })}>Zentrieren</button>
-            <button type="button" className="plt-btn-secondary" style={{ flex: 1 }} onClick={() => fileRef.current?.click()}>Ändern</button>
-            <button type="button" className="plt-btn-secondary" style={{ flex: 1, color: '#f87171' }} onClick={removeImg}>Entfernen</button>
+            <button type="button" className="plt-btn-secondary" style={{ flex: 1 }} onClick={() => setCurrentPos({ x: 0, y: 0 })}>{t.studio.center}</button>
+            <button type="button" className="plt-btn-secondary" style={{ flex: 1 }} onClick={() => fileRef.current?.click()}>{t.studio.change}</button>
+            <button type="button" className="plt-btn-secondary" style={{ flex: 1, color: '#f87171' }} onClick={removeImg}>{t.studio.remove}</button>
           </div>
           {uploadHint && (
             <p style={{ color: '#fbbf24', fontSize: '0.68rem', lineHeight: 1.45, margin: 0, textAlign: 'center' }}>{uploadHint}</p>
           )}
           <p className="plt-label" style={{ textAlign: 'center', margin: 0, color: '#555' }}>
-            Motiv ziehen zum Positionieren · Druckfläche {PRINT_SPEC.widthMm} × {PRINT_SPEC.heightMm} mm
+            {t.studio.dragHint.replace('{size}', formatSizeMm())}
           </p>
         </div>
       )}

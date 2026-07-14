@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const SYSTEM_PROMPT = `Du bist der PLATYPUS Shop Assistent. Du hilfst Kunden bei:
-- Größenberatung (S=XS-S, M=M, L=L-XL, XL=XL-XXL, XXL=XXL+)
-- Versandinformationen (DE: Hermes €4.49 / DPD €4.79 / DHL €4.99, 3–5 Werktage; RO: ab €12.99, 5–7 Werktage)
-- Produktinformationen (AirFit Pro, 100% Performance-Polyester, aktuell nur in Weiß erhältlich, weitere Farben folgen, Print-on-Demand)
-- Bestellstatus (Produktion nach Bestellung, 2-3 Werktage Produktion)
-- Reklamation (individuell bedruckte Ware: kein Widerrufsrecht gem. § 312g BGB, aber kostenloser Ersatz bei Druckfehlern, Beschädigung oder Falschlieferung)
-- Zahlung (Stripe, Kreditkarte, sichere Verbindung)
+const SYSTEM_PROMPT = `Du bist der Platypus Concierge — Premium-Berater für PLATYPUS On Me.
+Du hilfst bei:
+- Größen (Unisex S, M, L, XL, XXL — im Zweifel größer wählen)
+- Versand (DE: Hermes ab €4,49 / DPD €4,79 / DHL €4,99, 3–5 Werktage; RO: ab €12,99, 5–7 Werktage)
+- Produkt (AirFit Pro, Performance-Polyester 140 g/m², aktuell Weiß, Maßanfertigung auf Bestellung)
+- Atelier (Motiv hochladen vorne & hinten, 210 × 297 mm, Sublimation in die Faser)
+- Fertigung (2–3 Werktage nach Bestellung)
+- Reklamation (individuelle Fertigung: kein Widerruf § 312g BGB, Ersatz bei Druckfehlern/Mängeln)
+- Zahlung (Stripe: Karte, PayPal, Klarna)
 
-Antworte kurz, freundlich und hilfreich. Max 3 Sätze. 
-Wenn auf Rumänisch gefragt: antworte auf Rumänisch.
-Wenn auf Englisch gefragt: antworte auf Englisch.
-Sonst: Deutsch.`;
+Ton: elegant, knapp, premium. Max 3 Sätze. Kein „Print-on-Demand“ — sage „Maßanfertigung“.
+Rumänisch gefragt → Rumänisch. Englisch → Englisch. Sonst Deutsch.`;
 
 export async function POST(request: NextRequest) {
   try {
@@ -78,8 +78,8 @@ function getFallbackResponse(message: string, locale: string): string {
       versand: 'Deutschland: ab €4.49 (Hermes), €4.79 (DPD) oder €4.99 (DHL), 3–5 Werktage. Rumänien: ab €12.99, 5–7 Werktage.',
       rueckgabe: 'Da jedes Shirt individuell bedruckt wird, ist ein Widerruf gesetzlich ausgeschlossen (§ 312g BGB). Bei Druckfehlern oder Beschädigung ersetzen wir dein Shirt kostenlos — schreib uns einfach eine E-Mail mit Foto.',
       zahlung: 'Wir akzeptieren alle Kreditkarten über Stripe. 100% sichere Verbindung.',
-      produktion: 'Jedes Shirt wird individuell nach deiner Bestellung produziert. Produktionszeit: 2–3 Werktage.',
-      default: 'Hallo! Ich helfe dir gerne. Frag mich nach Größen, Versand, Produktion oder Reklamation.',
+      produktion: 'Jedes Piece wird maßgefertigt nach deiner Bestellung. Fertigung: 2–3 Werktage.',
+      default: 'Willkommen beim Platypus Concierge. Frag mich zu Größe, Versand, Atelier oder Qualität.',
     },
     ro: {
       groesse: 'Mărimi: S (XS-S), M (M), L (L-XL), XL (XL-XXL), XXL (XXL+). La nesiguranță, comandați o mărime mai mare.',

@@ -3,41 +3,28 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Logo from '@/app/components/Logo';
-
-interface FaqItem { q: string; a: string; }
-
-const FAQS: FaqItem[] = [
-  { q: 'Wie funktioniert das Gestalten meines Shirts?', a: 'Auf der Produktseite lädst du dein Motiv hoch — vorne und hinten im Format 210 × 297 mm (21 × 29,7 cm, Hochformat). Du verschiebst und skalierst es im Editor. Was du siehst, wird so gedruckt — Standard ist beidseitiger Druck.' },
-  { q: 'Welche Bildqualität sollte mein Motiv haben?', a: 'Empfohlen: 2480 × 3508 Pixel (300 dpi, 210 × 297 mm). Minimum: 1000 Pixel auf der kürzeren Seite. PNG mit transparentem Hintergrund für scharfe Kanten. Je höher die Auflösung, desto schärfer der Sublimationsdruck.' },
-  { q: 'Wie lange dauert die Lieferung?', a: 'Deutschland: 2–4 Werktage, ab €4.49 (Hermes, DPD oder DHL wählbar). Rumänien: 4–7 Werktage, ab €12.99. Da jedes Shirt auf Bestellung gedruckt wird, kommen 2–3 Werktage Produktionszeit hinzu.' },
-  { q: 'Kann ich meine Bestellung verfolgen?', a: 'Ja. Nach dem Kauf erhältst du eine Bestellnummer (Format PLT-...). Auf unserer Seite "Sendungsverfolgung" gibst du diese Nummer ein und siehst den aktuellen Status: Bezahlt, In Produktion, Versandt, Zugestellt.' },
-  { q: 'Welche Größen gibt es?', a: 'Unsere Shirts sind unisex und in den Größen S, M, L, XL und XXL erhältlich. Im Zweifel empfehlen wir eine Nummer größer.' },
-  { q: 'Aus welchem Material sind die Shirts?', a: 'Helles Premium-Polyester (B&C TM062, 140g/m²), angenehm zu tragen und langlebig. Optimiert für brillanten Sublimationsdruck deiner Motive. Aktuell in Weiß — weitere Farben folgen.' },
-  { q: 'Wie wird gedruckt?', a: 'Sublimationsdruck auf 100 % Polyester (B&C TM062): Dein Motiv wird im Format 210 × 297 mm gedruckt und per Transferpresse in die Faser eingebrannt — vorne und hinten. Waschbeständig bei 30°C, auf links.' },
-  { q: 'Kann ich umtauschen oder zurückgeben?', a: 'Da jedes Shirt individuell mit deinem Motiv bedruckt wird, ist ein Widerruf gesetzlich ausgeschlossen (§ 312g BGB). Aber: Bei Druckfehlern, Beschädigung oder Falschlieferung ersetzen wir dein Shirt selbstverständlich kostenfrei — schick uns einfach ein Foto per E-Mail.' },
-  { q: 'Welche Zahlungsmethoden gibt es?', a: 'Die Zahlung läuft sicher über Stripe — Kreditkarte und weitere gängige Methoden. Deine Zahlungsdaten werden verschlüsselt verarbeitet und nicht bei uns gespeichert.' },
-  { q: 'Wie erreiche ich den Kundenservice?', a: 'Nutze unseren Chat-Assistenten unten rechts auf jeder Seite — er beantwortet die meisten Fragen sofort. Für individuelle Anliegen kannst du uns über die im Impressum genannten Kontaktdaten erreichen.' },
-];
+import { useLocale } from '@/app/components/LocaleProvider';
+import { getFaqContent } from '@/lib/faq-content';
 
 export default function FaqPage() {
+  const { locale } = useLocale();
+  const { items, meta } = getFaqContent(locale);
   const [open, setOpen] = useState<number | null>(null);
 
   return (
     <div style={{ minHeight: '100vh', background: 'radial-gradient(1000px 500px at 50% -10%, rgba(226,0,26,0.08), transparent 60%), linear-gradient(180deg, #0c0c0d 0%, #0a0a0a 100%)', color: '#fff', fontFamily: 'system-ui, -apple-system, sans-serif' }}>
       <header style={{ padding: '1.1rem 2rem', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Logo size={44} />
-        <Link href="/" style={{ color: '#888', textDecoration: 'none', fontSize: '0.875rem' }}>← Shop</Link>
+        <Link href="/" style={{ color: '#888', textDecoration: 'none', fontSize: '0.875rem' }}>← Atelier</Link>
       </header>
 
       <div style={{ maxWidth: '720px', margin: '0 auto', padding: '3rem 2rem 5rem' }}>
-        <p style={{ color: '#e2001a', fontSize: '0.72rem', letterSpacing: '0.22em', marginBottom: '0.6rem', textTransform: 'uppercase', fontWeight: 600 }}>Hilfe & Antworten</p>
-        <h1 style={{ fontSize: '2.4rem', fontWeight: 900, marginBottom: '0.6rem', color: '#fff', letterSpacing: '-0.02em' }}>Häufige Fragen</h1>
-        <p style={{ color: '#999', fontSize: '1rem', marginBottom: '2.5rem', lineHeight: 1.6 }}>
-          Alles Wichtige rund um Gestaltung, Versand und Reklamation. Findest du keine Antwort? Frag unseren Chat-Assistenten.
-        </p>
+        <p style={{ color: '#e2001a', fontSize: '0.72rem', letterSpacing: '0.22em', marginBottom: '0.6rem', textTransform: 'uppercase', fontWeight: 600 }}>{meta.label}</p>
+        <h1 style={{ fontSize: '2.4rem', fontWeight: 900, marginBottom: '0.6rem', color: '#fff', letterSpacing: '-0.02em' }}>{meta.title}</h1>
+        <p style={{ color: '#999', fontSize: '1rem', marginBottom: '2.5rem', lineHeight: 1.6 }}>{meta.sub}</p>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-          {FAQS.map((item, i) => {
+          {items.map((item, i) => {
             const isOpen = open === i;
             return (
               <div key={i} style={{ background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '12px', overflow: 'hidden' }}>
@@ -59,10 +46,10 @@ export default function FaqPage() {
         </div>
 
         <div style={{ marginTop: '3rem', textAlign: 'center', padding: '2rem', background: '#121212', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '16px' }}>
-          <p style={{ color: '#fff', fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.5rem' }}>Noch Fragen?</p>
-          <p style={{ color: '#999', fontSize: '0.9rem', marginBottom: '1.25rem' }}>Unser Assistent hilft dir sofort weiter.</p>
-          <Link href="/product/1" style={{ display: 'inline-block', background: '#e2001a', color: '#fff', padding: '0.85rem 2rem', borderRadius: '999px', textDecoration: 'none', fontWeight: 700, fontSize: '0.875rem' }}>
-            Jetzt gestalten
+          <p style={{ color: '#fff', fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.5rem' }}>{meta.more}</p>
+          <p style={{ color: '#999', fontSize: '0.9rem', marginBottom: '1.25rem' }}>{meta.moreSub}</p>
+          <Link href="/product/1" className="plt-btn-primary" style={{ display: 'inline-block', padding: '0.85rem 2rem', textDecoration: 'none', fontSize: '0.875rem' }}>
+            {meta.cta}
           </Link>
         </div>
       </div>
