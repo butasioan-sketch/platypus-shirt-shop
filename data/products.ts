@@ -2,7 +2,7 @@ export const products = [
   {
     id: 1,
     name: "Essential Shirt Weiß",
-    price: 29.99,
+    price: 39.99,
     color: "Weiß",
     print: "Sublimation",
     image: "/white-shirt.svg",

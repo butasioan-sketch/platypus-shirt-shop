@@ -17,7 +17,7 @@ const COLORS = [
 ];
 
 const PRODUCTS: Record<string, { name: string; price: number; color: string; sizes: string[] }> = {
-  '1': { name: 'AirFit Pro', price: 29.99, color: '#f5f5f5', sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
+  '1': { name: 'AirFit Pro', price: 39.99, color: '#f5f5f5', sizes: ['S', 'M', 'L', 'XL', 'XXL'] },
 };
 
 export default function ProductPage() {

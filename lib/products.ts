@@ -32,7 +32,7 @@ export const PRODUCTS: Product[] = [
   {
     id: '1',
     slug: 'essential-polyester',
-    price: 29.99,
+    price: 39.99,
     color: '#f5f5f5',
     textColor: '#000',
     sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
