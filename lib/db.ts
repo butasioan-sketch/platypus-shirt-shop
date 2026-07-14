@@ -79,6 +79,18 @@ export async function initDb() {
       )
     `);
     await sql.query(`CREATE INDEX IF NOT EXISTS reviews_status_idx ON reviews (status, created_at DESC)`);
+    await sql.query(`
+      CREATE TABLE IF NOT EXISTS newsletter_subscribers (
+        id BIGSERIAL PRIMARY KEY,
+        email TEXT NOT NULL,
+        token TEXT UNIQUE NOT NULL,
+        status TEXT DEFAULT 'pending',
+        locale TEXT DEFAULT 'de',
+        created_at TIMESTAMPTZ DEFAULT NOW(),
+        confirmed_at TIMESTAMPTZ
+      )
+    `);
+    await sql.query(`CREATE UNIQUE INDEX IF NOT EXISTS newsletter_email_idx ON newsletter_subscribers (lower(email))`);
     return true;
   } catch (err) {
     console.error('DB init error:', err);
@@ -397,6 +409,39 @@ export async function deleteReview(id: string): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+export async function addNewsletterSubscriber(email: string, token: string, locale = 'de'): Promise<'created' | 'exists'> {
+  const sql = await getPg() as { query: (q: string, p?: unknown[]) => Promise<Record<string, unknown>[]> } | null;
+  if (!sql) return 'created';
+  try {
+    await sql.query(
+      `INSERT INTO newsletter_subscribers (email, token, locale) VALUES (lower($1), $2, $3)`,
+      [email, token, locale]
+    );
+    return 'created';
+  } catch {
+    return 'exists';
+  }
+}
+
+export async function confirmNewsletterSubscriber(token: string): Promise<boolean> {
+  const sql = await getPg() as { query: (q: string, p?: unknown[]) => Promise<Record<string, unknown>[]> } | null;
+  if (!sql) return false;
+  const rows = await sql.query(
+    `UPDATE newsletter_subscribers SET status='confirmed', confirmed_at=NOW() WHERE token=$1 AND status='pending' RETURNING id`,
+    [token]
+  );
+  return rows.length > 0;
+}
+
+export async function getNewsletterSubscribers(): Promise<{ email: string; status: string; locale: string; created_at: string }[]> {
+  const sql = await getPg() as { query: (q: string, p?: unknown[]) => Promise<Record<string, unknown>[]> } | null;
+  if (!sql) return [];
+  const rows = await sql.query(
+    `SELECT email, status, locale, created_at FROM newsletter_subscribers ORDER BY created_at DESC LIMIT 500`
+  );
+  return rows as { email: string; status: string; locale: string; created_at: string }[];
 }
 
 export async function getReviewStats() {

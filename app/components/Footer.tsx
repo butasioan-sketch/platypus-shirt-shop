@@ -1,6 +1,8 @@
 'use client';
 import Link from 'next/link';
 import { socialChannels } from '@/data/social';
+import { useLocale } from '@/app/components/LocaleProvider';
+import NewsletterForm from '@/app/components/NewsletterForm';
 
 const SOCIAL_ICONS: Record<string, React.ReactNode> = {
   instagram: (
@@ -37,10 +39,13 @@ const FOOTER_LINKS = [
 
 export default function Footer() {
   const activeSocial = socialChannels.filter(s => s.enabled);
+  const { locale } = useLocale();
 
   return (
     <footer className="plt-footer">
       <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+
+        <NewsletterForm locale={locale} />
 
         {activeSocial.length > 0 && (
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginBottom: '1.75rem' }}>
