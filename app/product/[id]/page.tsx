@@ -182,6 +182,11 @@ export default function ProductPage() {
                 </button>
               ))}
             </div>
+            {size && size !== 'L' && (
+              <p style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#666', lineHeight: 1.5 }}>
+                Das Druckbild ist für Größe L kalibriert — auf {size} wirkt es proportional angepasst.
+              </p>
+            )}
             <details style={{ marginTop: '0.7rem' }}>
               <summary style={{ cursor: 'pointer', color: '#888', fontSize: '0.8rem', userSelect: 'none' }}>
                 📏 {t.product.sizeChart}

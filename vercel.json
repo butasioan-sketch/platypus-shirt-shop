@@ -5,5 +5,8 @@
     { "source": "/datenschutz", "destination": "/datenschutz" },
     { "source": "/versand", "destination": "/versand" },
     { "source": "/admin/:path*", "destination": "/admin/:path*" }
+  ],
+  "crons": [
+    { "path": "/api/health-cron", "schedule": "0 * * * *" }
   ]
 }
