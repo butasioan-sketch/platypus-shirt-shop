@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { notifyAdminWebhookError } from '@/lib/admin-alert';
 
 export async function POST(request: NextRequest) {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -37,7 +38,7 @@ export async function POST(request: NextRequest) {
         headers: { 'Content-Type': 'application/json', 'x-internal-key': process.env.INTERNAL_API_KEY || '' },
         body: JSON.stringify({
           stripeSessionId: session.id,
-          customerEmail: session.customer_email,
+          customerEmail: session.customer_details?.email ?? session.customer_email,
           amountTotal: (session.amount_total || 0) / 100,
           currency: session.currency?.toUpperCase() || 'EUR',
           locale: session.metadata?.locale || 'de',
@@ -76,6 +77,7 @@ export async function POST(request: NextRequest) {
       }
     } catch (err) {
       console.error('Order Erstellung fehlgeschlagen:', err);
+      await notifyAdminWebhookError(session.id, err).catch(() => {});
     }
   }
 
