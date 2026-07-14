@@ -5,7 +5,7 @@ import { OrbitControls, useGLTF, Decal, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import ShirtFlip from './ShirtFlip';
 import StaticShirtPreview from './StaticShirtPreview';
-import { PRINT_SPEC, VIEWER_DEFAULTS, BRAND_DEMO_PRINT } from '@/lib/print-spec';
+import { PRINT_SPEC, VIEWER_DEFAULTS } from '@/lib/print-spec';
 
 interface PrintData { src: string; x: number; y: number; scale: number; }
 interface Shirt3DProps {
@@ -118,17 +118,14 @@ export default function Shirt3D({
       .catch(() => setModelExists(false));
   }, []);
 
-  const demoFront = props.frontPrint ?? BRAND_DEMO_PRINT.front;
-  const demoBack = props.backPrint ?? BRAND_DEMO_PRINT.back;
-
   if (modelExists === null || !modelExists) {
     if (fallback === 'static') {
-      return <StaticShirtPreview print={demoFront} shadow="0 12px 32px rgba(0,0,0,0.55)" />;
+      return <StaticShirtPreview shadow="0 12px 32px rgba(0,0,0,0.55)" />;
     }
     return (
       <ShirtFlip
-        frontPrint={demoFront}
-        backPrint={demoBack}
+        frontPrint={props.frontPrint}
+        backPrint={props.backPrint}
         autoRotateSpeed={VIEWER_DEFAULTS.autoRotateSpeed2D}
         idleDelayMs={VIEWER_DEFAULTS.idleDelayMs}
         showControls={false}

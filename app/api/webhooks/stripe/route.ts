@@ -65,6 +65,8 @@ export async function POST(request: NextRequest) {
               total: (session.amount_total || 0) / 100,
               items: parsedItems,
               locale: session.metadata?.locale || 'de',
+              designId: session.metadata?.designId || null,
+              designIds: session.metadata?.designIds || '',
             }),
           });
           console.log('Bestätigungs-E-Mail ausgelöst für:', customerEmail);

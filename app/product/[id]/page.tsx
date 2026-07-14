@@ -121,7 +121,7 @@ export default function ProductPage() {
         <div className="editor-col" style={{ position: 'sticky', top: '5rem', alignSelf: 'start' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
             <span style={{ background: '#e2001a', color: '#fff', fontSize: '0.65rem', fontWeight: 700, padding: '0.25rem 0.6rem', borderRadius: '999px', letterSpacing: '0.05em' }}>NEU</span>
-            <span style={{ color: '#888', fontSize: '0.8rem' }}>DIN A4 Hochformat · vorne & hinten · {PRINT_SPEC.widthMm}×{PRINT_SPEC.heightMm} mm</span>
+            <span style={{ color: '#888', fontSize: '0.8rem' }}>{PRINT_SPEC.widthMm} × {PRINT_SPEC.heightMm} mm · vorne & hinten</span>
           </div>
           <div style={{ borderRadius: '16px', overflow: 'visible', background: 'transparent' }}>
             <DesignStudio shirtColor={activeColor.hex} onDesignChange={setDesign} />

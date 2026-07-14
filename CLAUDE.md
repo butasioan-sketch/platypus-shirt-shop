@@ -35,7 +35,7 @@ Flutter, Docker, pm2, @nex-ai/nex, npm-global claude-code, anthropic Python SDK.
 ## Harte Signaturen
 - `calcUnitPrice(front?, back?)` — keine Seitenzahl
 - `proxy.ts` (nicht middleware.ts)
-- `lib/print-spec.ts` — DIN A4 Hochformat
+- `lib/print-spec.ts` — Druckfläche 210 × 297 mm
 - designs-DB: nur front_image, back_image — keine Positionsdaten
 
 ## Aktive Scripts

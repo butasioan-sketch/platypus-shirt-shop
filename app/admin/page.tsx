@@ -2,17 +2,24 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import Logo from '@/app/components/Logo';
+import { getAllProducts } from '@/lib/products';
 
 export default function AdminPage() {
   const [orderCount, setOrderCount] = useState(0);
+  const [pageviews24h, setPageviews24h] = useState(0);
   const [stripeStatus, setStripeStatus] = useState<'loading' | 'ok' | 'demo'>('loading');
+  const productCount = getAllProducts().length;
 
   useEffect(() => {
-    try {
-      const orders = JSON.parse(localStorage.getItem('platypus_orders') || '[]');
-      setOrderCount(orders.length);
-    } catch { setOrderCount(0); }
+    fetch('/api/orders?stats=true')
+      .then(r => r.json())
+      .then(s => setOrderCount(s.total ?? 0))
+      .catch(() => setOrderCount(0));
+
+    fetch('/api/analytics')
+      .then(r => r.json())
+      .then(a => setPageviews24h(a.last24h ?? 0))
+      .catch(() => setPageviews24h(0));
 
     fetch('/api/payments/create-checkout')
       .then(r => r.json())
@@ -22,15 +29,14 @@ export default function AdminPage() {
 
   const cards = [
     { label: 'Orders', value: orderCount.toString(), href: '/admin/orders', color: '#4ade80', icon: '📦' },
+    { label: 'Analytics', value: `${pageviews24h} / 24h`, href: '/admin/analytics', color: '#f472b6', icon: '📊' },
     { label: 'Stripe', value: stripeStatus === 'loading' ? '...' : stripeStatus === 'ok' ? 'Aktiv' : 'Demo', href: '/admin/tests', color: stripeStatus === 'ok' ? '#4ade80' : '#facc15', icon: '💳' },
-    { label: 'Inventory', value: '2 Produkte', href: '/admin/inventory', color: '#60a5fa', icon: '👕' },
-    { label: 'Viewer Notes', value: 'Notizen', href: '/admin/viewer-notes', color: '#a78bfa', icon: '📝' },
+    { label: 'Inventory', value: `${productCount} Produkt${productCount !== 1 ? 'e' : ''}`, href: '/admin/inventory', color: '#60a5fa', icon: '👕' },
   ];
 
   const links = [
     { label: 'Live Shop', href: 'https://platypus-shirt-shop.vercel.app', ext: true },
     { label: 'Produkt 1', href: '/product/1', ext: false },
-    { label: 'Produkt 2', href: '/product/2', ext: false },
     { label: 'Warenkorb', href: '/cart', ext: false },
     { label: 'Stripe Dashboard', href: 'https://dashboard.stripe.com', ext: true },
   ];
@@ -51,7 +57,6 @@ export default function AdminPage() {
           {new Date().toLocaleDateString('de-DE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
         </p>
 
-        {/* STAT CARDS */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '3rem' }}>
           {cards.map((card) => (
             <Link key={card.label} href={card.href} style={{ textDecoration: 'none' }}>
@@ -66,7 +71,6 @@ export default function AdminPage() {
           ))}
         </div>
 
-        {/* QUICK LINKS */}
         <h2 style={{ fontSize: '0.75rem', color: '#555', letterSpacing: '0.2em', marginBottom: '1rem', textTransform: 'uppercase' }}>Quick Links</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '3rem' }}>
           {links.map((l) => (
@@ -75,32 +79,6 @@ export default function AdminPage() {
               <span>{l.label}</span>
               <span style={{ color: '#333' }}>{l.ext ? '↗' : '→'}</span>
             </a>
-          ))}
-        </div>
-
-        {/* CHECKLISTE */}
-        <h2 style={{ fontSize: '0.75rem', color: '#555', letterSpacing: '0.2em', marginBottom: '1rem', textTransform: 'uppercase' }}>Launch Checkliste</h2>
-        <div style={{ background: '#111', border: '1px solid #1a1a1a', borderRadius: '12px', padding: '1.5rem' }}>
-          {[
-            { done: true,  label: 'Shop live auf Vercel' },
-            { done: true,  label: 'Stripe Checkout integriert' },
-            { done: true,  label: 'Design-Editor: eigenes Motiv hochladen' },
-            { done: true,  label: 'Admin Dashboard' },
-            { done: true,  label: 'Warenkorb mit LocalStorage' },
-            { done: stripeStatus === 'ok', label: 'Echter Stripe Key gesetzt' },
-            { done: false, label: 'Stripe Webhook aktiv' },
-            { done: false, label: 'Admin Passwort gesetzt' },
-            { done: false, label: 'Echte Produktbilder' },
-            { done: false, label: 'Erster echter Testkauf' },
-            { done: false, label: 'Datenbank (Supabase)' },
-            { done: false, label: 'E-Mail Bestätigung' },
-          ].map((item) => (
-            <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.5rem 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
-              <span style={{ color: item.done ? '#4ade80' : '#333', fontSize: '1rem', minWidth: '20px' }}>
-                {item.done ? '✓' : '○'}
-              </span>
-              <span style={{ color: item.done ? '#fff' : '#555', fontSize: '0.875rem' }}>{item.label}</span>
-            </div>
           ))}
         </div>
       </div>

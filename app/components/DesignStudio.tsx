@@ -54,7 +54,7 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
         if (short < PRINT_SPEC.minUploadPx) {
           setUploadHint(`Auflösung niedrig (${probe.width}×${probe.height}). Empfohlen: ${PRINT_SPEC.widthPx}×${PRINT_SPEC.heightPx} px.`);
         } else if (Math.abs(ratio - a4) > 0.25 && Math.abs(ratio - 1 / a4) > 0.25) {
-          setUploadHint(`Seitenverhältnis weicht von DIN A4 ab. Hochformat (${PRINT_SPEC.widthMm}×${PRINT_SPEC.heightMm} mm) liefert das beste Ergebnis.`);
+          setUploadHint(`Seitenverhältnis weicht ab. Hochformat ${PRINT_SPEC.widthMm} × ${PRINT_SPEC.heightMm} mm (${PRINT_SPEC.widthMm / 10} × ${PRINT_SPEC.heightMm / 10} cm) liefert das beste Ergebnis.`);
         } else {
           setUploadHint('');
         }
@@ -201,7 +201,7 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
               <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', textAlign: 'center', lineHeight: 1.4 }}>
-                DIN A4 · Hochformat<br />{PRINT_SPEC.widthMm}×{PRINT_SPEC.heightMm} mm
+                {PRINT_SPEC.widthMm} × {PRINT_SPEC.heightMm} mm<br />({PRINT_SPEC.widthMm / 10} × {PRINT_SPEC.heightMm / 10} cm)
               </span>
             </div>
           )}

@@ -46,9 +46,9 @@ export const PRODUCTS: Product[] = [
       en: 'AirFit Pro',
     },
     description: {
-      de: 'B&C TM062 · 100% Polyester · 140g/m² · Sublimation DIN A4 · Unisex',
-      ro: 'B&C TM062 · 100% Poliester · 140g/m² · Sublimare DIN A4 · Unisex',
-      en: 'B&C TM062 · 100% Polyester · 140g/m² · DIN A4 sublimation · Unisex',
+      de: 'B&C TM062 · 100% Polyester · 140g/m² · Sublimation 210×297 mm · Unisex',
+      ro: 'B&C TM062 · 100% Poliester · 140g/m² · Sublimare 210×297 mm · Unisex',
+      en: 'B&C TM062 · 100% Polyester · 140g/m² · 210×297 mm sublimation · Unisex',
     },
     tags: ['essential', 'polyester', 'sublimation', 'hell', 'basic'],
     active: true,

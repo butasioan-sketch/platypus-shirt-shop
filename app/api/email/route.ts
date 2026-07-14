@@ -33,31 +33,59 @@ function buildStatusHtml(title: string, body: string, orderId: string): string {
   </div>`;
 }
 
-const EMAIL_TEMPLATES: Record<string, (data: OrderEmailData) => { subject: string; html: string }> = {
-  de: (d) => ({
-    subject: `PLATYPUS — Bestellbestätigung ${d.orderId}`,
-    html: buildHtml('Danke für deine Bestellung!', 'Deine Bestellung wurde erfolgreich aufgegeben.', d, 'Produktion startet innerhalb von 24 Stunden.'),
-  }),
-  ro: (d) => ({
-    subject: `PLATYPUS — Confirmare comandă ${d.orderId}`,
-    html: buildHtml('Mulțumim pentru comandă!', 'Comanda ta a fost plasată cu succes.', d, 'Producția începe în 24 de ore.'),
-  }),
-  en: (d) => ({
-    subject: `PLATYPUS — Order Confirmation ${d.orderId}`,
-    html: buildHtml('Thank you for your order!', 'Your order has been placed successfully.', d, 'Production starts within 24 hours.'),
-  }),
-};
+function buildConfirmationEmail(d: OrderEmailData, designPreview: string) {
+  const templates: Record<string, { subject: string; title: string; intro: string; footer: string }> = {
+    de: { subject: `PLATYPUS — Bestellbestätigung ${d.orderId}`, title: 'Danke für deine Bestellung!', intro: 'Deine Bestellung wurde erfolgreich aufgegeben.', footer: 'Produktion startet innerhalb von 24 Stunden.' },
+    ro: { subject: `PLATYPUS — Confirmare comandă ${d.orderId}`, title: 'Mulțumim pentru comandă!', intro: 'Comanda ta a fost plasată cu succes.', footer: 'Producția începe în 24 de ore.' },
+    en: { subject: `PLATYPUS — Order Confirmation ${d.orderId}`, title: 'Thank you for your order!', intro: 'Your order has been placed successfully.', footer: 'Production starts within 24 hours.' },
+  };
+  const t = templates[d.locale] || templates.de;
+  return { subject: t.subject, html: buildHtml(t.title, t.intro, d, t.footer, designPreview) };
+}
 
 interface OrderEmailData {
   orderId: string;
   email: string;
   total: number;
-  items: { name: string; size: string; quantity: number; price: number }[];
+  items: { name: string; size: string; quantity: number; price: number; designId?: string }[];
   locale: string;
+  designId?: string;
+  designIds?: string;
   type?: 'confirmation' | 'production' | 'shipped' | 'delivered';
 }
 
-function buildHtml(title: string, intro: string, d: OrderEmailData, footer: string): string {
+async function fetchDesignImages(ids: string[]) {
+  const url = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+  if (!url || ids.length === 0) return [];
+  try {
+    const { neon } = await import('@neondatabase/serverless');
+    const sql = neon(url);
+    const rows: { id: string; front_image?: string; back_image?: string }[] = [];
+    for (const id of ids.slice(0, 3)) {
+      const r = await sql.query('SELECT id, front_image, back_image FROM designs WHERE id=$1', [id]) as Record<string, string>[];
+      if (r[0]) rows.push(r[0] as { id: string; front_image?: string; back_image?: string });
+    }
+    return rows;
+  } catch {
+    return [];
+  }
+}
+
+function buildDesignPreviewHtml(designs: { id: string; front_image?: string; back_image?: string }[]): string {
+  if (!designs.length) return '';
+  const blocks = designs.map((d) => {
+    const imgs = [
+      d.front_image ? `<div style="text-align:center"><p style="color:#666;font-size:11px;margin:0 0 6px">Vorne</p><img src="${d.front_image}" alt="Vorne" style="max-width:200px;border-radius:8px;border:1px solid #333"/></div>` : '',
+      d.back_image ? `<div style="text-align:center"><p style="color:#666;font-size:11px;margin:0 0 6px">Hinten</p><img src="${d.back_image}" alt="Hinten" style="max-width:200px;border-radius:8px;border:1px solid #333"/></div>` : '',
+    ].filter(Boolean).join('');
+    if (!imgs) return '';
+    return `<div style="margin-bottom:16px"><p style="color:#888;font-size:12px;margin-bottom:8px">Dein Motiv</p><div style="display:flex;gap:16px;flex-wrap:wrap;justify-content:center">${imgs}</div></div>`;
+  }).join('');
+  if (!blocks) return '';
+  return `<div style="background:#111;border:1px solid #222;border-radius:12px;padding:16px;margin-bottom:24px">${blocks}</div>`;
+}
+
+function buildHtml(title: string, intro: string, d: OrderEmailData, footer: string, designPreview = ''): string {
   const itemRows = d.items.map(i =>
     `<tr><td style="padding:8px 0;color:#888">${i.quantity}× ${i.name} (${i.size})</td><td style="padding:8px 0;text-align:right">€${(i.price * i.quantity).toFixed(2)}</td></tr>`
   ).join('');
@@ -67,6 +95,7 @@ function buildHtml(title: string, intro: string, d: OrderEmailData, footer: stri
     <h1 style="font-size:24px;letter-spacing:0.15em;margin-bottom:32px">PLATYPUS</h1>
     <h2 style="font-size:20px;margin-bottom:8px">${title}</h2>
     <p style="color:#888;margin-bottom:24px">${intro}</p>
+    ${designPreview}
     <div style="background:#111;border:1px solid #222;border-radius:12px;padding:20px;margin-bottom:24px">
       <p style="color:#555;font-size:12px;margin-bottom:12px">Order ${d.orderId}</p>
       <table style="width:100%;border-collapse:collapse">${itemRows}</table>
@@ -88,11 +117,20 @@ export async function POST(request: NextRequest) {
     const data: OrderEmailData = await request.json();
     const apiKey = process.env.RESEND_API_KEY;
 
+    const designIds = Array.from(new Set([
+      data.designId,
+      ...(data.designIds?.split(',').filter(Boolean) || []),
+      ...(data.items?.map(i => i.designId).filter(Boolean) || []),
+    ].filter(Boolean))) as string[];
+
+    const designs = await fetchDesignImages(designIds);
+    const designPreview = buildDesignPreviewHtml(designs);
+
     const statusSet = data.type && data.type !== 'confirmation' ? STATUS_TEXTS[data.type] : null;
     const template = statusSet
       ? (() => { const t = statusSet[data.locale] || statusSet.de;
           return { subject: `PLATYPUS — ${t.subject} (${data.orderId})`, html: buildStatusHtml(t.title, t.body, data.orderId) }; })()
-      : (EMAIL_TEMPLATES[data.locale] || EMAIL_TEMPLATES.de)(data);
+      : buildConfirmationEmail(data, designPreview);
 
     if (!apiKey) {
       console.log('E-Mail (Demo):', template.subject, '→', data.email);

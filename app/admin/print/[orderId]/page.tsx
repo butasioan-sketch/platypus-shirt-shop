@@ -52,7 +52,7 @@ export default async function PrintView({ params }: { params: Promise<{ orderId:
         </div>
       ))}
       <p style={{ fontSize: '0.75rem', color: '#999', borderTop: '1px solid #ddd', paddingTop: '1rem' }}>
-        {PRINT_SPEC.method} · {PRINT_SPEC.blank} · {PRINT_SPEC.format} {PRINT_SPEC.orientation === 'portrait' ? 'Hochformat' : ''} ({PRINT_SPEC.widthMm}×{PRINT_SPEC.heightMm} mm, {PRINT_SPEC.dpi} dpi = {PRINT_SPEC.widthPx}×{PRINT_SPEC.heightPx} px). Motive in Originalauflösung — Rechtsklick → Bild speichern → Epson SC-F100.
+        {PRINT_SPEC.method} · {PRINT_SPEC.blank} · {PRINT_SPEC.widthMm} × {PRINT_SPEC.heightMm} mm Hochformat ({PRINT_SPEC.dpi} dpi = {PRINT_SPEC.widthPx} × {PRINT_SPEC.heightPx} px). Motive in Originalauflösung — Rechtsklick → Bild speichern → Epson SC-F100.
       </p>
     </div>
   );

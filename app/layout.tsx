@@ -18,8 +18,8 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://platypus-shirt-shop
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: 'On Me — Custom Sublimation T-Shirts | DIN A4',
-  description: 'B&C TM062 Polyester-Shirt mit deinem Motiv — vorne & hinten auf DIN A4. Sublimationsdruck in der Faser. Versand DE & RO.',
+  title: 'On Me — Custom Sublimation T-Shirts | 210 × 297 mm',
+  description: 'B&C TM062 Polyester-Shirt mit deinem Motiv — vorne & hinten (210 × 297 mm). Sublimationsdruck in der Faser. Versand DE & RO.',
   keywords: 'platypus, t-shirt, print on demand, custom shirt, eigenes design, motiv hochladen, tricouri, romania',
   icons: {
     icon: [{ url: '/icon-192.png', sizes: '192x192' }, { url: '/icon-512.png', sizes: '512x512' }],
@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
   openGraph: {
     title: 'On Me — Dein Motiv auf Premium Polyester',
-    description: 'Sublimationsdruck DIN A4 — vorne & hinten. B&C TM062, 39,99 €.',
+    description: 'Sublimationsdruck 210 × 297 mm — vorne & hinten. B&C TM062, 39,99 €.',
     type: 'website',
     url: siteUrl,
     images: [{ url: '/og.png', width: 1200, height: 630 }],
