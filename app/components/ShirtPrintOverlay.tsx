@@ -1,7 +1,7 @@
 'use client';
 
-import { PRINT_SPEC } from '@/lib/print-spec';
-import { getPrintImageStyle, getPrintZoneStyle } from '@/lib/print-position';
+import { PRINT_SPEC, getPlacementZoneStyle } from '@/lib/print-spec';
+import { getMotifStyle } from '@/lib/print-position';
 import { useLocale } from '@/app/components/LocaleProvider';
 
 interface ShirtPrintOverlayProps {
@@ -24,37 +24,35 @@ export default function ShirtPrintOverlay({
   interactive = false,
 }: ShirtPrintOverlayProps) {
   const { t } = useLocale();
-  const zoneStyle = {
-    ...getPrintZoneStyle(side),
-    cursor: interactive && imageSrc ? 'grab' : 'default',
-    boxShadow: imageSrc
-      ? 'inset 0 0 0 1px rgba(226,0,26,0.25)'
-      : 'inset 0 0 0 1.5px rgba(255,255,255,0.2)',
-  };
 
-  return (
-    <div
-      className="plt-print-zone"
-      style={zoneStyle}
-      onMouseDown={interactive ? onPointerDown : undefined}
-      onTouchStart={interactive ? onPointerDown : undefined}
-    >
-      {showGuide && !imageSrc && (
+  if (!imageSrc) {
+    if (!showGuide) return null;
+    return (
+      <div className="plt-print-zone" style={{ ...getPlacementZoneStyle(side), borderRadius: '3px', boxShadow: 'inset 0 0 0 1.5px rgba(255,255,255,0.2)' }}>
         <div className="plt-print-guide">
           <span className="plt-print-guide-text">
             {t.studio.printZoneLabel}<br />
             {PRINT_SPEC.widthMm} × {PRINT_SPEC.heightMm} mm
           </span>
         </div>
-      )}
-      {imageSrc && (
-        <img
-          src={imageSrc}
-          alt={side === 'front' ? t.studio.front : t.studio.back}
-          style={getPrintImageStyle(scale, pos)}
-          draggable={false}
-        />
-      )}
-    </div>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={imageSrc}
+      alt={side === 'front' ? t.studio.front : t.studio.back}
+      draggable={false}
+      onMouseDown={interactive ? onPointerDown : undefined}
+      onTouchStart={interactive ? onPointerDown : undefined}
+      style={{
+        ...getMotifStyle(side, { scale, x: pos.x, y: pos.y }),
+        pointerEvents: interactive ? 'auto' : 'none',
+        cursor: interactive ? 'grab' : 'default',
+        borderRadius: '3px',
+        boxShadow: 'inset 0 0 0 1px rgba(226,0,26,0.25)',
+      }}
+    />
   );
 }

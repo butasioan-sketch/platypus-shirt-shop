@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { getPrintOverlayBox, SHIRT_VIEWER_ASPECT, type PrintSide } from '@/lib/print-spec';
-import { getPrintImageStyle } from '@/lib/print-position';
+import { SHIRT_VIEWER_ASPECT, type PrintSide } from '@/lib/print-spec';
+import { getMotifStyle } from '@/lib/print-position';
 
 interface ShirtFlipProps {
   frontSrc?: string;
@@ -9,12 +9,10 @@ interface ShirtFlipProps {
   altFront?: string;
   altBack?: string;
   initialRotation?: number;
-  autoRotateSpeed?: number;    // Stellschraube 1
-  dragSensitivity?: number;    // Stellschraube 2
-  idleDelayMs?: number;        // Stellschraube 3
-  perspective?: number;        // Stellschraube 4
-  shadow?: string;             // Stellschraube 5
-  inertiaFriction?: number;    // Stellschraube 6
+  dragSensitivity?: number;    // Stellschraube 1
+  perspective?: number;        // Stellschraube 2
+  shadow?: string;             // Stellschraube 3
+  inertiaFriction?: number;    // Stellschraube 4
   frontPrint?: { src: string; x?: number; y?: number; scale?: number };
   backPrint?: { src: string; x?: number; y?: number; scale?: number };
   showHint?: boolean;
@@ -24,9 +22,7 @@ interface ShirtFlipProps {
 }
 
 const DEFAULTS = {
-  autoRotateSpeed: 0.022,
   dragSensitivity: 0.55,
-  idleDelayMs: 3800,
   perspective: 1200,
   shadow: '0 8px 24px rgba(0,0,0,0.5)',
   inertiaFriction: 0.91,
@@ -39,9 +35,7 @@ export default function ShirtFlip({
   altFront = 'AirFit Pro — Vorderseite',
   altBack = 'AirFit Pro — Rückseite',
   initialRotation = 0,
-  autoRotateSpeed = DEFAULTS.autoRotateSpeed,
   dragSensitivity = DEFAULTS.dragSensitivity,
-  idleDelayMs = DEFAULTS.idleDelayMs,
   perspective = DEFAULTS.perspective,
   shadow = DEFAULTS.shadow,
   inertiaFriction = DEFAULTS.inertiaFriction,
@@ -58,12 +52,10 @@ export default function ShirtFlip({
   const viewerRef = useRef<HTMLDivElement>(null);
   const lastXRef = useRef(0);
   const lastTimeRef = useRef(performance.now());
-  const idleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const rafRef = useRef<number>(0);
   const isDraggingRef = useRef(false);
   const loadedCountRef = useRef(0);
 
-  const [isIdle, setIsIdle] = useState(true);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [hasError, setHasError] = useState(false);
 
@@ -75,42 +67,26 @@ export default function ShirtFlip({
   }, [onRotationChange]);
 
   const normalize = (r: number) => { let n = r % 360; if (n < 0) n += 360; return n; };
-  const startIdleTimer = useCallback(() => {
-    if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-    idleTimerRef.current = setTimeout(() => {
-      if (modeRef.current !== 'dragging') { modeRef.current = 'idle'; setIsIdle(true); }
-    }, idleDelayMs);
-  }, [idleDelayMs]);
 
-  const stopIdleTimer = () => {
-    if (idleTimerRef.current) { clearTimeout(idleTimerRef.current); idleTimerRef.current = null; }
-  };
-
-  const tick = useCallback((t: number) => {
-    const delta = t - lastTimeRef.current;
-    lastTimeRef.current = t;
-    let needsUpdate = false;
-    if (modeRef.current === 'idle' && !isDraggingRef.current) {
-      rotationRef.current += delta * autoRotateSpeed;
-      needsUpdate = true;
-    } else if (modeRef.current === 'coasting' && enableInertia) {
-      rotationRef.current += velocityRef.current;
+  // Nur Trägheit (Coasting) nach dem Loslassen läuft über requestAnimationFrame —
+  // kein Idle-Modus mehr, der von selbst zu drehen beginnt.
+  const tick = useCallback(() => {
+    if (modeRef.current === 'coasting' && enableInertia) {
+      rotationRef.current = normalize(rotationRef.current + velocityRef.current);
       velocityRef.current *= inertiaFriction;
-      needsUpdate = true;
+      updateTransform();
       if (Math.abs(velocityRef.current) < DEFAULTS.minVelocity) {
-        modeRef.current = 'idle'; velocityRef.current = 0; startIdleTimer();
+        modeRef.current = 'idle';
+        velocityRef.current = 0;
       }
     }
-    if (needsUpdate) { rotationRef.current = normalize(rotationRef.current); updateTransform(); }
     rafRef.current = requestAnimationFrame(tick);
-  }, [autoRotateSpeed, enableInertia, inertiaFriction, updateTransform, startIdleTimer]);
+  }, [enableInertia, inertiaFriction, updateTransform]);
 
   useEffect(() => {
-    lastTimeRef.current = performance.now();
     rafRef.current = requestAnimationFrame(tick);
     return () => {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
     };
   }, [tick]);
 
@@ -120,8 +96,6 @@ export default function ShirtFlip({
     lastXRef.current = e.clientX;
     lastTimeRef.current = performance.now();
     velocityRef.current = 0;
-    stopIdleTimer();
-    setIsIdle(false);
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     if (viewerRef.current) viewerRef.current.style.cursor = 'grabbing';
   };
@@ -144,34 +118,22 @@ export default function ShirtFlip({
     if (enableInertia && Math.abs(velocityRef.current) > DEFAULTS.minVelocity * 1.8) {
       modeRef.current = 'coasting';
     } else {
-      modeRef.current = 'idle'; velocityRef.current = 0; startIdleTimer();
+      modeRef.current = 'idle'; velocityRef.current = 0;
     }
     if (viewerRef.current) viewerRef.current.style.cursor = 'grab';
   };
 
   const resetToFront = () => {
-    stopIdleTimer();
     modeRef.current = 'idle'; velocityRef.current = 0; isDraggingRef.current = false;
-    rotationRef.current = 0; updateTransform(0); setIsIdle(true);
-    setTimeout(startIdleTimer, 300);
-  };
-
-  const toggleAutoRotate = () => {
-    if (modeRef.current === 'idle') {
-      modeRef.current = 'coasting'; velocityRef.current = 0.6; setIsIdle(false); stopIdleTimer();
-    } else {
-      modeRef.current = 'idle'; velocityRef.current = 0; setIsIdle(true); startIdleTimer();
-    }
+    rotationRef.current = 0; updateTransform(0);
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     const step = 12;
     if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-      e.preventDefault(); stopIdleTimer(); modeRef.current = 'idle';
+      e.preventDefault(); modeRef.current = 'idle';
       rotationRef.current += e.key === 'ArrowRight' ? step : -step;
-      updateTransform(); setIsIdle(false); startIdleTimer();
-    } else if (e.key === ' ' || e.key === 'Spacebar') {
-      e.preventDefault(); toggleAutoRotate();
+      updateTransform();
     } else if (e.key.toLowerCase() === 'r' || e.key === 'Escape') {
       e.preventDefault(); resetToFront();
     }
@@ -199,11 +161,13 @@ export default function ShirtFlip({
     pointerEvents: 'none', filter: `drop-shadow(${shadow})`,
   };
   const wrapStyle: React.CSSProperties = { position: 'relative', height: '100%', aspectRatio: SHIRT_VIEWER_ASPECT, maxWidth: '100%' };
-  const printBox = (side: PrintSide): React.CSSProperties => ({ ...getPrintOverlayBox(side), pointerEvents: 'none', zIndex: 2, opacity: 0.98 });
   const renderPrint = (side: PrintSide, pr?: { src: string; x?: number; y?: number; scale?: number }) => pr ? (
-    <div style={printBox(side)}>
-      <img src={pr.src} alt="" draggable={false} style={getPrintImageStyle(pr.scale ?? 1, { x: pr.x ?? 0, y: pr.y ?? 0 })} />
-    </div>
+    <img
+      src={pr.src}
+      alt=""
+      draggable={false}
+      style={{ ...getMotifStyle(side, { scale: pr.scale ?? 1, x: pr.x ?? 0, y: pr.y ?? 0 }), zIndex: 2, opacity: 0.98 }}
+    />
   ) : null;
   const ctrlBtn: React.CSSProperties = {
     padding: '0.5rem', background: 'transparent', border: 'none', color: '#999',
@@ -216,7 +180,7 @@ export default function ShirtFlip({
       onKeyDown={onKeyDown}
       tabIndex={0}
       role="img"
-      aria-label={'Interaktive 360-Grad-Ansicht des Shirts. Ziehen zum Drehen, Pfeiltasten, Leertaste = Auto-Drehung, R = Reset.'}
+      aria-label={'Interaktive 360-Grad-Ansicht des Shirts. Nur manuell drehbar: Ziehen oder Pfeiltasten, R = Reset.'}
     >
       {!imagesLoaded && (
         <div style={{ position: 'absolute', inset: 0, zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -256,19 +220,12 @@ export default function ShirtFlip({
               <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.058 11H1M12 3v2m0 16v2m9-9H15m-6 0a8.002 8.002 0 01-3.356-2.5" />
             </svg>
           </button>
-          <button onClick={toggleAutoRotate} style={ctrlBtn} title={isIdle ? 'Auto-Drehung pausieren' : 'Auto-Drehung starten'} aria-label="Auto-Drehung umschalten">
-            {isIdle ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" /></svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-            )}
-          </button>
         </div>
       )}
 
       {showHint && imagesLoaded && (
         <p style={{ color: '#666', fontSize: '0.62rem', letterSpacing: '0.12em', textTransform: 'uppercase', marginTop: '0.6rem', textAlign: 'center', flexShrink: 0 }}>
-          ↔ Ziehen • Doppelklick = Reset • 360°
+          ↔ Ziehen zum Drehen • Doppelklick = Reset
         </p>
       )}
     </div>

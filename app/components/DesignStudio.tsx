@@ -111,8 +111,10 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
   const moveDrag = (clientX: number, clientY: number) => {
     if (!dragging || !dragStart.current || !containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
-    const dx = (clientX - dragStart.current.mx) * (100 / rect.width);
-    const dy = (clientY - dragStart.current.my) * (100 / rect.height);
+    const zone = PRINT_SPEC.placement[side];
+    // 1:1-Drag: Pixel-Delta -> Prozent des Containers -> Prozent der (kleineren) Placement-Zone
+    const dx = (clientX - dragStart.current.mx) * (100 / rect.width) * (100 / zone.width);
+    const dy = (clientY - dragStart.current.my) * (100 / rect.height) * (100 / zone.height);
     const limit = PRINT_SPEC.maxOffsetPercent;
     setCurrentPos({
       x: Math.max(-limit, Math.min(limit, dragStart.current.px + dx)),

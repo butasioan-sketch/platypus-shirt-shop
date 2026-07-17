@@ -5,7 +5,6 @@ import { OrbitControls, useGLTF, Decal, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import ShirtFlip from './ShirtFlip';
 import StaticShirtPreview from './StaticShirtPreview';
-import { VIEWER_DEFAULTS } from '@/lib/print-spec';
 import { getDecalDimensions, getDecalPosition } from '@/lib/print-position';
 
 interface PrintData { src: string; x: number; y: number; scale: number; }
@@ -14,7 +13,6 @@ interface Shirt3DProps {
   backPrint?: PrintData;
   shirtColor?: string;
   enableTouch?: boolean;
-  autoRotateSpeed?: number;
   /** static = statisches Bild (Startseite), flip = 2D-Editor-Fallback (Design-Studio) */
   fallback?: 'static' | 'flip';
 }
@@ -23,8 +21,8 @@ const MODEL_PATH = '/models/shirt-white-v2.glb';
 
 // === KUNDENMOTIV ALS DECAL ===
 // Position wird dynamisch aus der Bounding-Box des Shirt-Meshes abgeleitet.
-// print.x / print.y: -20..+20 (% aus 2D-Editor, 0 = Mitte, y+ = nach unten)
-// print.scale: Multiplikator (Slider, 1 = 100 %)
+// print.x / print.y: -50..+50 (% aus 2D-Editor, 0 = Mitte der nutzbaren Fläche, y+ = nach unten)
+// print.scale: Multiplikator (Slider, 1 = 100 % A4-Größe) — identisches Mapping wie im 2D-Editor.
 function CustomerPrint({ mesh, print, front }:
   { mesh: THREE.Mesh; print: PrintData; front: boolean }) {
   const tex = useTexture(print.src);
@@ -35,11 +33,14 @@ function CustomerPrint({ mesh, print, front }:
     const bb = mesh.geometry.boundingBox as THREE.Box3;
     const c = new THREE.Vector3(); bb.getCenter(c);
     const s = new THREE.Vector3(); bb.getSize(s);
-    const { w, h } = getDecalDimensions({ x: s.x, y: s.y, z: s.z }, print.scale || 1, front ? 'front' : 'back');
+    const side = front ? 'front' : 'back';
+    const transform = { scale: print.scale || 1, x: print.x, y: print.y };
+    const { w, h } = getDecalDimensions({ x: s.x, y: s.y, z: s.z }, side, transform);
     const position = getDecalPosition(
       { x: c.x, y: c.y, z: c.z },
       { x: s.x, y: s.y, z: s.z },
-      { scale: print.scale || 1, x: print.x, y: print.y },
+      side,
+      transform,
       front,
     );
     return {
@@ -107,7 +108,6 @@ function ShirtModel({ frontPrint, backPrint, shirtColor = '#ffffff' }: Shirt3DPr
 // === HAUPTKOMPONENTE ===
 export default function Shirt3D({
   enableTouch = true,
-  autoRotateSpeed = VIEWER_DEFAULTS.autoRotateSpeed3D,
   fallback = 'flip',
   ...props
 }: Shirt3DProps) {
@@ -127,8 +127,6 @@ export default function Shirt3D({
       <ShirtFlip
         frontPrint={props.frontPrint}
         backPrint={props.backPrint}
-        autoRotateSpeed={VIEWER_DEFAULTS.autoRotateSpeed2D}
-        idleDelayMs={VIEWER_DEFAULTS.idleDelayMs}
         showControls={false}
         showHint={false}
       />
@@ -149,8 +147,7 @@ export default function Shirt3D({
           enablePan={false}
           minDistance={0.3}
           maxDistance={2}
-          autoRotate
-          autoRotateSpeed={autoRotateSpeed}
+          autoRotate={false}
           target={[0, 0.53, 0]}
           enableRotate={enableTouch}
           enableZoom={enableTouch}

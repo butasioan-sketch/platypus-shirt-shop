@@ -11,7 +11,12 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   });
 }
 
-/** CSS object-fit:cover + object-position — identisch zu getPrintImageStyle */
+/**
+ * CSS object-fit:cover, zentriert. transform.x/y aus dem Editor beschreiben die
+ * Position des Motivs AUF DEM SHIRT (Placement-Zone) — nicht den Bildausschnitt
+ * im Druck-Sheet. Das Druck-Sheet zeigt daher immer den zentrierten Ausschnitt,
+ * nur `scale` (Zoom) wirkt sich auf den Ausschnitt aus.
+ */
 function drawCover(
   ctx: CanvasRenderingContext2D,
   img: HTMLImageElement,
@@ -19,21 +24,14 @@ function drawCover(
   boxY: number,
   boxW: number,
   boxH: number,
-  pos: { x: number; y: number },
 ) {
-  const anchorPctX = (50 + pos.x) / 100;
-  const anchorPctY = (50 + pos.y) / 100;
   const renderScale = Math.max(boxW / img.width, boxH / img.height);
   const renderW = img.width * renderScale;
   const renderH = img.height * renderScale;
-  const anchorBoxX = anchorPctX * boxW;
-  const anchorBoxY = anchorPctY * boxH;
-  const anchorImgX = anchorPctX * renderW;
-  const anchorImgY = anchorPctY * renderH;
   ctx.drawImage(
     img,
-    boxX + anchorBoxX - anchorImgX,
-    boxY + anchorBoxY - anchorImgY,
+    boxX + (boxW - renderW) / 2,
+    boxY + (boxH - renderH) / 2,
     renderW,
     renderH,
   );
@@ -69,7 +67,7 @@ export async function renderPrintSheet(
   ctx.beginPath();
   ctx.rect(0, 0, widthPx, heightPx);
   ctx.clip();
-  drawCover(ctx, img, boxX, boxY, boxW, boxH, { x: transform.x, y: transform.y });
+  drawCover(ctx, img, boxX, boxY, boxW, boxH);
   ctx.restore();
 
   const format = options?.format ?? 'jpeg';

@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { PRINT_SPEC, getPrintOverlayBox, type PrintSide } from './print-spec';
+import { PRINT_SPEC, type PrintSide } from './print-spec';
 
 export interface PrintTransform {
   scale: number;
@@ -7,66 +7,70 @@ export interface PrintTransform {
   y: number;
 }
 
-/** Motiv füllt beim Upload die Standard-Druckfläche (realistisch, cover) */
+/** Motiv füllt beim Upload die Standard-Druckfläche (A4-Größe, mittig in der nutzbaren Fläche) */
 export function defaultPrintTransform(): PrintTransform {
   return { scale: 1, x: 0, y: 0 };
 }
 
-/** CSS für Motiv innerhalb der Druckfläche — deckt die Zone wie echter Sublimationsdruck */
-export function getPrintImageStyle(
-  scale: number,
-  pos: { x: number; y: number },
-): CSSProperties {
+function clampOffset(v: number): number {
+  const limit = PRINT_SPEC.maxOffsetPercent;
+  return Math.max(-limit, Math.min(limit, v));
+}
+
+/**
+ * Einzige Quelle der Wahrheit für die Motiv-Position: Rechteck in Prozent
+ * des Shirt-Fotos (top/left/width/height). Wird von 2D-Editor UND 3D-Decal
+ * gleichermaßen genutzt, damit beide Ansichten identisch mappen.
+ */
+export function getMotifRect(side: PrintSide, transform: PrintTransform) {
+  const base = PRINT_SPEC.overlay[side];
+  const zone = PRINT_SPEC.placement[side];
+  const width = base.width * transform.scale;
+  const height = base.height * transform.scale;
+  const cx = zone.left + zone.width / 2 + (clampOffset(transform.x) / 100) * zone.width;
+  const cy = zone.top + zone.height / 2 + (clampOffset(transform.y) / 100) * zone.height;
+  return { top: cy - height / 2, left: cx - width / 2, width, height };
+}
+
+/** CSS für das Motiv — absolut positioniert relativ zum Shirt-Foto-Container */
+export function getMotifStyle(side: PrintSide, transform: PrintTransform): CSSProperties {
+  const r = getMotifRect(side, transform);
   return {
     position: 'absolute',
-    width: `${Math.round(scale * 100)}%`,
-    height: `${Math.round(scale * 100)}%`,
+    top: `${r.top}%`,
+    left: `${r.left}%`,
+    width: `${r.width}%`,
+    height: `${r.height}%`,
     objectFit: 'cover',
-    objectPosition: `${50 + pos.x}% ${50 + pos.y}%`,
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
     pointerEvents: 'none',
     userSelect: 'none',
   };
 }
 
-export function getPrintZoneStyle(side: PrintSide = 'front'): CSSProperties {
-  return {
-    ...getPrintOverlayBox(side),
-    pointerEvents: 'auto',
-    zIndex: 2,
-    borderRadius: '3px',
-    overflow: 'hidden',
-  };
-}
-
-/** 3D-Decal-Größe aus gleicher Overlay-Spec wie 2D-Editor */
+/** 3D-Decal-Größe — dieselben Prozentwerte wie im 2D-Editor, auf die Mesh-Bounding-Box übertragen */
 export function getDecalDimensions(
   bboxSize: { x: number; y: number; z: number },
-  scale: number,
-  side: PrintSide = 'front',
+  side: PrintSide,
+  transform: PrintTransform,
 ): { w: number; h: number } {
-  const o = PRINT_SPEC.overlay[side];
-  const h = bboxSize.y * (o.height / 100) * scale;
-  const w = h * PRINT_SPEC.aspectRatio;
-  return { w, h };
+  const r = getMotifRect(side, transform);
+  return { w: bboxSize.x * (r.width / 100), h: bboxSize.y * (r.height / 100) };
 }
 
-/** 3D-Decal-Position — spiegelt overlay top/left aus print-spec */
+/** 3D-Decal-Position — dieselben Prozentwerte wie im 2D-Editor, auf die Mesh-Bounding-Box übertragen */
 export function getDecalPosition(
   center: { x: number; y: number; z: number },
   bboxSize: { x: number; y: number; z: number },
-  print: PrintTransform,
+  side: PrintSide,
+  transform: PrintTransform,
   front: boolean,
 ): [number, number, number] {
-  const side: PrintSide = front ? 'front' : 'back';
-  const o = PRINT_SPEC.overlay[side];
+  const r = getMotifRect(side, transform);
+  const cxPct = r.left + r.width / 2;
+  const cyPct = r.top + r.height / 2;
   const dirX = front ? 1 : -1;
-  const zoneCenterY = center.y + bboxSize.y * (0.5 - (o.top + o.height / 2) / 100);
-  const zoneCenterX = center.x + dirX * bboxSize.x * ((o.left + o.width / 2 - 50) / 100);
-  const x = zoneCenterX + dirX * (print.x / 100) * bboxSize.x * 0.35;
-  const y = zoneCenterY - (print.y / 100) * bboxSize.y * 0.35;
+  const x = center.x + dirX * bboxSize.x * ((cxPct - 50) / 100);
+  const y = center.y + bboxSize.y * (0.5 - cyPct / 100);
   const z = center.z + (front ? 1 : -1) * (bboxSize.z / 2);
   return [x, y, z];
 }
