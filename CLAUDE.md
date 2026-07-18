@@ -37,8 +37,8 @@ Siehe `.env.example`. Production-Secrets auf Vercel — `npx vercel env ls`.
 - No-Print-Zonen (Schulter/Seitennaht/Kragen/Saum): `NO_PRINT_NOTE` in `lib/print-spec.ts`, im Atelier-UI und PDF-Platzierungsdiagramm (gestrichelt) sichtbar.
 
 ## Produkt-Roadmap
-- P1 AirFit Pro T-Shirt — LIVE
-- P2 Shorts, P3 Boxer Herren, P4 Boxer Damen — **PLACEHOLDER**, Specs fehlen noch (siehe Kommentar in `lib/products.ts`). Keine Preise/Maße erfinden, kein Checkout ohne Specs.
+- P1 AirFit Pro T-Shirt (unisex) — LIVE
+- P2 Laufshorts (unisex, weiß), P3 Boxershorts (Herren), P4 Sport-Unterwäsche (Damen, Polyester) — **PLACEHOLDER**, Specs (Größen, Preis, Gewicht) fehlen noch (siehe Kommentar in `lib/products.ts`). Keine Preise/Maße erfinden, kein Checkout ohne Specs.
 
 ## Regeln
 - Vor Deploy: `./p build`

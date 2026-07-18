@@ -28,10 +28,10 @@ export interface Product {
   createdAt: string;
 }
 
-// PLACEHOLDER_PRODUCTS (noch NICHT im Shop, keine Specs vorhanden — nicht erfinden):
-// P2 — Kurze Hose (Shorts), weiß, 3D analog Shirt3D — Specs kommen später von Jonny
-// P3 — Boxershorts Herren, weiß — Specs kommen später von Jonny
-// P4 — Boxershorts Damen, weiß — Specs kommen später von Jonny
+// PLACEHOLDER_PRODUCTS (noch NICHT im Shop, keine vollen Specs vorhanden — Maße/Preise/Gewicht nicht erfinden):
+// P2 — Laufshorts, unisex, weiß, 3D analog Shirt3D — Rest der Specs kommt später von Jonny
+// P3 — Boxershorts, Herren, weiß — Specs kommen später von Jonny
+// P4 — Sport-Unterwäsche, Damen, Polyester — Rest der Specs kommt später von Jonny
 // Sobald Specs da sind: Product-Eintrag + eigene Placement-Kalibrierung, kein Checkout ohne Specs.
 export const PRODUCTS: Product[] = [
   {

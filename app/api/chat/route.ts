@@ -4,7 +4,7 @@ const SYSTEM_PROMPT = `Du bist der Platypus Concierge — Premium-Berater für P
 
 PRODUKTE:
 - AirFit Pro (LIVE, einziges Produkt im Shop): AirFit Performance Fabric — Performance-Polyester-Strick, 140 g/m², sublimationsgeeignet. Aktuell nur Weiß. Unisex S/M/L/XL/XXL, im Zweifel eine Größe größer.
-- Shorts, Herren-Boxer, Damen-Boxer: NUR künftig geplant, NOCH NICHT im Shop, KEINE Specs/Preise vorhanden. Ehrlich antworten: „kommt bald, aktuell noch nicht bestellbar" — niemals Preise oder Maße dafür erfinden.
+- Laufshorts (unisex, weiß), Boxershorts (Herren), Sport-Unterwäsche (Damen, Polyester): NUR künftig geplant, NOCH NICHT im Shop, KEINE weiteren Specs/Preise vorhanden. Ehrlich antworten: „kommt bald, aktuell noch nicht bestellbar" — niemals Preise oder Maße dafür erfinden.
 
 MATERIAL: AirFit Performance Fabric — leicht, schnelltrocknend, Motiv wird in die Faser sublimiert (kein Aufkleber, kein Abblättern, kein Verblassen). Technisch: Performance-Polyester-Strick, 140 g/m².
 
@@ -95,7 +95,7 @@ function getFallbackResponse(message: string, locale: string): string {
       material: 'AirFit Performance Fabric — leicht, schnelltrocknend, dein Motiv wird in die Faser sublimiert (kein Aufkleber, kein Abblättern). Aktuell nur in Weiß.',
       atelier: 'Im Atelier lädst du dein Motiv hoch (vorne und/oder hinten, 210 × 297 mm) und positionierst/skalierst es frei — was du siehst, wird genauso gedruckt. Die 360°-Ansicht drehst du nur manuell per Ziehen.',
       pflege: 'Waschen bei 30 °C, auf links gewendet — so hält der Druck am längsten.',
-      kommendeProdukte: 'Shorts und Boxershorts sind geplant, aber noch nicht im Shop — sobald es Details gibt, siehst du sie hier zuerst.',
+      kommendeProdukte: 'Laufshorts (unisex), Boxershorts (Herren) und Sport-Unterwäsche (Damen) sind geplant, aber noch nicht im Shop — sobald es Details gibt, siehst du sie hier zuerst.',
       default: 'Willkommen beim Platypus Concierge. Frag mich zu Größe, Material, Atelier, Versand oder Qualität.',
     },
     ro: {
@@ -107,7 +107,7 @@ function getFallbackResponse(message: string, locale: string): string {
       material: 'AirFit Performance Fabric — ușor, se usucă rapid, designul tău este sublimat în fibră (fără autocolant, fără decojire). Momentan doar alb.',
       atelier: 'În Atelier încarci motivul (față și/sau spate, 210 × 297 mm) și îl poziționezi/scalezi liber — ce vezi, se imprimă exact așa. Vederea 360° se rotește doar manual, prin tragere.',
       pflege: 'Spălare la 30 °C, pe dos — așa ține imprimeul cel mai mult.',
-      kommendeProdukte: 'Pantaloni scurți și boxeri sunt planificați, dar încă nu sunt în magazin — vei fi primul care le vede aici.',
+      kommendeProdukte: 'Pantaloni scurți de alergare (unisex), boxeri (bărbați) și lenjerie sport (damă) sunt planificate, dar încă nu sunt în magazin — vei fi primul care le vede aici.',
       default: 'Bună! Te ajut cu plăcere. Întreabă-mă despre mărimi, material, Atelier, livrare sau reclamații.',
     },
     en: {
@@ -119,7 +119,7 @@ function getFallbackResponse(message: string, locale: string): string {
       material: 'AirFit Performance Fabric — light, fast-drying, your design is sublimated into the fiber (no sticker, no peeling). Currently white only.',
       atelier: 'In the Studio you upload your design (front and/or back, 210 × 297 mm) and freely position/scale it — what you see is exactly what prints. The 360° view only rotates manually by dragging.',
       pflege: 'Wash at 30 °C, inside out — that keeps the print looking best for longest.',
-      kommendeProdukte: "Shorts and boxers are planned but not in the shop yet — you'll see them here first once details are ready.",
+      kommendeProdukte: "Running shorts (unisex), boxers (men) and sport underwear (women) are planned but not in the shop yet — you'll see them here first once details are ready.",
       default: 'Hi! Happy to help. Ask me about sizes, material, the Studio, shipping or quality claims.',
     },
   };
