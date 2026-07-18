@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'AirFit Pro — Dein Design | PLATYPUS',
-  description: 'AirFit Pro — 100% Performance-Polyester, Vollflächendruck Vorder- & Rückseite. Maßgefertigt auf Bestellung. Lade dein Motiv hoch und gestalte dein Statement-Shirt.',
+  description: 'AirFit Pro — AirFit Performance Fabric, Vollflächendruck Vorder- & Rückseite. Maßgefertigt auf Bestellung. Lade dein Motiv hoch und gestalte dein Statement-Shirt.',
 };
 
 const productSchema = {

@@ -32,6 +32,13 @@ Siehe `.env.example`. Production-Secrets auf Vercel — `npx vercel env ls`.
 - PDF: `GET /api/orders/{id}/print-pdf` (lib/print-job.ts, pdf-lib) — Auftragskopf + je Seite Druckblatt (Ebene 1) + Platzierung (Ebene 2, % + mm-Näherung). Geschützt wie `/admin` (proxy.ts, ADMIN_PASSWORD).
 - Ebene 1 (Druckblatt, `lib/print-export.ts`) vs Ebene 2 (Platzierung auf Shirt, `lib/print-position.ts`/`lib/print-job.ts`) — Details im Kommentar dort.
 - Legacy-Designs ohne Transform-Spalten: Admin zeigt "unbekannt (Legacy)".
+- PDF hat zusätzlich Seite "KUNDENBLICK" pro Seite (Shirt-Foto + Motiv exakt wie Atelier/360°) — `lib/print-customer-view.ts`, `designs.front_preview`/`back_preview`. Reklamations-Nachweis. Legacy ohne Preview: Fallback-Text.
+- Preis: `lib/pricing.ts` — BASE_PRICE deckt INCLUDED_IMAGES (2) Motiv-Slots, jedes weitere Bild +EXTRA_IMAGE_PRICE (2.99€). Heute nur front+back → immer 39.99€.
+- No-Print-Zonen (Schulter/Seitennaht/Kragen/Saum): `NO_PRINT_NOTE` in `lib/print-spec.ts`, im Atelier-UI und PDF-Platzierungsdiagramm (gestrichelt) sichtbar.
+
+## Produkt-Roadmap
+- P1 AirFit Pro T-Shirt — LIVE
+- P2 Shorts, P3 Boxer Herren, P4 Boxer Damen — **PLACEHOLDER**, Specs fehlen noch (siehe Kommentar in `lib/products.ts`). Keine Preise/Maße erfinden, kein Checkout ohne Specs.
 
 ## Regeln
 - Vor Deploy: `./p build`

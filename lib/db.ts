@@ -59,6 +59,8 @@ export async function initDb() {
     await sql.query(`ALTER TABLE designs ADD COLUMN IF NOT EXISTS back_transform JSONB`);
     await sql.query(`ALTER TABLE designs ADD COLUMN IF NOT EXISTS meta JSONB`);
     await sql.query(`ALTER TABLE designs ADD COLUMN IF NOT EXISTS frozen_at TIMESTAMPTZ`);
+    await sql.query(`ALTER TABLE designs ADD COLUMN IF NOT EXISTS front_preview TEXT`);
+    await sql.query(`ALTER TABLE designs ADD COLUMN IF NOT EXISTS back_preview TEXT`);
     await sql.query(`
       CREATE TABLE IF NOT EXISTS analytics_events (
         id BIGSERIAL PRIMARY KEY,
@@ -181,6 +183,8 @@ export interface DesignRecord {
   id: string;
   frontImage: string | null;
   backImage: string | null;
+  frontPreview: string | null;
+  backPreview: string | null;
   productId: string | null;
   frontTransform: { scale: number; x: number; y: number } | null;
   backTransform: { scale: number; x: number; y: number } | null;
@@ -193,6 +197,8 @@ function mapDesignRow(row: Record<string, unknown>): DesignRecord {
     id: row.id as string,
     frontImage: (row.front_image as string) || null,
     backImage: (row.back_image as string) || null,
+    frontPreview: (row.front_preview as string) || null,
+    backPreview: (row.back_preview as string) || null,
     productId: (row.product_id as string) || null,
     frontTransform: (row.front_transform as DesignRecord['frontTransform']) || null,
     backTransform: (row.back_transform as DesignRecord['backTransform']) || null,

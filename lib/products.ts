@@ -28,6 +28,11 @@ export interface Product {
   createdAt: string;
 }
 
+// PLACEHOLDER_PRODUCTS (noch NICHT im Shop, keine Specs vorhanden — nicht erfinden):
+// P2 — Kurze Hose (Shorts), weiß, 3D analog Shirt3D — Specs kommen später von Jonny
+// P3 — Boxershorts Herren, weiß — Specs kommen später von Jonny
+// P4 — Boxershorts Damen, weiß — Specs kommen später von Jonny
+// Sobald Specs da sind: Product-Eintrag + eigene Placement-Kalibrierung, kein Checkout ohne Specs.
 export const PRODUCTS: Product[] = [
   {
     id: '1',
@@ -38,8 +43,8 @@ export const PRODUCTS: Product[] = [
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
     fits: ['Unisex'],
     colors: SHIRT_COLORS,
-    material: '100% Polyester (sublimationsgeeignet)',
-    weight: '160g/m²',
+    material: 'AirFit Performance Fabric — Performance-Polyester-Strick (sublimationsgeeignet)',
+    weight: '140g/m²',
     name: {
       de: 'AirFit Pro',
       ro: 'AirFit Pro',

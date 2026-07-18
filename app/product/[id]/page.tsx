@@ -14,6 +14,7 @@ const DesignStudio = dynamic(() => import('@/app/components/DesignStudio'), { ss
 import type { DesignState } from '@/app/components/DesignStudio';
 import { calcUnitPrice } from '@/lib/pricing';
 import { renderPrintSheet } from '@/lib/print-export';
+import { renderCustomerViewComposite } from '@/lib/print-customer-view';
 import { trackAddToCart, trackViewProduct } from '@/lib/analytics';
 
 export default function ProductPage() {
@@ -60,14 +61,17 @@ export default function ProductPage() {
   const saveDesign = async (): Promise<string | null> => {
     if (!design.front && !design.back) return null;
     try {
-      const [front, back] = await Promise.all([
+      const [front, back, frontPreview, backPreview] = await Promise.all([
         design.front ? renderPrintSheet(design.front, design.frontTransform, { format: 'jpeg', quality: 0.92 }) : Promise.resolve(null),
         design.back ? renderPrintSheet(design.back, design.backTransform, { format: 'jpeg', quality: 0.92 }) : Promise.resolve(null),
+        design.front ? renderCustomerViewComposite('front', design.front, design.frontTransform).catch(() => null) : Promise.resolve(null),
+        design.back ? renderCustomerViewComposite('back', design.back, design.backTransform).catch(() => null) : Promise.resolve(null),
       ]);
       const payload = JSON.stringify({
         front, back, productId: id,
         frontTransform: design.front ? design.frontTransform : null,
         backTransform: design.back ? design.backTransform : null,
+        frontPreview, backPreview,
         meta: {
           dpi: PRINT_SPEC.dpi,
           widthPx: PRINT_SPEC.widthPx,

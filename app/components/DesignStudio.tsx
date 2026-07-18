@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { calcUnitPrice } from '@/lib/pricing';
-import { PRINT_SPEC, SHIRT_VIEWER_ASPECT, formatSizeMm } from '@/lib/print-spec';
+import { PRINT_SPEC, SHIRT_VIEWER_ASPECT, formatSizeMm, NO_PRINT_NOTE } from '@/lib/print-spec';
 import { defaultPrintTransform, type PrintTransform } from '@/lib/print-position';
 import { useLocale } from '@/app/components/LocaleProvider';
 import ShirtPrintOverlay from './ShirtPrintOverlay';
@@ -214,6 +214,9 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
           )}
           <p className="plt-label" style={{ textAlign: 'center', margin: 0, color: '#555' }}>
             {t.studio.dragHint.replace('{size}', formatSizeMm())}
+          </p>
+          <p className="plt-label" style={{ textAlign: 'center', margin: 0, color: '#444', fontSize: '0.65rem' }}>
+            {NO_PRINT_NOTE}
           </p>
         </div>
       )}

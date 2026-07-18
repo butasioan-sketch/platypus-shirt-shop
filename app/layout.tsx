@@ -20,7 +20,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://platypus-shirt-shop
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: 'PLATYPUS — On Me. | Premium Custom Shirts',
-  description: 'Dein Motiv auf Performance-Polyester — sublimiert in die Faser, vorne und hinten. Maßgefertigt auf Bestellung. Versand DE & RO.',
+  description: 'Dein Motiv auf AirFit Performance Fabric — sublimiert in die Faser, vorne und hinten. Maßgefertigt auf Bestellung. Versand DE & RO.',
   keywords: 'platypus, on me, premium t-shirt, sublimation, custom shirt, eigenes design, performance polyester',
   icons: {
     icon: [{ url: '/icon-192.png', sizes: '192x192' }, { url: '/icon-512.png', sizes: '512x512' }],

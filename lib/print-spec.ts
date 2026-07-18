@@ -14,10 +14,15 @@ const OVERLAY_FRONT = { top: 26.3, left: 34.7, width: 30.9, height: 29.2 };
 const OVERLAY_BACK = { top: 29.9, left: 34.5, width: 28.9, height: 27.3 };
 
 /** Nutzbare Fläche (Prozent der Shirt-Fotos) — Bereich, in dem der Mittelpunkt
- *  des Motivs frei verschoben werden darf. Hals, Ärmel, Seiten und Saum sind
- *  ausgespart (kalibriert auf dieselben Referenzfotos wie OVERLAY_*). */
+ *  des Motivs frei verschoben werden darf. No-Print-Zonen bewusst ausgespart:
+ *  Kragen/Halsausschnitt (oben), Schulterbereich beider Schultern (oben),
+ *  Seitennaht unter den Armen (links/rechts), Saum (unten) — kalibriert auf
+ *  dieselben Referenzfotos wie OVERLAY_*. */
 const PLACEMENT_FRONT = { top: 20, left: 20, width: 60, height: 58 };
 const PLACEMENT_BACK = { top: 20, left: 20, width: 60, height: 58 };
+
+/** Kurzer Hinweistext für UI/PDF — No-Print-Zonen menschenlesbar. */
+export const NO_PRINT_NOTE = 'Schulterbereich, Seitennaht (unter den Armen), Kragen und Saum sind bewusst ausgespart.';
 
 export const PRINT_SPEC = {
   orientation: 'portrait' as const,

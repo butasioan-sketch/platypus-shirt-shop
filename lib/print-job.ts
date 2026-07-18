@@ -2,7 +2,7 @@
 // Ebene 1 (Druckblatt) vs Ebene 2 (Platzierung) — siehe lib/print-export.ts Kommentar.
 
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from 'pdf-lib';
-import { PRINT_SPEC, SHIRT_PHOTO, formatSizeMm, type PrintSide } from './print-spec';
+import { PRINT_SPEC, SHIRT_PHOTO, formatSizeMm, getPlacementZone, NO_PRINT_NOTE, type PrintSide } from './print-spec';
 import { getMotifRect, defaultPrintTransform, type PrintTransform } from './print-position';
 import type { DesignRecord } from './db';
 import type { Order } from './types';
@@ -117,6 +117,18 @@ function drawPlacementDiagram(page: PDFPage, x: number, y: number, w: number, h:
 
   page.drawRectangle({ x: boxX, y: boxY, width: boxW, height: boxH, borderColor: rgb(0.6, 0.6, 0.6), borderWidth: 1 });
 
+  // No-Print-Zone: gestrichelter Rahmen der nutzbaren Placement-Zone (Schulter/Seitennaht/Kragen/Saum ausgespart)
+  const zone = getPlacementZone(placement.side);
+  page.drawRectangle({
+    x: boxX + (zone.left / 100) * boxW,
+    y: boxY + boxH - ((zone.top + zone.height) / 100) * boxH,
+    width: (zone.width / 100) * boxW,
+    height: (zone.height / 100) * boxH,
+    borderColor: rgb(0.7, 0.7, 0.7),
+    borderWidth: 0.75,
+    borderDashArray: [3, 3],
+  });
+
   const motifX = boxX + (placement.percent.left / 100) * boxW;
   // PDF-Y wächst nach oben, unsere top% wächst nach unten -> umrechnen
   const motifTopFromTop = (placement.percent.top / 100) * boxH;
@@ -178,6 +190,7 @@ export async function generatePrintPdf(order: Order, designs: DesignRecord[], pr
     for (const { side, image, placement } of sides) {
       if (!image) continue;
       const sideLabel = side === 'front' ? 'VORNE' : 'HINTEN';
+      const preview = side === 'front' ? d.frontPreview : d.backPreview;
 
       // Druckblatt-Seite
       const sheetPage = doc.addPage(A4_PT);
@@ -203,10 +216,32 @@ export async function generatePrintPdf(order: Order, designs: DesignRecord[], pr
         py -= 14;
         drawText(placePage, font, placement.note, MARGIN, py, 7.5, rgb(0.55, 0.55, 0.55));
         py -= 30;
-        drawText(placePage, font, 'A4-Transfer so auf Blank positionieren (rot = Motiv-Bereich):', MARGIN, py, 9);
+        drawText(placePage, font, 'A4-Transfer so auf Blank positionieren (rot = Motiv-Bereich, gestrichelt = nutzbare Zone):', MARGIN, py, 9);
+        py -= 14;
+        drawText(placePage, font, NO_PRINT_NOTE, MARGIN, py, 7.5, rgb(0.55, 0.55, 0.55));
         py -= 16;
         drawPlacementDiagram(placePage, MARGIN, MARGIN, pw - MARGIN * 2, py - MARGIN, placement);
       }
+
+      // Kundenblick-Seite — Reklamations-Nachweis: exakt das, was der Kunde im Atelier sah
+      const viewPage = doc.addPage(A4_PT);
+      drawText(viewPage, bold, `KUNDENBLICK ${sideLabel} — ${d.id}`, MARGIN, ph - MARGIN, 13);
+      drawText(viewPage, font, 'Kundenansicht Atelier — verbindlich für Reklamation', MARGIN, ph - MARGIN - 18, 9, rgb(0.45, 0.45, 0.45));
+      if (preview) {
+        const viewImg = await embedImage(doc, preview);
+        if (viewImg) {
+          const maxW = pw - MARGIN * 2;
+          const maxH = ph - MARGIN * 2 - 60;
+          const scale = Math.min(maxW / viewImg.width, maxH / viewImg.height);
+          const w = viewImg.width * scale;
+          const h = viewImg.height * scale;
+          viewPage.drawImage(viewImg, { x: (pw - w) / 2, y: MARGIN + 20, width: w, height: h });
+        }
+      } else {
+        drawText(viewPage, font, 'Kundenblick-Preview nicht verfügbar (Legacy-Design vor Einführung dieser Ansicht).', MARGIN, ph - MARGIN - 60, 9, rgb(0.6, 0.4, 0));
+        drawText(viewPage, font, 'Siehe Platzierungsseite (% + Diagramm) als Ersatz-Nachweis.', MARGIN, ph - MARGIN - 76, 9, rgb(0.45, 0.45, 0.45));
+      }
+      drawText(viewPage, font, `${order.id} · ${d.id} · ${new Date(printJob.frozenAt).toLocaleString('de-DE')}`, MARGIN, MARGIN - 8, 7.5, rgb(0.55, 0.55, 0.55));
     }
   }
 
