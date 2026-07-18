@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { notifyAdminWebhookError } from '@/lib/admin-alert';
+import { notifyAdminWebhookError, notifyAdminOrderIssue } from '@/lib/admin-alert';
+import { getDesignById, freezeDesign, updateOrderPrintJob, updateOrderStatus } from '@/lib/db';
+import { buildPrintJobPayload } from '@/lib/print-job';
 
 export async function POST(request: NextRequest) {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -75,10 +77,39 @@ export async function POST(request: NextRequest) {
 
       console.log('Order erstellt für Session:', session.id);
 
+      const orderData = await orderRes.json().catch(() => ({}));
+      const orderId = orderData?.order?.id || orderData?.id || session.id;
+
+      // Druckauftrag einfrieren: Designs laden, fehlendes Motiv -> on_hold, Snapshot speichern.
+      // Darf die Bestellung nie kaputtmachen — rein additiv, Fehler nur loggen.
+      try {
+        const designIds = Array.from(new Set(
+          [...parsedItems.map((i) => i.designId), session.metadata?.designId]
+            .filter((v): v is string => Boolean(v))
+        ));
+        const designs = (await Promise.all(designIds.map((id) => getDesignById(id))))
+          .filter((d): d is NonNullable<typeof d> => d !== null);
+
+        const anyMissingImage = designIds.length === 0 || designs.length < designIds.length
+          || designs.some((d) => !d.frontImage && !d.backImage);
+
+        if (anyMissingImage && orderData?.order && orderData.order.status !== 'on_hold') {
+          await updateOrderStatus(orderId, 'on_hold');
+          await notifyAdminOrderIssue({ ...orderData.order, status: 'on_hold' }, 'missing_design').catch(() => {});
+        }
+
+        await Promise.all(designs.map((d) => freezeDesign(d.id)));
+
+        if (designs.length > 0) {
+          const printJob = buildPrintJobPayload(orderId, designs);
+          await updateOrderPrintJob(orderId, printJob);
+        }
+      } catch (freezeErr) {
+        console.error('Druckauftrag-Freeze fehlgeschlagen (Bestellung bleibt gültig):', freezeErr);
+      }
+
       // Bestätigungs-E-Mail senden (fehlertolerant - darf Bestellung nie kaputtmachen)
       try {
-        const orderData = await orderRes.json().catch(() => ({}));
-        const orderId = orderData?.order?.id || orderData?.id || session.id;
         if (customerEmail) {
           await fetch(`${siteUrl}/api/email`, {
             method: 'POST',

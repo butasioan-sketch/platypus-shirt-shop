@@ -32,6 +32,22 @@ export function proxy(request: NextRequest) {
     });
   }
 
+  if (pathname.endsWith('/print-pdf')) {
+    // Druckauftrag-PDF enthält Kundenmotive — gleiches Schutzmodell wie /admin
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    if (!adminPassword) return NextResponse.next();
+    const authHeader = request.headers.get('authorization');
+    if (authHeader?.startsWith('Basic ')) {
+      const credentials = Buffer.from(authHeader.split(' ')[1], 'base64').toString('utf-8');
+      const [, password] = credentials.split(':');
+      if (password === adminPassword) return NextResponse.next();
+    }
+    return new NextResponse('Admin Login erforderlich', {
+      status: 401,
+      headers: { 'WWW-Authenticate': 'Basic realm="PLATYPUS Admin"' },
+    });
+  }
+
   if (pathname === '/api/reviews') {
     if (request.method === 'POST') return NextResponse.next();
 
@@ -82,5 +98,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/orders', '/api/reviews'],
+  matcher: ['/admin/:path*', '/api/orders', '/api/orders/:id/print-pdf', '/api/reviews'],
 };

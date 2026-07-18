@@ -144,6 +144,7 @@ export default function AdminOrdersPage() {
                   </div>
                 )}
                 <a href={`/admin/print/${order.id}`} target="_blank" rel="noreferrer" style={{ background: '#1a1a1a', border: '1px solid #333', padding: '0.35rem 0.8rem', borderRadius: '8px', color: '#fff', fontSize: '0.75rem', textDecoration: 'none', marginRight: '0.4rem', display: 'inline-block' }}>Druckauftrag</a>
+                <a href={`/api/orders/${order.id}/print-pdf`} style={{ background: '#1a1a1a', border: '1px solid #333', padding: '0.35rem 0.8rem', borderRadius: '8px', color: '#fff', fontSize: '0.75rem', textDecoration: 'none', marginRight: '0.4rem', display: 'inline-block' }}>PDF</a>
                 {Array.from(new Set(
                   [...(order.items || []).map((it) => it.designId), order.designId]
                     .filter((d): d is string => Boolean(d))

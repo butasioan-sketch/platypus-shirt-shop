@@ -1,37 +1,38 @@
-import { getOrderById } from '@/lib/db';
+import { getOrderById, getDesignById, type DesignRecord } from '@/lib/db';
 import { PRINT_SPEC, formatSizeMm } from '@/lib/print-spec';
-
-async function getDesign(id: string) {
-  const url = process.env.DATABASE_URL || process.env.POSTGRES_URL;
-  if (!url) return null;
-  const { neon } = await import('@neondatabase/serverless');
-  const sql = neon(url);
-  const rows = await sql.query('SELECT front_image, back_image FROM designs WHERE id=$1', [id]) as Record<string,string>[];
-  return rows[0] || null;
-}
+import { orderDesignIds } from '@/lib/order-review';
 
 export default async function PrintView({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = await params;
   const order = await getOrderById(orderId);
   if (!order) return <div style={{ padding: 40, fontFamily: 'sans-serif' }}>Bestellung nicht gefunden.</div>;
 
-  const ids = Array.from(new Set([
-    ...(order.items || []).map((i: { designId?: string }) => i.designId),
-    order.designId,
-  ].filter(Boolean))) as string[];
-
-  type DesignRow = { id: string; front_image?: string; back_image?: string };
-  const designs: DesignRow[] = await Promise.all(ids.map(async (id) => ({ id, ...(await getDesign(id)) })));
-  const hasDesign = designs.some((d) => d.front_image || d.back_image);
+  const ids = orderDesignIds(order);
+  const designs: DesignRecord[] = (await Promise.all(ids.map((id) => getDesignById(id))))
+    .filter((d): d is DesignRecord => d !== null);
+  const hasDesign = designs.some((d) => d.frontImage || d.backImage);
   const missingDesign = !hasDesign;
 
   return (
-    <div style={{ fontFamily: 'system-ui, sans-serif', padding: '2rem', maxWidth: 900, margin: '0 auto', color: '#111' }}>
-      <div style={{ borderBottom: '2px solid #111', paddingBottom: '1rem', marginBottom: '1.5rem' }}>
-        <h1 style={{ margin: 0, fontSize: '1.4rem' }}>PLATYPUS — Druckauftrag</h1>
-        <p style={{ margin: '0.4rem 0 0', fontSize: '0.95rem' }}>
-          <strong>{order.id}</strong> · {order.shippingCountry}{order.shippingMethod ? ' · ' + order.shippingMethod : ''} · Status: {order.status}
-        </p>
+    <div style={{ fontFamily: 'system-ui, sans-serif', padding: '2rem', maxWidth: 900, margin: '0 auto', color: '#111', background: '#fff', minHeight: '100vh' }}>
+      <div style={{ borderBottom: '2px solid #111', paddingBottom: '1rem', marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
+        <div>
+          <h1 style={{ margin: 0, fontSize: '1.4rem' }}>PLATYPUS — Druckauftrag</h1>
+          <p style={{ margin: '0.4rem 0 0', fontSize: '0.95rem' }}>
+            <strong>{order.id}</strong> · {order.shippingCountry}{order.shippingMethod ? ' · ' + order.shippingMethod : ''} · Status: {order.status}
+            {designs.some((d) => d.frozenAt) && (
+              <span style={{ marginLeft: '0.6rem', background: '#111', color: '#4ade80', padding: '2px 10px', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 700 }}>
+                ❄ frozen
+              </span>
+            )}
+          </p>
+        </div>
+        <a
+          href={`/api/orders/${order.id}/print-pdf`}
+          style={{ background: '#111', color: '#fff', padding: '0.6rem 1.25rem', borderRadius: '8px', fontWeight: 700, fontSize: '0.875rem', textDecoration: 'none', whiteSpace: 'nowrap' }}
+        >
+          📄 PDF Druckauftrag herunterladen
+        </a>
       </div>
 
       {missingDesign && (
@@ -66,13 +67,15 @@ export default async function PrintView({ params }: { params: Promise<{ orderId:
 
       {designs.map((d) => (
         <div key={d.id} style={{ marginBottom: '2.5rem', pageBreakInside: 'avoid' }}>
-          <p style={{ fontSize: '0.8rem', color: '#666', marginBottom: '1rem' }}>Design {d.id}</p>
+          <p style={{ fontSize: '0.8rem', color: '#666', marginBottom: '1rem' }}>
+            Design {d.id}{d.frozenAt && ` · eingefroren ${new Date(d.frozenAt).toLocaleString('de-DE')}`}
+          </p>
           <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'flex-start' }}>
-            {d.front_image && (
+            {d.frontImage && (
               <div>
                 <p style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.6rem' }}>VORNE — {PRINT_SPEC.widthPx} × {PRINT_SPEC.heightPx} px</p>
                 <a
-                  href={d.front_image}
+                  href={d.frontImage}
                   download={`${order.id}-front.jpg`}
                   style={{
                     display: 'inline-block',
@@ -88,14 +91,19 @@ export default async function PrintView({ params }: { params: Promise<{ orderId:
                 >
                   ↓ VORNE drucken
                 </a>
-                <img src={d.front_image} alt="front" style={{ display: 'block', maxWidth: 320, border: '1px solid #ccc' }} />
+                <img src={d.frontImage} alt="front" style={{ display: 'block', maxWidth: 320, border: '1px solid #ccc' }} />
+                <p style={{ fontSize: '0.72rem', color: '#888', marginTop: '0.4rem' }}>
+                  Platzierung: {d.frontTransform
+                    ? `scale ${d.frontTransform.scale.toFixed(2)} · x ${d.frontTransform.x.toFixed(1)} · y ${d.frontTransform.y.toFixed(1)}`
+                    : 'unbekannt (Legacy — vor Transform-Speicherung)'}
+                </p>
               </div>
             )}
-            {d.back_image && (
+            {d.backImage && (
               <div>
                 <p style={{ fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.6rem' }}>HINTEN — {PRINT_SPEC.widthPx} × {PRINT_SPEC.heightPx} px</p>
                 <a
-                  href={d.back_image}
+                  href={d.backImage}
                   download={`${order.id}-back.jpg`}
                   style={{
                     display: 'inline-block',
@@ -111,7 +119,12 @@ export default async function PrintView({ params }: { params: Promise<{ orderId:
                 >
                   ↓ HINTEN drucken
                 </a>
-                <img src={d.back_image} alt="back" style={{ display: 'block', maxWidth: 320, border: '1px solid #ccc' }} />
+                <img src={d.backImage} alt="back" style={{ display: 'block', maxWidth: 320, border: '1px solid #ccc' }} />
+                <p style={{ fontSize: '0.72rem', color: '#888', marginTop: '0.4rem' }}>
+                  Platzierung: {d.backTransform
+                    ? `scale ${d.backTransform.scale.toFixed(2)} · x ${d.backTransform.x.toFixed(1)} · y ${d.backTransform.y.toFixed(1)}`
+                    : 'unbekannt (Legacy — vor Transform-Speicherung)'}
+                </p>
               </div>
             )}
           </div>

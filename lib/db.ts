@@ -45,6 +45,7 @@ export async function initDb() {
     `);
     await sql.query(`ALTER TABLE orders ADD COLUMN IF NOT EXISTS design_id TEXT`);
     await sql.query(`ALTER TABLE orders ADD COLUMN IF NOT EXISTS shipping_method TEXT`);
+    await sql.query(`ALTER TABLE orders ADD COLUMN IF NOT EXISTS print_job JSONB`);
     await sql.query(`
       CREATE TABLE IF NOT EXISTS designs (
         id TEXT PRIMARY KEY,
@@ -54,6 +55,10 @@ export async function initDb() {
         created_at TIMESTAMPTZ DEFAULT NOW()
       )
     `);
+    await sql.query(`ALTER TABLE designs ADD COLUMN IF NOT EXISTS front_transform JSONB`);
+    await sql.query(`ALTER TABLE designs ADD COLUMN IF NOT EXISTS back_transform JSONB`);
+    await sql.query(`ALTER TABLE designs ADD COLUMN IF NOT EXISTS meta JSONB`);
+    await sql.query(`ALTER TABLE designs ADD COLUMN IF NOT EXISTS frozen_at TIMESTAMPTZ`);
     await sql.query(`
       CREATE TABLE IF NOT EXISTS analytics_events (
         id BIGSERIAL PRIMARY KEY,
@@ -169,6 +174,86 @@ export async function updateOrderStatus(id: string, status: string): Promise<boo
     return true;
   } catch {
     return false;
+  }
+}
+
+export interface DesignRecord {
+  id: string;
+  frontImage: string | null;
+  backImage: string | null;
+  productId: string | null;
+  frontTransform: { scale: number; x: number; y: number } | null;
+  backTransform: { scale: number; x: number; y: number } | null;
+  meta: Record<string, unknown> | null;
+  frozenAt: string | null;
+}
+
+function mapDesignRow(row: Record<string, unknown>): DesignRecord {
+  return {
+    id: row.id as string,
+    frontImage: (row.front_image as string) || null,
+    backImage: (row.back_image as string) || null,
+    productId: (row.product_id as string) || null,
+    frontTransform: (row.front_transform as DesignRecord['frontTransform']) || null,
+    backTransform: (row.back_transform as DesignRecord['backTransform']) || null,
+    meta: (row.meta as Record<string, unknown>) || null,
+    frozenAt: row.frozen_at ? new Date(row.frozen_at as string).toISOString() : null,
+  };
+}
+
+/** Design-Datensatz laden (Bilder + Platzierungs-Transforms). */
+export async function getDesignById(id: string): Promise<DesignRecord | null> {
+  const sql = await getPg() as { query: (q: string, p?: unknown[]) => Promise<Record<string, unknown>[]> } | null;
+  if (!sql) return null;
+  try {
+    const rows = await sql.query(`SELECT * FROM designs WHERE id=$1 LIMIT 1`, [id]);
+    return rows.length ? mapDesignRow(rows[0]) : null;
+  } catch (err) {
+    console.error('getDesignById error:', err);
+    return null;
+  }
+}
+
+/** Setzt frozen_at einmalig (idempotent) — macht das Design für die Produktion unveränderlich. */
+export async function freezeDesign(id: string): Promise<DesignRecord | null> {
+  const sql = await getPg() as { query: (q: string, p?: unknown[]) => Promise<Record<string, unknown>[]> } | null;
+  if (!sql) return null;
+  try {
+    const rows = await sql.query(
+      `UPDATE designs SET frozen_at=COALESCE(frozen_at, NOW()) WHERE id=$1 RETURNING *`,
+      [id]
+    );
+    return rows.length ? mapDesignRow(rows[0]) : null;
+  } catch (err) {
+    console.error('freezeDesign error:', err);
+    return null;
+  }
+}
+
+/** Speichert den eingefrorenen Druckauftrags-Snapshot (Transforms + PrintSpec zum Zahlungszeitpunkt) an der Order. */
+export async function updateOrderPrintJob(id: string, printJob: unknown): Promise<boolean> {
+  const sql = await getPg() as { query: (q: string, p?: unknown[]) => Promise<Record<string, unknown>[]> } | null;
+  if (!sql) return false;
+  try {
+    await sql.query(`UPDATE orders SET print_job=$1 WHERE id=$2`, [JSON.stringify(printJob), id]);
+    return true;
+  } catch (err) {
+    console.error('updateOrderPrintJob error:', err);
+    return false;
+  }
+}
+
+export async function getOrderPrintJob(id: string): Promise<Record<string, unknown> | null> {
+  const sql = await getPg() as { query: (q: string, p?: unknown[]) => Promise<Record<string, unknown>[]> } | null;
+  if (!sql) return null;
+  try {
+    const rows = await sql.query(`SELECT print_job FROM orders WHERE id=$1 LIMIT 1`, [id]);
+    if (!rows.length) return null;
+    const pj = rows[0].print_job;
+    return (typeof pj === 'string' ? JSON.parse(pj) : pj) as Record<string, unknown> | null;
+  } catch (err) {
+    console.error('getOrderPrintJob error:', err);
+    return null;
   }
 }
 

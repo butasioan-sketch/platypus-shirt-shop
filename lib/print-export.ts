@@ -12,10 +12,21 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 }
 
 /**
- * CSS object-fit:cover, zentriert. transform.x/y aus dem Editor beschreiben die
- * Position des Motivs AUF DEM SHIRT (Placement-Zone) — nicht den Bildausschnitt
- * im Druck-Sheet. Das Druck-Sheet zeigt daher immer den zentrierten Ausschnitt,
- * nur `scale` (Zoom) wirkt sich auf den Ausschnitt aus.
+ * ZWEI-EBENEN-MODELL DER DRUCKDATEN (Strategie: EMPFOHLEN, siehe
+ * CLAUDE-AUFTRAG-DRUCKAUFTRAG-PDF-FREEZE.md):
+ *
+ * EBENE 1 — DRUCKBLATT (diese Datei): das A4-Transferpapier für den Sublimationsdruck
+ * (Epson SC-F100), immer 210×297 mm / 2480×3508 px. Nur `scale` (Zoom) wirkt sich
+ * auf den Bildausschnitt aus — object-fit:cover, zentriert.
+ *
+ * EBENE 2 — PLATZIERUNG AUF SHIRT (lib/print-position.ts / lib/print-job.ts):
+ * `transform.x/y` beschreiben NICHT den Bildausschnitt hier, sondern wo das fertige
+ * A4-Blatt auf Vorder-/Rückseite des Blanks aufgepresst wird (Produktionsanweisung).
+ * getMotifRect(side, transform) ist die Single Source für diese Position; das
+ * Druckauftrag-PDF zeigt sie als eigene "Platzierung"-Seite neben dem reinen A4-Blatt.
+ *
+ * Diese Datei rechnet x/y bewusst NICHT ein — das würde den physischen Druckinhalt
+ * ändern. Nur mit explizitem Auftrag anders zu handhaben.
  */
 function drawCover(
   ctx: CanvasRenderingContext2D,

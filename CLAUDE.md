@@ -25,6 +25,14 @@ bash scripts/p2-verify.sh
 ## Env
 Siehe `.env.example`. Production-Secrets auf Vercel — `npx vercel env ls`.
 
+## Druckauftrag / Freeze
+- `designs.front_transform`/`back_transform` (scale,x,y) + `meta` werden bei jedem `saveDesign` gespeichert.
+- Nach Zahlung (Stripe-Webhook): Design wird eingefroren (`frozen_at`), fehlendes Motiv → Order `on_hold`.
+- `orders.print_job` = unveränderlicher Snapshot (Transforms + Placement + PrintSpec) zum Zahlungszeitpunkt.
+- PDF: `GET /api/orders/{id}/print-pdf` (lib/print-job.ts, pdf-lib) — Auftragskopf + je Seite Druckblatt (Ebene 1) + Platzierung (Ebene 2, % + mm-Näherung). Geschützt wie `/admin` (proxy.ts, ADMIN_PASSWORD).
+- Ebene 1 (Druckblatt, `lib/print-export.ts`) vs Ebene 2 (Platzierung auf Shirt, `lib/print-position.ts`/`lib/print-job.ts`) — Details im Kommentar dort.
+- Legacy-Designs ohne Transform-Spalten: Admin zeigt "unbekannt (Legacy)".
+
 ## Regeln
 - Vor Deploy: `./p build`
 - Kein Preis auf Homepage

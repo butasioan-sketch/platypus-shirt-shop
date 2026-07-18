@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic';
 import SiteHeader from '@/app/components/SiteHeader';
 import TrustIcon from '@/app/components/TrustIcon';
 import { useLocale } from '@/app/components/LocaleProvider';
-import { formatSizeMm } from '@/lib/print-spec';
+import { formatSizeMm, PRINT_SPEC } from '@/lib/print-spec';
 import { getProduct, getProductName, getProductDescription, SHIRT_COLORS } from '@/lib/products';
 
 const DesignStudio = dynamic(() => import('@/app/components/DesignStudio'), { ssr: false });
@@ -64,7 +64,18 @@ export default function ProductPage() {
         design.front ? renderPrintSheet(design.front, design.frontTransform, { format: 'jpeg', quality: 0.92 }) : Promise.resolve(null),
         design.back ? renderPrintSheet(design.back, design.backTransform, { format: 'jpeg', quality: 0.92 }) : Promise.resolve(null),
       ]);
-      const payload = JSON.stringify({ front, back, productId: id });
+      const payload = JSON.stringify({
+        front, back, productId: id,
+        frontTransform: design.front ? design.frontTransform : null,
+        backTransform: design.back ? design.backTransform : null,
+        meta: {
+          dpi: PRINT_SPEC.dpi,
+          widthPx: PRINT_SPEC.widthPx,
+          heightPx: PRINT_SPEC.heightPx,
+          blank: PRINT_SPEC.blank,
+          method: PRINT_SPEC.method,
+        },
+      });
       console.log('[saveDesign] payload', (payload.length / 1024 / 1024).toFixed(2), 'MB');
       const res = await fetch('/api/designs', {
         method: 'POST',
