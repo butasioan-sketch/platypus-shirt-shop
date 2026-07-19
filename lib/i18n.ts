@@ -10,6 +10,7 @@ export const translations = {
       cart: 'Warenkorb',
       shipping: 'Versand',
       about: 'Über uns',
+      shorts: 'Shorts',
     },
     hero: {
       badge: 'AirFit Performance Fabric · Vollflächiger Druck',
@@ -20,8 +21,10 @@ export const translations = {
       viewer: 'Tippen zum Gestalten',
       productTeaser: 'AirFit Pro — Essential Piece',
       productHint: 'AirFit Performance Fabric · Unisex · Maßgefertigt auf Bestellung',
-      shortsCta: '+ AirFit Pro Shorts entdecken',
-      bundleHint: 'Tee + Shorts zusammen? Wird im Warenkorb automatisch als Essential Set kombiniert.',
+      shortsCta: 'Shorts entdecken',
+      bundleHint: 'Wird im Warenkorb automatisch angewendet.',
+      essentialSetLabel: 'Essential Set',
+      essentialSetSave: (amount: string) => `Du sparst €${amount}`,
     },
     shop: {
       label: 'Atelier',
@@ -168,6 +171,7 @@ export const translations = {
       cart: 'Coș',
       shipping: 'Livrare',
       about: 'Despre noi',
+      shorts: 'Pantaloni scurți',
     },
     hero: {
       badge: 'AirFit Performance Fabric · Imprimare integrală',
@@ -178,8 +182,10 @@ export const translations = {
       viewer: 'Atinge pentru a crea',
       productTeaser: 'AirFit Pro — Essential Piece',
       productHint: 'AirFit Performance Fabric · Unisex · Confecționat la comandă',
-      shortsCta: '+ Descoperă AirFit Pro Shorts',
-      bundleHint: 'Tricou + pantaloni scurți împreună? Se combină automat ca Essential Set în coș.',
+      shortsCta: 'Descoperă Shorts',
+      bundleHint: 'Se aplică automat în coș.',
+      essentialSetLabel: 'Essential Set',
+      essentialSetSave: (amount: string) => `Economisești €${amount}`,
     },
     shop: {
       label: 'Atelier',
@@ -326,6 +332,7 @@ export const translations = {
       cart: 'Cart',
       shipping: 'Shipping',
       about: 'About',
+      shorts: 'Shorts',
     },
     hero: {
       badge: 'AirFit Performance Fabric · Full-Area Print',
@@ -336,8 +343,10 @@ export const translations = {
       viewer: 'Tap to design',
       productTeaser: 'AirFit Pro — Essential Piece',
       productHint: 'AirFit Performance Fabric · Unisex · Made to order',
-      shortsCta: '+ Discover AirFit Pro Shorts',
-      bundleHint: 'Tee + Shorts together? Automatically combined as the Essential Set in your cart.',
+      shortsCta: 'Discover Shorts',
+      bundleHint: 'Applied automatically in your cart.',
+      essentialSetLabel: 'Essential Set',
+      essentialSetSave: (amount: string) => `You save €${amount}`,
     },
     shop: {
       label: 'Studio',

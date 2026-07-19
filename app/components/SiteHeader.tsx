@@ -16,6 +16,7 @@ export default function SiteHeader() {
         <span className="brand-text" style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '0.15em', color: '#fff' }}>PLATYPUS</span>
       </Link>
       <nav style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+        <Link href="/product/2" className="plt-nav-link">{t.nav.shorts}</Link>
         <Link href="/versand" className="plt-nav-link">{t.nav.shipping}</Link>
         <LocaleSwitcher />
         <CartCount />

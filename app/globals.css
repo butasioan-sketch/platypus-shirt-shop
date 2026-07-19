@@ -169,6 +169,9 @@ input, select, textarea {
   .editor-col > div:last-child {
     height: auto !important;
   }
+  .hero-essential-strip {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 @media (min-width: 769px) {

@@ -54,6 +54,6 @@ Siehe `.env.example`. Production-Secrets auf Vercel — `npx vercel env ls`.
 
 ## Regeln
 - Vor Deploy: `./p build`
-- Kein Preis auf Homepage
+- Preise auf Homepage seit 19.07.2026 erlaubt (Essential Collection zeigt Tee/Shorts/Set-Preis explizit, Jonny-OK)
 - Checkout immer mit designId
 - Terminologie: Maßanfertigung, Atelier, Platypus Concierge (nicht Print-on-Demand)
