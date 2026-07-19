@@ -1,11 +1,10 @@
-// Kundenblick-Composite: Shirt-Foto + Motiv exakt wie im 2D-Editor (Reklamations-Nachweis).
+// Kundenblick-Composite: Garment-Foto + Motiv exakt wie im 2D-Editor (Reklamations-Nachweis).
 // Client-Canvas (wie renderPrintSheet) — teilt getMotifRect mit ShirtPrintOverlay, daher pixel-treu.
 
-import { SHIRT_PHOTO, type PrintSide } from './print-spec';
+import { getGarmentProfile, getGarmentPhotoSrc, type PrintSide } from './print-spec';
 import { getMotifRect, type PrintTransform } from './print-position';
 
 const TARGET_WIDTH = 1000;
-const TARGET_HEIGHT = Math.round(TARGET_WIDTH * (SHIRT_PHOTO.height / SHIRT_PHOTO.width));
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -37,13 +36,8 @@ function drawCover(
   ctx.restore();
 }
 
-const SHIRT_PHOTO_SRC: Record<PrintSide, string> = {
-  front: '/airfit-front-t.png',
-  back: '/airfit-back-t.png',
-};
-
 /**
- * Rendert den exakten Kundenblick (Atelier-Ansicht): Shirt-Foto + Motiv auf der
+ * Rendert den exakten Kundenblick (Atelier-Ansicht): Garment-Foto + Motiv auf der
  * vom Kunden gewählten Position/Skalierung. Gleiche getMotifRect-Quelle wie
  * ShirtPrintOverlay — Reklamations-Nachweis "das hat der Kunde gesehen".
  */
@@ -51,35 +45,39 @@ export async function renderCustomerViewComposite(
   side: PrintSide,
   motifSrc: string,
   transform: PrintTransform,
+  productId: string = '1',
 ): Promise<string> {
+  const profile = getGarmentProfile(productId);
+  const targetHeight = Math.round(TARGET_WIDTH * (profile.photoHeight / profile.photoWidth));
+
   const canvas = document.createElement('canvas');
   canvas.width = TARGET_WIDTH;
-  canvas.height = TARGET_HEIGHT;
+  canvas.height = targetHeight;
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('Canvas nicht verfügbar');
 
-  const [shirtImg, motifImg] = await Promise.all([
-    loadImage(SHIRT_PHOTO_SRC[side]),
+  const [garmentImg, motifImg] = await Promise.all([
+    loadImage(getGarmentPhotoSrc(side, productId)),
     loadImage(motifSrc),
   ]);
 
   ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, TARGET_WIDTH, TARGET_HEIGHT);
+  ctx.fillRect(0, 0, TARGET_WIDTH, targetHeight);
 
-  // Shirt-Foto: object-fit:contain, wie im Editor (Container-Aspect == Foto-Aspect -> volle Fläche)
-  const shirtScale = Math.min(TARGET_WIDTH / shirtImg.width, TARGET_HEIGHT / shirtImg.height);
-  const shirtW = shirtImg.width * shirtScale;
-  const shirtH = shirtImg.height * shirtScale;
-  const shirtX = (TARGET_WIDTH - shirtW) / 2;
-  const shirtY = (TARGET_HEIGHT - shirtH) / 2;
-  ctx.drawImage(shirtImg, shirtX, shirtY, shirtW, shirtH);
+  // Garment-Foto: object-fit:contain, wie im Editor (Container-Aspect == Foto-Aspect -> volle Fläche)
+  const garmentScale = Math.min(TARGET_WIDTH / garmentImg.width, targetHeight / garmentImg.height);
+  const garmentW = garmentImg.width * garmentScale;
+  const garmentH = garmentImg.height * garmentScale;
+  const garmentX = (TARGET_WIDTH - garmentW) / 2;
+  const garmentY = (targetHeight - garmentH) / 2;
+  ctx.drawImage(garmentImg, garmentX, garmentY, garmentW, garmentH);
 
   // Motiv: identische Prozent-Position/-Größe wie getMotifStyle (ShirtPrintOverlay)
-  const rect = getMotifRect(side, transform);
-  const boxX = shirtX + (rect.left / 100) * shirtW;
-  const boxY = shirtY + (rect.top / 100) * shirtH;
-  const boxW = (rect.width / 100) * shirtW;
-  const boxH = (rect.height / 100) * shirtH;
+  const rect = getMotifRect(side, transform, productId);
+  const boxX = garmentX + (rect.left / 100) * garmentW;
+  const boxY = garmentY + (rect.top / 100) * garmentH;
+  const boxW = (rect.width / 100) * garmentW;
+  const boxH = (rect.height / 100) * garmentH;
   drawCover(ctx, motifImg, boxX, boxY, boxW, boxH);
 
   return canvas.toDataURL('image/jpeg', 0.85);

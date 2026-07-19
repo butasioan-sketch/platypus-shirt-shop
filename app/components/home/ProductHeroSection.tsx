@@ -61,6 +61,13 @@ export default function ProductHeroSection({ locale }: { locale: Locale }) {
               {t.hero.cta}
             </Link>
           </div>
+
+          <Link href="/product/2" style={{ color: '#e2001a', fontSize: '0.85rem', fontWeight: 700, textDecoration: 'none', marginBottom: '0.4rem' }}>
+            {t.hero.shortsCta}
+          </Link>
+          <p style={{ color: '#666', fontSize: '0.75rem', lineHeight: 1.5 }}>
+            {t.hero.bundleHint}
+          </p>
         </div>
       </div>
     </section>

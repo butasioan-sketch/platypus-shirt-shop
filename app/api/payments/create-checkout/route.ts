@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { getPaymentMethod } from "../../../../data/payments";
 import { getProviderMode } from "../../../../lib/paymentProviders";
-import { calcUnitPrice } from "../../../../lib/pricing";
+import { calcUnitPriceForProduct, calcMerchandiseTotal, isBundleEligible, PRICE_BUNDLE_ESSENTIAL, EXTRA_IMAGE_PRICE, INCLUDED_IMAGES, type MerchandiseItem } from "../../../../lib/pricing";
 import { checkRateLimit, clientIp } from "../../../../lib/rate-limit";
 import { SHIPPING_OPTIONS, DEFAULT_SHIPPING_ID, type Country } from "../../../../lib/shipping";
 
 type CheckoutItem = {
+  productId?: string; // '1' Tee | '2' Shorts — default '1' fuer alte Aufrufer
   name: string;
   size?: string;
   color?: string;
@@ -14,7 +15,82 @@ type CheckoutItem = {
   designId?: string;
 };
 
-type PricedItem = CheckoutItem & { unitPrice: number; pages: number; qty: number };
+type PricedItem = CheckoutItem & { productId: string; unitPrice: number; pages: number; qty: number };
+
+// Bundle-Preis auf zwei Stripe-Line-Haelften aufteilen, die exakt auf PRICE_BUNDLE_ESSENTIAL summieren.
+function splitBundleHalves(): { tee: number; shorts: number } {
+  const teeHalf = Math.floor((PRICE_BUNDLE_ESSENTIAL * 100) / 2) / 100;
+  const shortsHalf = +(PRICE_BUNDLE_ESSENTIAL - teeHalf).toFixed(2);
+  return { tee: teeHalf, shorts: shortsHalf };
+}
+
+function itemLabel(p: PricedItem, suffix = ""): string {
+  return `${p.name}${p.color ? ` · ${p.color}` : ""}${p.size ? ` · Größe ${p.size}` : ""}${suffix}`;
+}
+
+/**
+ * Baut Stripe-Line-Items. Bei Bundle: je 1x Tee + 1x Shorts bilden ein Paar, dessen
+ * Preis auf zwei Line-Haelften aufgeteilt wird, die zusammen exakt PRICE_BUNDLE_ESSENTIAL
+ * ergeben (+ Extra-Bild-Aufpreis pro Teil oben drauf). Ueberzaehlige Einheiten (qty ueber
+ * den verfuegbaren Paaren hinaus) laufen zum normalen Flat-Preis. Summe der Lines ==
+ * calcMerchandiseTotal(...) exakt, da dieselbe Paar-Logik verwendet wird.
+ */
+function buildLineItems(priced: PricedItem[], applyBundle: boolean) {
+  const halves = splitBundleHalves();
+  let teeBudget = applyBundle
+    ? Math.min(
+        priced.filter((p) => p.productId === "1").reduce((s, p) => s + p.qty, 0),
+        priced.filter((p) => p.productId === "2").reduce((s, p) => s + p.qty, 0),
+      )
+    : 0;
+  let shortsBudget = teeBudget;
+
+  const lines: Array<{
+    quantity: number;
+    price_data: { currency: string; unit_amount: number; product_data: { name: string; description: string } };
+  }> = [];
+
+  for (const p of priced) {
+    const extraPerUnit = Math.max(0, p.pages - INCLUDED_IMAGES) * EXTRA_IMAGE_PRICE;
+
+    if (p.productId !== "1" && p.productId !== "2") {
+      lines.push({
+        quantity: p.qty,
+        price_data: { currency: "eur", unit_amount: Math.round(p.unitPrice * 100), product_data: { name: itemLabel(p), description: `${p.pages} Seite(n) bedruckt` } },
+      });
+      continue;
+    }
+
+    const isTee = p.productId === "1";
+    const budget = isTee ? teeBudget : shortsBudget;
+    const pairedQty = Math.min(p.qty, budget);
+    const leftoverQty = p.qty - pairedQty;
+    if (isTee) teeBudget -= pairedQty; else shortsBudget -= pairedQty;
+
+    if (pairedQty > 0) {
+      const half = isTee ? halves.tee : halves.shorts;
+      lines.push({
+        quantity: pairedQty,
+        price_data: {
+          currency: "eur",
+          unit_amount: Math.round((half + extraPerUnit) * 100),
+          product_data: { name: itemLabel(p, " (Essential Set)"), description: `${p.pages} Seite(n) bedruckt · Set-Anteil` },
+        },
+      });
+    }
+    if (leftoverQty > 0) {
+      lines.push({
+        quantity: leftoverQty,
+        price_data: {
+          currency: "eur",
+          unit_amount: Math.round(p.unitPrice * 100),
+          product_data: { name: itemLabel(p), description: `${p.pages} Seite(n) bedruckt` },
+        },
+      });
+    }
+  }
+  return lines;
+}
 
 async function getSql() {
   const url = process.env.DATABASE_URL || process.env.POSTGRES_URL;
@@ -103,6 +179,7 @@ export async function POST(request: Request) {
     const sql = await getSql();
     const priced: PricedItem[] = [];
     for (const item of items) {
+      const productId = item.productId || "1";
       let front: string | null = null;
       let back: string | null = null;
       if (item.designId && sql) {
@@ -117,12 +194,14 @@ export async function POST(request: Request) {
       }
       const pages = (front ? 1 : 0) + (back ? 1 : 0);
       const qty = Math.max(1, Math.min(99, Math.round(Number(item.quantity || 1))));
-      priced.push({ ...item, pages, qty, unitPrice: calcUnitPrice(front, back) });
+      priced.push({ ...item, productId, pages, qty, unitPrice: calcUnitPriceForProduct(productId, pages) });
     }
 
-    const serverTotal = Math.round(
-      (priced.reduce((sum, p) => sum + p.unitPrice * p.qty, 0) + shippingCost) * 100
-    ) / 100;
+    // Bundle: automatisch sobald >=1 Tee (id '1') und >=1 Shorts (id '2') vorhanden sind.
+    const merchItems: MerchandiseItem[] = priced.map((p) => ({ productId: p.productId, pages: p.pages, qty: p.qty }));
+    const applyBundle = body.applyBundle !== false && isBundleEligible(merchItems);
+    const merchandiseTotal = calcMerchandiseTotal(merchItems, applyBundle);
+    const serverTotal = Math.round((merchandiseTotal + shippingCost) * 100) / 100;
 
     if (method.provider !== "stripe") {
       return demoCheckout(body, method, "non_stripe_demo_checkout_created", serverTotal);
@@ -140,7 +219,7 @@ export async function POST(request: Request) {
     // Stripe-Limit: 500 Zeichen pro Metadata-Value. .slice() würde JSON brechen.
     const itemsAbbrev = priced.map((p) => ({
       n: p.name.slice(0, 20), s: p.size ?? '', c: p.color ?? '',
-      q: p.qty, pr: p.unitPrice, pg: p.pages, d: p.designId ?? '',
+      q: p.qty, pr: p.unitPrice, pg: p.pages, d: p.designId ?? '', pid: p.productId,
     }));
     let itemsMeta = JSON.stringify(itemsAbbrev);
     if (itemsMeta.length > 490) {
@@ -155,17 +234,7 @@ export async function POST(request: Request) {
       mode: "payment",
       allow_promotion_codes: true,
       payment_method_types: ["card", "paypal", "klarna", "sepa_debit", "link"],
-      line_items: priced.map((p) => ({
-        quantity: p.qty,
-        price_data: {
-          currency: "eur",
-          unit_amount: Math.round(p.unitPrice * 100),
-          product_data: {
-            name: `${p.name}${p.color ? ` · ${p.color}` : ""}${p.size ? ` · Größe ${p.size}` : ""}`,
-            description: `${p.pages} Seite(n) bedruckt`,
-          },
-        },
-      })),
+      line_items: buildLineItems(priced, applyBundle),
       shipping_options: [{
         shipping_rate_data: {
           type: "fixed_amount",

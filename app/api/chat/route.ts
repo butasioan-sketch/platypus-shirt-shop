@@ -2,15 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const SYSTEM_PROMPT = `Du bist der Platypus Concierge — Premium-Berater für PLATYPUS On Me.
 
-PRODUKTE:
-- AirFit Pro (LIVE, einziges Produkt im Shop): AirFit Performance Fabric — Performance-Polyester-Strick, 140 g/m², sublimationsgeeignet. Aktuell nur Weiß. Unisex S/M/L/XL/XXL, im Zweifel eine Größe größer.
-- Laufshorts (unisex, weiß), Boxershorts (Herren), Sport-Unterwäsche (Damen, Polyester): NUR künftig geplant, NOCH NICHT im Shop, KEINE weiteren Specs/Preise vorhanden. Ehrlich antworten: „kommt bald, aktuell noch nicht bestellbar" — niemals Preise oder Maße dafür erfinden.
+PRODUKTE (Essential Collection — genau 2, alles unisex, weiß, LIVE):
+- AirFit Pro T-Shirt: AirFit Performance Fabric, 140 g/m², Unisex S–XXL, Maßanfertigung. Im Zweifel eine Größe größer.
+- AirFit Pro Shorts: Unisex Laufshorts, gleicher Brand-Aufbau, weiß, Performance Fabric (135 g/m²), Blank James & Nicholson JN387. Gleicher Atelier-Prozess wie das T-Shirt. Keine Boxer oder andere Produkte im Sortiment.
 
-MATERIAL: AirFit Performance Fabric — leicht, schnelltrocknend, Motiv wird in die Faser sublimiert (kein Aufkleber, kein Abblättern, kein Verblassen). Technisch: Performance-Polyester-Strick, 140 g/m².
+MATERIAL: AirFit Performance Fabric — leicht, schnelltrocknend, Motiv wird in die Faser sublimiert (kein Aufkleber, kein Abblättern, kein Verblassen). Technisch: Performance-Polyester-Strick (T-Shirt 140 g/m², Shorts 135 g/m²).
 
-ATELIER (Design-Prozess): Kunde lädt eigenes Motiv hoch (vorne und/oder hinten getrennt, Format 210 × 297 mm / DIN A4). Motiv ist frei auf der gesamten Vorder-/Rückseite verschiebbar und skalierbar — WYSIWYG, was im Editor zu sehen ist, wird genauso gedruckt. Zusätzlich 360°-Ansicht des Shirts, nur manuell drehbar (Ziehen), keine Automatik.
+ATELIER (Design-Prozess): Kunde lädt eigenes Motiv hoch (vorne und/oder hinten getrennt, Format 210 × 297 mm / DIN A4). Motiv ist frei auf der gesamten Vorder-/Rückseite verschiebbar und skalierbar — WYSIWYG, was im Editor zu sehen ist, wird genauso gedruckt. Zusätzlich 360°-Ansicht, nur manuell drehbar (Ziehen), keine Automatik.
 
-PREIS: Fixpreis €39,99 pro Shirt, unabhängig ob nur eine Seite oder beide Seiten (vorne & hinten) bedruckt werden.
+PREIS: T-Shirt €39,99, Shorts €39,99 — jeweils Fixpreis, unabhängig ob nur eine Seite oder beide Seiten (vorne & hinten) bedruckt werden. Essential Set (1× T-Shirt + 1× Shorts zusammen): €69,99 statt €79,98 — wird im Warenkorb automatisch angewendet, sobald beide Produkte drin sind.
 
 VERSAND: Deutschland ab €4,49 (Hermes) / €4,79 (DPD) / €4,99 (DHL), 3–5 Werktage. Rumänien ab €12,99, 5–7 Werktage. Zusätzlich Fertigungszeit: 2–3 Werktage nach Bestellung, da jedes Piece individuell bedruckt wird.
 
@@ -23,7 +23,7 @@ ZAHLUNG: Stripe — Kreditkarte, PayPal, Klarna, sichere Verbindung.
 REGELN:
 - Max 3–5 Sätze, Ton elegant/knapp/premium (Benefit-Sprache, kein Chemie-Label zuerst)
 - Kein „Print-on-Demand" — immer „Maßanfertigung"/„individuelle Fertigung"
-- Nie Preise oder Specs für Shorts/Boxer erfinden — ehrlich „kommt bald" sagen
+- Nie Preise/Specs für Produkte außerhalb der Essential Collection erfinden (keine Boxer, keine weiteren Farben/Produkte)
 - Rumänisch gefragt → Rumänisch. Englisch → Englisch. Sonst Deutsch.`;
 
 export async function POST(request: NextRequest) {
@@ -95,7 +95,7 @@ function getFallbackResponse(message: string, locale: string): string {
       material: 'AirFit Performance Fabric — leicht, schnelltrocknend, dein Motiv wird in die Faser sublimiert (kein Aufkleber, kein Abblättern). Aktuell nur in Weiß.',
       atelier: 'Im Atelier lädst du dein Motiv hoch (vorne und/oder hinten, 210 × 297 mm) und positionierst/skalierst es frei — was du siehst, wird genauso gedruckt. Die 360°-Ansicht drehst du nur manuell per Ziehen.',
       pflege: 'Waschen bei 30 °C, auf links gewendet — so hält der Druck am längsten.',
-      kommendeProdukte: 'Laufshorts (unisex), Boxershorts (Herren) und Sport-Unterwäsche (Damen) sind geplant, aber noch nicht im Shop — sobald es Details gibt, siehst du sie hier zuerst.',
+      bundleInfo: 'Essential Collection: AirFit Pro T-Shirt und AirFit Pro Shorts — je €39,99. Beide zusammen als Essential Set: €69,99 statt €79,98, automatisch im Warenkorb.',
       default: 'Willkommen beim Platypus Concierge. Frag mich zu Größe, Material, Atelier, Versand oder Qualität.',
     },
     ro: {
@@ -107,7 +107,7 @@ function getFallbackResponse(message: string, locale: string): string {
       material: 'AirFit Performance Fabric — ușor, se usucă rapid, designul tău este sublimat în fibră (fără autocolant, fără decojire). Momentan doar alb.',
       atelier: 'În Atelier încarci motivul (față și/sau spate, 210 × 297 mm) și îl poziționezi/scalezi liber — ce vezi, se imprimă exact așa. Vederea 360° se rotește doar manual, prin tragere.',
       pflege: 'Spălare la 30 °C, pe dos — așa ține imprimeul cel mai mult.',
-      kommendeProdukte: 'Pantaloni scurți de alergare (unisex), boxeri (bărbați) și lenjerie sport (damă) sunt planificate, dar încă nu sunt în magazin — vei fi primul care le vede aici.',
+      bundleInfo: 'Essential Collection: tricoul AirFit Pro și pantalonii scurți AirFit Pro — câte €39,99. Împreună ca Essential Set: €69,99 în loc de €79,98, aplicat automat în coș.',
       default: 'Bună! Te ajut cu plăcere. Întreabă-mă despre mărimi, material, Atelier, livrare sau reclamații.',
     },
     en: {
@@ -119,7 +119,7 @@ function getFallbackResponse(message: string, locale: string): string {
       material: 'AirFit Performance Fabric — light, fast-drying, your design is sublimated into the fiber (no sticker, no peeling). Currently white only.',
       atelier: 'In the Studio you upload your design (front and/or back, 210 × 297 mm) and freely position/scale it — what you see is exactly what prints. The 360° view only rotates manually by dragging.',
       pflege: 'Wash at 30 °C, inside out — that keeps the print looking best for longest.',
-      kommendeProdukte: "Running shorts (unisex), boxers (men) and sport underwear (women) are planned but not in the shop yet — you'll see them here first once details are ready.",
+      bundleInfo: 'Essential Collection: AirFit Pro T-shirt and AirFit Pro Shorts — €39.99 each. Both together as the Essential Set: €69.99 instead of €79.98, applied automatically in your cart.',
       default: 'Hi! Happy to help. Ask me about sizes, material, the Studio, shipping or quality claims.',
     },
   };
@@ -140,8 +140,8 @@ function getFallbackResponse(message: string, locale: string): string {
     return lang.atelier;
   if (msg.includes('pflege') || msg.includes('waschen') || msg.includes('care') || msg.includes('wash') || msg.includes('spăl') || msg.includes('spal'))
     return lang.pflege;
-  if (msg.includes('shorts') || msg.includes('boxer') || msg.includes('hose') || msg.includes('pantaloni'))
-    return lang.kommendeProdukte;
+  if (msg.includes('shorts') || msg.includes('hose') || msg.includes('pantaloni') || msg.includes('bundle') || msg.includes('set') || msg.includes('essential'))
+    return lang.bundleInfo;
   if (msg.includes('produktion') || msg.includes('production') || msg.includes('producție') || msg.includes('wann') || msg.includes('maßanfertigung') || msg.includes('print-on-demand'))
     return lang.produktion;
 

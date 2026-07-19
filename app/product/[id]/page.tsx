@@ -12,7 +12,7 @@ import { getProduct, getProductName, getProductDescription, SHIRT_COLORS } from 
 
 const DesignStudio = dynamic(() => import('@/app/components/DesignStudio'), { ssr: false });
 import type { DesignState } from '@/app/components/DesignStudio';
-import { calcUnitPrice } from '@/lib/pricing';
+import { calcUnitPriceForProduct } from '@/lib/pricing';
 import { renderPrintSheet } from '@/lib/print-export';
 import { renderCustomerViewComposite } from '@/lib/print-customer-view';
 import { trackAddToCart, trackViewProduct } from '@/lib/analytics';
@@ -48,13 +48,13 @@ export default function ProductPage() {
   }, []);
 
   useEffect(() => {
-    if (product) trackViewProduct({ id, name: product.name?.de ?? id, price: 39.99 });
+    if (product) trackViewProduct({ id, name: product.name?.de ?? id, price: product.price });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   if (!product) notFound();
 
-  const unitPrice = calcUnitPrice(design?.front, design?.back);
+  const unitPrice = calcUnitPriceForProduct(id, (design.front ? 1 : 0) + (design.back ? 1 : 0));
   const productName = getProductName(product, locale);
   const colorLabel = activeColor.label[locale] || activeColor.label.de;
 
@@ -64,8 +64,8 @@ export default function ProductPage() {
       const [front, back, frontPreview, backPreview] = await Promise.all([
         design.front ? renderPrintSheet(design.front, design.frontTransform, { format: 'jpeg', quality: 0.92 }) : Promise.resolve(null),
         design.back ? renderPrintSheet(design.back, design.backTransform, { format: 'jpeg', quality: 0.92 }) : Promise.resolve(null),
-        design.front ? renderCustomerViewComposite('front', design.front, design.frontTransform).catch(() => null) : Promise.resolve(null),
-        design.back ? renderCustomerViewComposite('back', design.back, design.backTransform).catch(() => null) : Promise.resolve(null),
+        design.front ? renderCustomerViewComposite('front', design.front, design.frontTransform, id).catch(() => null) : Promise.resolve(null),
+        design.back ? renderCustomerViewComposite('back', design.back, design.backTransform, id).catch(() => null) : Promise.resolve(null),
       ]);
       const payload = JSON.stringify({
         front, back, productId: id,
@@ -139,7 +139,7 @@ export default function ProductPage() {
           total: unitPrice + getShipping(DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY),
           country: DEFAULT_COUNTRY,
           shippingMethod: 'DHL',
-          items: [{ name: productName, size, color: colorLabel, price: unitPrice, quantity: 1, designId }],
+          items: [{ productId: id, name: productName, size, color: colorLabel, price: unitPrice, quantity: 1, designId }],
         }),
       });
       const data = await res.json();
@@ -164,7 +164,7 @@ export default function ProductPage() {
           <p className="plt-label" style={{ marginBottom: '0.75rem', color: '#aaa' }}>
             {t.shop.printZone.replace('{size}', formatSizeMm())}
           </p>
-          <DesignStudio shirtColor={activeColor.hex} onDesignChange={setDesign} />
+          <DesignStudio productId={id} shirtColor={activeColor.hex} onDesignChange={setDesign} />
         </div>
 
         <div>
@@ -197,7 +197,7 @@ export default function ProductPage() {
                 </button>
               ))}
             </div>
-            {size && size !== 'L' && (
+            {id === '1' && size && size !== 'L' && (
               <p style={{ marginTop: '0.5rem', fontSize: '0.75rem', color: '#666', lineHeight: 1.5 }}>
                 Das Druckbild ist für Größe L kalibriert — auf {size} wirkt es proportional angepasst.
               </p>

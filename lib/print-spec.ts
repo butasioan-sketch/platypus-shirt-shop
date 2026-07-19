@@ -9,6 +9,8 @@ export const SHIRT_PHOTO = {
 
 export type PrintSide = 'front' | 'back';
 
+interface Rect { top: number; left: number; width: number; height: number }
+
 /** Prozent der Shirt-Fotos — exakte A4-Größe (210:297) auf Körperfläche Gr. L bei scale=1 */
 const OVERLAY_FRONT = { top: 26.3, left: 34.7, width: 30.9, height: 29.2 };
 const OVERLAY_BACK = { top: 29.9, left: 34.5, width: 28.9, height: 27.3 };
@@ -23,6 +25,77 @@ const PLACEMENT_BACK = { top: 20, left: 20, width: 60, height: 58 };
 
 /** Kurzer Hinweistext für UI/PDF — No-Print-Zonen menschenlesbar. */
 export const NO_PRINT_NOTE = 'Schulterbereich, Seitennaht (unter den Armen), Kragen und Saum sind bewusst ausgespart.';
+
+// === PRODUKT-PROFILE (Garment-Kalibrierung pro productId) ===
+// Jedes Produkt hat eigene Fotos + eigene Overlay/Placement-Kalibrierung —
+// die A4-Druckblatt-Spec (widthMm/heightMm/dpi/scale-Grenzen) ist dagegen
+// produktübergreifend gleich (derselbe Drucker/dieselbe Presse für alle Teile).
+export interface GarmentProfile {
+  productId: string;
+  photoWidth: number;
+  photoHeight: number;
+  overlay: { front: Rect; back: Rect };
+  placement: { front: Rect; back: Rect };
+  blank: string;
+  weightGsm: number;
+  frontSrc: string;
+  backSrc: string;
+  /** Näherungs-Referenzhöhe in mm für die mm-Umrechnung im PDF — null wenn keine
+   *  belastbare Referenzmessung vorliegt (dann zeigt das PDF nur %, kein mm). */
+  mmReferenceHeight: number | null;
+}
+
+const TEE_PROFILE: GarmentProfile = {
+  productId: '1',
+  photoWidth: SHIRT_PHOTO.width,
+  photoHeight: SHIRT_PHOTO.height,
+  overlay: { front: OVERLAY_FRONT, back: OVERLAY_BACK },
+  placement: { front: PLACEMENT_FRONT, back: PLACEMENT_BACK },
+  blank: 'B&C TM062',
+  weightGsm: 140,
+  frontSrc: '/airfit-front-t.png',
+  backSrc: '/airfit-back-t.png',
+  mmReferenceHeight: 740 + 110, // shirtLengthMm + collarOffsetMm (Gr. L)
+};
+
+// Shorts-Fotos: 863×1200 (front) / 864×1200 (back) — gemeinsam auf 864×1200 gerundet.
+// Overlay/Placement per Bildinspektion geschätzt (Bund oben, Saum unten, Seitennaht-Paspel
+// links/rechts ausgespart) — ERSTVERSION, nicht durch physischen Testdruck verifiziert.
+const SHORTS_OVERLAY = { top: 24, left: 25.5, width: 49, height: 50 };
+const SHORTS_PLACEMENT = { top: 12, left: 14, width: 72, height: 74 };
+
+const SHORTS_PROFILE: GarmentProfile = {
+  productId: '2',
+  photoWidth: 864,
+  photoHeight: 1200,
+  overlay: { front: SHORTS_OVERLAY, back: SHORTS_OVERLAY },
+  placement: { front: SHORTS_PLACEMENT, back: SHORTS_PLACEMENT },
+  blank: 'James & Nicholson JN387',
+  weightGsm: 135,
+  frontSrc: '/airfit-shorts-front.png',
+  backSrc: '/airfit-shorts-back.png',
+  mmReferenceHeight: null, // keine Referenzmessung vorhanden — nicht erfinden
+};
+
+export const GARMENT_PROFILES: Record<string, GarmentProfile> = {
+  '1': TEE_PROFILE,
+  '2': SHORTS_PROFILE,
+};
+
+export function getGarmentProfile(productId: string = '1'): GarmentProfile {
+  return GARMENT_PROFILES[productId] || TEE_PROFILE;
+}
+
+export function getGarmentPhotoSrc(side: PrintSide, productId: string = '1'): string {
+  const g = getGarmentProfile(productId);
+  return side === 'front' ? g.frontSrc : g.backSrc;
+}
+
+/** CSS aspect-ratio Wert für den Viewer-Container, produktabhängig. */
+export function getViewerAspect(productId: string = '1'): string {
+  const g = getGarmentProfile(productId);
+  return `${g.photoWidth} / ${g.photoHeight}`;
+}
 
 export const PRINT_SPEC = {
   orientation: 'portrait' as const,
@@ -57,12 +130,12 @@ export const PRINT_SPEC = {
 
 export type PrintLocale = 'de' | 'ro' | 'en';
 
-export function getPrintOverlay(side: PrintSide = 'front') {
-  return PRINT_SPEC.overlay[side];
+export function getPrintOverlay(side: PrintSide = 'front', productId: string = '1') {
+  return getGarmentProfile(productId).overlay[side];
 }
 
-export function getPlacementZone(side: PrintSide = 'front') {
-  return PRINT_SPEC.placement[side];
+export function getPlacementZone(side: PrintSide = 'front', productId: string = '1') {
+  return getGarmentProfile(productId).placement[side];
 }
 
 /** 210 × 297 mm */
@@ -88,8 +161,8 @@ export function formatPrintSpec(locale: PrintLocale = 'de'): string {
   return `${formatSizeMm()} (${formatSizeCm(locale)}) · ${{ de: 'Hochformat', ro: 'vertical', en: 'portrait' }[locale]}`;
 }
 
-export function getPlacementZoneStyle(side: PrintSide = 'front') {
-  const p = getPlacementZone(side);
+export function getPlacementZoneStyle(side: PrintSide = 'front', productId: string = '1') {
+  const p = getPlacementZone(side, productId);
   return {
     position: 'absolute' as const,
     top: `${p.top}%`,

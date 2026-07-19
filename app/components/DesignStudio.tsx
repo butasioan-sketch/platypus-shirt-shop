@@ -2,8 +2,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
-import { calcUnitPrice } from '@/lib/pricing';
-import { PRINT_SPEC, SHIRT_VIEWER_ASPECT, formatSizeMm, NO_PRINT_NOTE } from '@/lib/print-spec';
+import { calcUnitPriceForProduct } from '@/lib/pricing';
+import { PRINT_SPEC, formatSizeMm, NO_PRINT_NOTE, getPlacementZone, getGarmentPhotoSrc, getViewerAspect } from '@/lib/print-spec';
 import { defaultPrintTransform, type PrintTransform } from '@/lib/print-position';
 import { useLocale } from '@/app/components/LocaleProvider';
 import ShirtPrintOverlay from './ShirtPrintOverlay';
@@ -18,11 +18,12 @@ export interface DesignState {
 }
 
 interface DesignStudioProps {
+  productId?: string;
   shirtColor?: string;
   onDesignChange?: (data: DesignState) => void;
 }
 
-export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
+export default function DesignStudio({ productId = '1', onDesignChange }: DesignStudioProps) {
   const { t } = useLocale();
   const [side, setSide] = useState<'front' | 'back'>('front');
   const [preview360, setPreview360] = useState(false);
@@ -111,7 +112,7 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
   const moveDrag = (clientX: number, clientY: number) => {
     if (!dragging || !dragStart.current || !containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
-    const zone = PRINT_SPEC.placement[side];
+    const zone = getPlacementZone(side, productId);
     // 1:1-Drag: Pixel-Delta -> Prozent des Containers -> Prozent der (kleineren) Placement-Zone
     const dx = (clientX - dragStart.current.mx) * (100 / rect.width) * (100 / zone.width);
     const dy = (clientY - dragStart.current.my) * (100 / rect.height) * (100 / zone.height);
@@ -146,21 +147,25 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
 
       <div className="plt-price-bar" style={{ marginBottom: '1rem' }}>
         <span className="plt-label" style={{ margin: 0 }}>{t.studio.price} {priceSuffix}</span>
-        <span style={{ color: '#fff', fontWeight: 800, fontSize: '1.15rem' }}>€{calcUnitPrice(frontImg, backImg).toFixed(2)}</span>
+        <span style={{ color: '#fff', fontWeight: 800, fontSize: '1.15rem' }}>€{calcUnitPriceForProduct(productId, (frontImg ? 1 : 0) + (backImg ? 1 : 0)).toFixed(2)}</span>
       </div>
 
       {preview360 ? (
-        <div style={{ width: '100%', aspectRatio: SHIRT_VIEWER_ASPECT, marginBottom: '1rem' }}>
+        <div style={{ width: '100%', aspectRatio: getViewerAspect(productId), marginBottom: '1rem' }}>
           <Shirt3D
             frontPrint={printData(frontImg, frontScale, frontPos)}
             backPrint={printData(backImg, backScale, backPos)}
+            frontSrc={getGarmentPhotoSrc('front', productId)}
+            backSrc={getGarmentPhotoSrc('back', productId)}
+            productId={productId}
+            fallback="flip"
           />
         </div>
       ) : (
         <div
           ref={containerRef}
           style={{
-            position: 'relative', width: '100%', aspectRatio: SHIRT_VIEWER_ASPECT, marginBottom: '1rem',
+            position: 'relative', width: '100%', aspectRatio: getViewerAspect(productId), marginBottom: '1rem',
             opacity: flipping ? 0.4 : 1, transform: flipping ? 'scale(0.98)' : 'scale(1)',
             transition: 'opacity 0.28s, transform 0.28s',
           }}
@@ -171,7 +176,7 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
           onTouchEnd={endDrag}
         >
           <img
-            src={side === 'front' ? '/airfit-front-t.png' : '/airfit-back-t.png'}
+            src={getGarmentPhotoSrc(side, productId)}
             alt={sideLabel}
             style={{ width: '100%', height: '100%', objectFit: 'contain', pointerEvents: 'none', filter: 'drop-shadow(0 10px 28px rgba(0,0,0,0.5))' }}
             draggable={false}
@@ -183,6 +188,7 @@ export default function DesignStudio({ onDesignChange }: DesignStudioProps) {
             pos={currentPos}
             interactive={!!currentImg}
             onPointerDown={startDrag}
+            productId={productId}
           />
         </div>
       )}

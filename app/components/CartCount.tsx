@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useLocale } from '@/app/components/LocaleProvider';
+import { calcMerchandiseTotal, isBundleEligible, type MerchandiseItem } from '@/lib/pricing';
 
 export default function CartCount() {
   const { t } = useLocale();
@@ -15,7 +16,10 @@ export default function CartCount() {
     try {
       const cart = JSON.parse(localStorage.getItem('platypus_cart') || '[]');
       const c = cart.reduce((s: number, i: { quantity?: number }) => s + (i.quantity || 1), 0);
-      const t = cart.reduce((s: number, i: { price?: number; quantity?: number }) => s + (i.price || 0) * (i.quantity || 1), 0);
+      const merchItems: MerchandiseItem[] = cart.map((i: { id?: string; pages?: number; quantity?: number }) => ({
+        productId: i.id || '1', pages: i.pages || 1, qty: i.quantity || 1,
+      }));
+      const t = calcMerchandiseTotal(merchItems, isBundleEligible(merchItems));
       setCount(c);
       setTotal(t);
     } catch { setCount(0); setTotal(0); }

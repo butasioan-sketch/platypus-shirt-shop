@@ -6,7 +6,7 @@ import SiteHeader from '@/app/components/SiteHeader';
 import { useLocale } from '@/app/components/LocaleProvider';
 import { trackCheckoutStarted } from '@/lib/analytics';
 import { SHIPPING_OPTIONS, COUNTRIES, DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY, getShipping, type Country, type ShippingOption } from '@/lib/shipping';
-import { BASE_PRICE } from '@/lib/pricing';
+import { calcUnitPriceForProduct, calcMerchandiseTotal, isBundleEligible, PRICE_BUNDLE_ESSENTIAL, type MerchandiseItem } from '@/lib/pricing';
 
 interface CartItem {
   id: string;
@@ -86,7 +86,11 @@ export default function CartPage() {
     localStorage.setItem('platypus_cart', JSON.stringify(updated));
   };
 
-  const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0);
+  const merchItems: MerchandiseItem[] = items.map((i) => ({ productId: i.id, pages: i.pages || 1, qty: i.quantity }));
+  const bundleEligible = isBundleEligible(merchItems);
+  const naiveTotal = calcMerchandiseTotal(merchItems, false);
+  const subtotal = bundleEligible ? calcMerchandiseTotal(merchItems, true) : naiveTotal;
+  const bundleSavings = bundleEligible ? +(naiveTotal - subtotal).toFixed(2) : 0;
   const shipping = items.length > 0 ? getShipping(shipId, country) : 0;
   const total = subtotal + shipping;
   const missingDesign = items.some((i) => !i.designId);
@@ -110,7 +114,8 @@ export default function CartPage() {
           total,
           country,
           shippingMethod: SHIPPING_OPTIONS.find(o => o.id === shipId)?.carrier || 'DHL',
-          items: items.map(i => ({ name: i.name, size: i.size, color: i.color, price: i.price, quantity: i.quantity, designId: i.designId })),
+          applyBundle: bundleEligible,
+          items: items.map(i => ({ productId: i.id, name: i.name, size: i.size, color: i.color, price: i.price, quantity: i.quantity, designId: i.designId })),
         }),
       });
       const data = await res.json();
@@ -150,7 +155,7 @@ export default function CartPage() {
                       <p style={{ fontWeight: 700, marginBottom: '0.25rem' }}>{item.name}</p>
                       <p style={{ color: '#999', fontSize: '0.8rem' }}>{t.product.size}: {item.size}{item.color ? ' | ' + t.product.color + ': ' + item.color : ''} | {item.fit || t.product.unisex}</p>
                       <p style={{ color: '#666', fontSize: '0.72rem', marginTop: '0.2rem' }}>
-                        €{BASE_PRICE.toFixed(2)}{item.pages ? ` · ${t.cart.printedSides(item.pages)}` : ''} je Stück
+                        €{calcUnitPriceForProduct(item.id, item.pages || 1).toFixed(2)}{item.pages ? ` · ${t.cart.printedSides(item.pages)}` : ''} je Stück
                       </p>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.4rem', flexShrink: 0 }}>
@@ -209,6 +214,11 @@ export default function CartPage() {
             </div>
 
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '1.5rem', marginBottom: '2rem' }}>
+              {bundleEligible && bundleSavings > 0 && (
+                <div style={{ background: 'rgba(74,222,128,0.1)', border: '1px solid rgba(74,222,128,0.3)', borderRadius: '10px', padding: '0.7rem 1rem', marginBottom: '1rem', fontSize: '0.82rem', color: '#4ade80', fontWeight: 600 }}>
+                  ✓ Essential Set angewendet — 1× Tee + 1× Shorts für €{PRICE_BUNDLE_ESSENTIAL.toFixed(2)} (du sparst €{bundleSavings.toFixed(2)})
+                </div>
+              )}
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', color: '#888' }}>
                 <span>{t.cart.subtotal}</span><span>€{subtotal.toFixed(2)}</span>
               </div>

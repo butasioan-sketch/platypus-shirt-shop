@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react';
-import { PRINT_SPEC, type PrintSide } from './print-spec';
+import { PRINT_SPEC, getGarmentProfile, type PrintSide } from './print-spec';
 
 export interface PrintTransform {
   scale: number;
@@ -22,9 +22,10 @@ function clampOffset(v: number): number {
  * des Shirt-Fotos (top/left/width/height). Wird von 2D-Editor UND 3D-Decal
  * gleichermaßen genutzt, damit beide Ansichten identisch mappen.
  */
-export function getMotifRect(side: PrintSide, transform: PrintTransform) {
-  const base = PRINT_SPEC.overlay[side];
-  const zone = PRINT_SPEC.placement[side];
+export function getMotifRect(side: PrintSide, transform: PrintTransform, productId: string = '1') {
+  const profile = getGarmentProfile(productId);
+  const base = profile.overlay[side];
+  const zone = profile.placement[side];
   const width = base.width * transform.scale;
   const height = base.height * transform.scale;
   const cx = zone.left + zone.width / 2 + (clampOffset(transform.x) / 100) * zone.width;
@@ -33,8 +34,8 @@ export function getMotifRect(side: PrintSide, transform: PrintTransform) {
 }
 
 /** CSS für das Motiv — absolut positioniert relativ zum Shirt-Foto-Container */
-export function getMotifStyle(side: PrintSide, transform: PrintTransform): CSSProperties {
-  const r = getMotifRect(side, transform);
+export function getMotifStyle(side: PrintSide, transform: PrintTransform, productId: string = '1'): CSSProperties {
+  const r = getMotifRect(side, transform, productId);
   return {
     position: 'absolute',
     top: `${r.top}%`,

@@ -12,6 +12,7 @@ interface ShirtPrintOverlayProps {
   showGuide?: boolean;
   onPointerDown?: (e: React.MouseEvent | React.TouchEvent) => void;
   interactive?: boolean;
+  productId?: string;
 }
 
 export default function ShirtPrintOverlay({
@@ -22,13 +23,14 @@ export default function ShirtPrintOverlay({
   showGuide = true,
   onPointerDown,
   interactive = false,
+  productId = '1',
 }: ShirtPrintOverlayProps) {
   const { t } = useLocale();
 
   if (!imageSrc) {
     if (!showGuide) return null;
     return (
-      <div className="plt-print-zone" style={{ ...getPlacementZoneStyle(side), borderRadius: '3px', boxShadow: 'inset 0 0 0 1.5px rgba(255,255,255,0.2)' }}>
+      <div className="plt-print-zone" style={{ ...getPlacementZoneStyle(side, productId), borderRadius: '3px', boxShadow: 'inset 0 0 0 1.5px rgba(255,255,255,0.2)' }}>
         <div className="plt-print-guide">
           <span className="plt-print-guide-text">
             {t.studio.printZoneLabel}<br />
@@ -47,7 +49,7 @@ export default function ShirtPrintOverlay({
       onMouseDown={interactive ? onPointerDown : undefined}
       onTouchStart={interactive ? onPointerDown : undefined}
       style={{
-        ...getMotifStyle(side, { scale, x: pos.x, y: pos.y }),
+        ...getMotifStyle(side, { scale, x: pos.x, y: pos.y }, productId),
         pointerEvents: interactive ? 'auto' : 'none',
         cursor: interactive ? 'grab' : 'default',
         borderRadius: '3px',

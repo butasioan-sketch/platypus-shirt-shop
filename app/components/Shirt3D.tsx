@@ -15,6 +15,10 @@ interface Shirt3DProps {
   enableTouch?: boolean;
   /** static = statisches Bild (Startseite), flip = 2D-Editor-Fallback (Design-Studio) */
   fallback?: 'static' | 'flip';
+  /** Foto-Quellen für den Fallback (kein GLB-Modell vorhanden, z.B. Shorts) — default: Shirt-Fotos */
+  frontSrc?: string;
+  backSrc?: string;
+  productId?: string;
 }
 
 const MODEL_PATH = '/models/shirt-white-v2.glb';
@@ -111,13 +115,18 @@ export default function Shirt3D({
   fallback = 'flip',
   ...props
 }: Shirt3DProps) {
+  // Das GLB-Modell existiert nur fuer den Tee (productId '1'). Fuer alle anderen
+  // Produkte (z.B. Shorts) nie den globalen Modell-Pfad pruefen — sonst wuerde
+  // faelschlich das Shirt-3D-Modell auf einer anderen Produktseite gerendert.
+  const supportsModel = !props.productId || props.productId === '1';
   const [modelExists, setModelExists] = useState<boolean | null>(null);
 
   useEffect(() => {
+    if (!supportsModel) { setModelExists(false); return; }
     fetch(MODEL_PATH, { method: 'HEAD' })
       .then((r) => setModelExists(r.ok))
       .catch(() => setModelExists(false));
-  }, []);
+  }, [supportsModel]);
 
   if (modelExists === null || !modelExists) {
     if (fallback === 'static') {
@@ -127,6 +136,9 @@ export default function Shirt3D({
       <ShirtFlip
         frontPrint={props.frontPrint}
         backPrint={props.backPrint}
+        productId={props.productId}
+        {...(props.frontSrc ? { frontSrc: props.frontSrc } : {})}
+        {...(props.backSrc ? { backSrc: props.backSrc } : {})}
         showControls={false}
         showHint={false}
       />

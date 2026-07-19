@@ -1,9 +1,10 @@
 'use client';
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { SHIRT_VIEWER_ASPECT, type PrintSide } from '@/lib/print-spec';
+import { getViewerAspect, type PrintSide } from '@/lib/print-spec';
 import { getMotifStyle } from '@/lib/print-position';
 
 interface ShirtFlipProps {
+  productId?: string;
   frontSrc?: string;
   backSrc?: string;
   altFront?: string;
@@ -30,6 +31,7 @@ const DEFAULTS = {
 } as const;
 
 export default function ShirtFlip({
+  productId = '1',
   frontSrc = '/airfit-front-t.png',
   backSrc = '/airfit-back-t.png',
   altFront = 'AirFit Pro — Vorderseite',
@@ -160,13 +162,13 @@ export default function ShirtFlip({
     width: '100%', height: '100%', objectFit: 'contain',
     pointerEvents: 'none', filter: `drop-shadow(${shadow})`,
   };
-  const wrapStyle: React.CSSProperties = { position: 'relative', height: '100%', aspectRatio: SHIRT_VIEWER_ASPECT, maxWidth: '100%' };
+  const wrapStyle: React.CSSProperties = { position: 'relative', height: '100%', aspectRatio: getViewerAspect(productId), maxWidth: '100%' };
   const renderPrint = (side: PrintSide, pr?: { src: string; x?: number; y?: number; scale?: number }) => pr ? (
     <img
       src={pr.src}
       alt=""
       draggable={false}
-      style={{ ...getMotifStyle(side, { scale: pr.scale ?? 1, x: pr.x ?? 0, y: pr.y ?? 0 }), zIndex: 2, opacity: 0.98 }}
+      style={{ ...getMotifStyle(side, { scale: pr.scale ?? 1, x: pr.x ?? 0, y: pr.y ?? 0 }, productId), zIndex: 2, opacity: 0.98 }}
     />
   ) : null;
   const ctrlBtn: React.CSSProperties = {
@@ -184,7 +186,7 @@ export default function ShirtFlip({
     >
       {!imagesLoaded && (
         <div style={{ position: 'absolute', inset: 0, zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: '70%', maxWidth: '300px', aspectRatio: SHIRT_VIEWER_ASPECT, borderRadius: '16px', background: 'rgba(255,255,255,0.04)' }} />
+          <div style={{ width: '70%', maxWidth: '300px', aspectRatio: getViewerAspect(productId), borderRadius: '16px', background: 'rgba(255,255,255,0.04)' }} />
         </div>
       )}
 

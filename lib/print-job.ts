@@ -2,7 +2,7 @@
 // Ebene 1 (Druckblatt) vs Ebene 2 (Platzierung) — siehe lib/print-export.ts Kommentar.
 
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from 'pdf-lib';
-import { PRINT_SPEC, SHIRT_PHOTO, formatSizeMm, getPlacementZone, NO_PRINT_NOTE, type PrintSide } from './print-spec';
+import { PRINT_SPEC, formatSizeMm, getPlacementZone, getGarmentProfile, NO_PRINT_NOTE, type PrintSide } from './print-spec';
 import { getMotifRect, defaultPrintTransform, type PrintTransform } from './print-position';
 import type { DesignRecord } from './db';
 import type { Order } from './types';
@@ -10,7 +10,7 @@ import type { Order } from './types';
 export interface PlacementInfo {
   side: PrintSide;
   percent: { top: number; left: number; width: number; height: number };
-  mm: { top: number; left: number; width: number; height: number };
+  mm: { top: number; left: number; width: number; height: number } | null;
   note: string;
 }
 
@@ -18,29 +18,36 @@ function round1(v: number): number {
   return Math.round(v * 10) / 10;
 }
 
-// Näherung: Shirt-Foto-Höhe in mm aus den einzigen zwei mm-Referenzwerten der Gr.-L-Kalibrierung.
-// Nicht pixelgenau vermessen — dient der Produktions-Orientierung, nicht als exaktes Maßband.
-const PHOTO_HEIGHT_MM_APPROX = PRINT_SPEC.shirtLengthMm + PRINT_SPEC.collarOffsetMm;
-const PHOTO_WIDTH_MM_APPROX = PHOTO_HEIGHT_MM_APPROX * (SHIRT_PHOTO.width / SHIRT_PHOTO.height);
+/** Position/Größe des Motivs auf dem Garment — Prozent (verbindlich) + mm (Näherung, falls Referenz vorhanden). */
+export function computePlacementMm(side: PrintSide, transform: PrintTransform, productId: string = '1'): PlacementInfo {
+  const r = getMotifRect(side, transform, productId);
+  const profile = getGarmentProfile(productId);
+  const percent = { top: round1(r.top), left: round1(r.left), width: round1(r.width), height: round1(r.height) };
 
-/** Position/Größe des Motivs auf dem Shirt — Prozent (verbindlich) + mm (Näherung, siehe note). */
-export function computePlacementMm(side: PrintSide, transform: PrintTransform): PlacementInfo {
-  const r = getMotifRect(side, transform);
+  if (profile.mmReferenceHeight === null) {
+    return {
+      side, percent, mm: null,
+      note: 'mm-Näherung für dieses Produkt nicht verfügbar (keine Referenzmessung) — Prozentwerte sind die verbindliche Quelle für die Platzierung.',
+    };
+  }
+
+  const photoHeightMmApprox = profile.mmReferenceHeight;
+  const photoWidthMmApprox = photoHeightMmApprox * (profile.photoWidth / profile.photoHeight);
   return {
-    side,
-    percent: { top: round1(r.top), left: round1(r.left), width: round1(r.width), height: round1(r.height) },
+    side, percent,
     mm: {
-      top: round1((r.top / 100) * PHOTO_HEIGHT_MM_APPROX),
-      left: round1((r.left / 100) * PHOTO_WIDTH_MM_APPROX),
-      width: round1((r.width / 100) * PHOTO_WIDTH_MM_APPROX),
-      height: round1((r.height / 100) * PHOTO_HEIGHT_MM_APPROX),
+      top: round1((r.top / 100) * photoHeightMmApprox),
+      left: round1((r.left / 100) * photoWidthMmApprox),
+      width: round1((r.width / 100) * photoWidthMmApprox),
+      height: round1((r.height / 100) * photoHeightMmApprox),
     },
-    note: 'mm ungefähr (kalibriert aus shirtLengthMm + collarOffsetMm, Gr. L). Prozentwerte sind die verbindliche Quelle für die Platzierung.',
+    note: 'mm ungefähr (grobe Referenzmessung). Prozentwerte sind die verbindliche Quelle für die Platzierung.',
   };
 }
 
 export interface PrintJobDesignEntry {
   id: string;
+  productId: string;
   hasFront: boolean;
   hasBack: boolean;
   frontTransform: PrintTransform | null;
@@ -69,17 +76,19 @@ export function buildPrintJobPayload(orderId: string, designs: DesignRecord[]): 
       blank: PRINT_SPEC.blank, method: PRINT_SPEC.method,
     },
     designs: designs.map((d) => {
+      const productId = d.productId || '1';
       const frontTransform = d.frontImage ? (d.frontTransform || defaultPrintTransform()) : null;
       const backTransform = d.backImage ? (d.backTransform || defaultPrintTransform()) : null;
       return {
         id: d.id,
+        productId,
         hasFront: !!d.frontImage,
         hasBack: !!d.backImage,
         frontTransform,
         backTransform,
         placement: {
-          front: frontTransform ? computePlacementMm('front', frontTransform) : undefined,
-          back: backTransform ? computePlacementMm('back', backTransform) : undefined,
+          front: frontTransform ? computePlacementMm('front', frontTransform, productId) : undefined,
+          back: backTransform ? computePlacementMm('back', backTransform, productId) : undefined,
         },
       };
     }),
@@ -107,18 +116,19 @@ async function embedImage(doc: PDFDocument, dataUrl: string) {
   return parsed.mime === 'jpeg' ? doc.embedJpg(parsed.bytes) : doc.embedPng(parsed.bytes);
 }
 
-function drawPlacementDiagram(page: PDFPage, x: number, y: number, w: number, h: number, placement: PlacementInfo) {
-  // Shirt-Fläche als Referenzrahmen (Seitenverhältnis des Shirt-Fotos)
-  const shirtAspect = SHIRT_PHOTO.width / SHIRT_PHOTO.height;
+function drawPlacementDiagram(page: PDFPage, x: number, y: number, w: number, h: number, placement: PlacementInfo, productId: string = '1') {
+  // Garment-Fläche als Referenzrahmen (Seitenverhältnis des Garment-Fotos)
+  const profile = getGarmentProfile(productId);
+  const garmentAspect = profile.photoWidth / profile.photoHeight;
   const boxH = h;
-  const boxW = boxH * shirtAspect;
+  const boxW = boxH * garmentAspect;
   const boxX = x + (w - boxW) / 2;
   const boxY = y;
 
   page.drawRectangle({ x: boxX, y: boxY, width: boxW, height: boxH, borderColor: rgb(0.6, 0.6, 0.6), borderWidth: 1 });
 
   // No-Print-Zone: gestrichelter Rahmen der nutzbaren Placement-Zone (Schulter/Seitennaht/Kragen/Saum ausgespart)
-  const zone = getPlacementZone(placement.side);
+  const zone = getPlacementZone(placement.side, productId);
   page.drawRectangle({
     x: boxX + (zone.left / 100) * boxW,
     y: boxY + boxH - ((zone.top + zone.height) / 100) * boxH,
@@ -166,9 +176,10 @@ export async function generatePrintPdf(order: Order, designs: DesignRecord[], pr
 
   drawText(cover, bold, 'Druckstandard', MARGIN, y, 12);
   y -= 18;
-  drawText(cover, font, `Format: ${formatSizeMm()} Hochformat · ${PRINT_SPEC.dpi} dpi · ${PRINT_SPEC.widthPx} × ${PRINT_SPEC.heightPx} px`, MARGIN, y, 10);
+  drawText(cover, font, `Format: ${formatSizeMm()} Hochformat · ${PRINT_SPEC.dpi} dpi · ${PRINT_SPEC.widthPx} × ${PRINT_SPEC.heightPx} px · Methode: ${PRINT_SPEC.method}`, MARGIN, y, 10);
   y -= 15;
-  drawText(cover, font, `Blank: ${PRINT_SPEC.blank} · Methode: ${PRINT_SPEC.method}`, MARGIN, y, 10);
+  const blanksUsed = Array.from(new Set(designs.map((d) => getGarmentProfile(d.productId || '1').blank)));
+  drawText(cover, font, `Blank: ${blanksUsed.join(' · ')}`, MARGIN, y, 10);
   y -= 15;
   drawText(cover, font, `Epson SC-F100: Papier A4, „Actual size" / 100 % — kein Fit-to-Page`, MARGIN, y, 10);
   y -= 25;
@@ -186,6 +197,8 @@ export async function generatePrintPdf(order: Order, designs: DesignRecord[], pr
       { side: 'front', image: d.frontImage, placement: entry?.placement.front },
       { side: 'back', image: d.backImage, placement: entry?.placement.back },
     ];
+
+    const designProductId = d.productId || '1';
 
     for (const { side, image, placement } of sides) {
       if (!image) continue;
@@ -210,17 +223,19 @@ export async function generatePrintPdf(order: Order, designs: DesignRecord[], pr
         const placePage = doc.addPage(A4_PT);
         drawText(placePage, bold, `PLATZIERUNG ${sideLabel} — ${d.id}`, MARGIN, ph - MARGIN, 13);
         let py = ph - MARGIN - 30;
-        drawText(placePage, font, `Position (% der Placement-Zone, Gr. L): top ${placement.percent.top}% · left ${placement.percent.left}% · width ${placement.percent.width}% · height ${placement.percent.height}%`, MARGIN, py, 9);
+        drawText(placePage, font, `Position (% der Placement-Zone): top ${placement.percent.top}% · left ${placement.percent.left}% · width ${placement.percent.width}% · height ${placement.percent.height}%`, MARGIN, py, 9);
         py -= 14;
-        drawText(placePage, font, `Näherung mm: top ${placement.mm.top} · left ${placement.mm.left} · width ${placement.mm.width} · height ${placement.mm.height}`, MARGIN, py, 9, rgb(0.45, 0.45, 0.45));
-        py -= 14;
+        if (placement.mm) {
+          drawText(placePage, font, `Näherung mm: top ${placement.mm.top} · left ${placement.mm.left} · width ${placement.mm.width} · height ${placement.mm.height}`, MARGIN, py, 9, rgb(0.45, 0.45, 0.45));
+          py -= 14;
+        }
         drawText(placePage, font, placement.note, MARGIN, py, 7.5, rgb(0.55, 0.55, 0.55));
         py -= 30;
         drawText(placePage, font, 'A4-Transfer so auf Blank positionieren (rot = Motiv-Bereich, gestrichelt = nutzbare Zone):', MARGIN, py, 9);
         py -= 14;
         drawText(placePage, font, NO_PRINT_NOTE, MARGIN, py, 7.5, rgb(0.55, 0.55, 0.55));
         py -= 16;
-        drawPlacementDiagram(placePage, MARGIN, MARGIN, pw - MARGIN * 2, py - MARGIN, placement);
+        drawPlacementDiagram(placePage, MARGIN, MARGIN, pw - MARGIN * 2, py - MARGIN, placement, designProductId);
       }
 
       // Kundenblick-Seite — Reklamations-Nachweis: exakt das, was der Kunde im Atelier sah
