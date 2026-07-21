@@ -103,6 +103,9 @@ function GarmentModel({
         color: new THREE.Color(shirtColor),
         roughness: 0.65,
         metalness: 0,
+        // Shorts-Platzhalter ist prozedural erzeugt (Ring-Loft) — DoubleSide als
+        // Absicherung gegen Winding-Fehler, ohne Risiko fuer das geprüfte Tee-GLB.
+        side: productId === '2' ? THREE.DoubleSide : THREE.FrontSide,
       });
       b.geometry.computeBoundingBox();
       console.log('[Shirt3D] product', productId, 'mesh:', b.name,
@@ -159,10 +162,11 @@ export default function Shirt3D({
     );
   }
 
-  // Shorts: Kamera etwas tiefer / näher; Tee: bisherige Werte
+  // Shorts: Kamera auf Mesh-Mitte (y 0.03..0.98) zentriert, weiter zurück damit
+  // Bund + beide Beine vollstaendig im Frame sind; Tee: bisherige Werte unveraendert.
   const isShorts = productId === '2';
-  const cameraPos: [number, number, number] = isShorts ? [0, 0.45, 1.1] : [0, 0.58, 0.85];
-  const orbitTarget: [number, number, number] = isShorts ? [0, 0.4, 0] : [0, 0.53, 0];
+  const cameraPos: [number, number, number] = isShorts ? [0, 0.5, 1.6] : [0, 0.58, 0.85];
+  const orbitTarget: [number, number, number] = isShorts ? [0, 0.5, 0] : [0, 0.53, 0];
 
   return (
     <Canvas
