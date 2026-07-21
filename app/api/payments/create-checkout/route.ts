@@ -182,17 +182,24 @@ export async function POST(request: Request) {
       const productId = item.productId || "1";
       let front: string | null = null;
       let back: string | null = null;
+      let pages = 0;
       if (item.designId && sql) {
         const rows = (await sql.query(
-          `SELECT front_image, back_image FROM designs WHERE id=$1`,
+          `SELECT front_image, back_image, meta FROM designs WHERE id=$1`,
           [item.designId]
         )) as Record<string, unknown>[];
         if (rows.length) {
           front = (rows[0].front_image as string) || null;
           back = (rows[0].back_image as string) || null;
+          const meta = rows[0].meta as Record<string, unknown> | null;
+          // Multi-Layer-Atelier: Preis basiert auf der tatsaechlichen Ebenen-Anzahl je
+          // Seite (meta.front/backLayerCount, serverseitig aus der DB gelesen — nie vom
+          // Client vertraut). Legacy-Designs ohne diese Felder: alte 0/1-pro-Seite-Regel.
+          const frontCount = typeof meta?.frontLayerCount === 'number' ? meta.frontLayerCount : (front ? 1 : 0);
+          const backCount = typeof meta?.backLayerCount === 'number' ? meta.backLayerCount : (back ? 1 : 0);
+          pages = Math.max(0, Math.min(12, Math.round(frontCount))) + Math.max(0, Math.min(12, Math.round(backCount)));
         }
       }
-      const pages = (front ? 1 : 0) + (back ? 1 : 0);
       const qty = Math.max(1, Math.min(99, Math.round(Number(item.quantity || 1))));
       priced.push({ ...item, productId, pages, qty, unitPrice: calcUnitPriceForProduct(productId, pages) });
     }

@@ -9,8 +9,9 @@ import { getDecalDimensions, getDecalPosition } from '@/lib/print-position';
 
 interface PrintData { src: string; x: number; y: number; scale: number; }
 interface Shirt3DProps {
-  frontPrint?: PrintData;
-  backPrint?: PrintData;
+  /** Mehrere Ebenen pro Seite (freies Multi-Bild/Text-Atelier) — Array-Reihenfolge = Z-Order. */
+  frontPrint?: PrintData[];
+  backPrint?: PrintData[];
   shirtColor?: string;
   enableTouch?: boolean;
   /** static = statisches Bild (Startseite), flip = 2D-Editor-Fallback (Design-Studio) */
@@ -35,8 +36,8 @@ function getModelPath(productId?: string): string | null {
 // === KUNDENMOTIV ALS DECAL ===
 // Position wird dynamisch aus der Bounding-Box des Garment-Meshes abgeleitet.
 // print.x / print.y: -50..+50 (% aus 2D-Editor); print.scale: Multiplikator — wie 2D-Editor.
-function CustomerPrint({ mesh, print, front, productId }:
-  { mesh: THREE.Mesh; print: PrintData; front: boolean; productId: string }) {
+function CustomerPrint({ mesh, print, front, productId, layerIndex = 0 }:
+  { mesh: THREE.Mesh; print: PrintData; front: boolean; productId: string; layerIndex?: number }) {
   const tex = useTexture(print.src);
   tex.anisotropy = 8;
 
@@ -56,18 +57,21 @@ function CustomerPrint({ mesh, print, front, productId }:
       front,
       productId,
     );
+    // Mehrere Ebenen auf derselben Seite: minimale Z-Staffelung gegen Z-Fighting
+    // zwischen uebereinanderliegenden Decals (Reihenfolge = Stapel, wie im Editor).
+    position[2] += (front ? 1 : -1) * layerIndex * 0.0015;
     return {
       pos: position,
       size: [w, h, Math.max(s.z * 1.5, 0.1)] as [number, number, number],
     };
-  }, [mesh, print.x, print.y, print.scale, front, productId]);
+  }, [mesh, print.x, print.y, print.scale, front, productId, layerIndex]);
   return (
     <Decal position={pos} rotation={[0, front ? 0 : Math.PI, 0]} scale={size}>
       <meshStandardMaterial
         map={tex}
         transparent
         polygonOffset
-        polygonOffsetFactor={-2}
+        polygonOffsetFactor={-2 - layerIndex}
         depthWrite={false}
         roughness={0.6}
         toneMapped={false}
@@ -118,8 +122,12 @@ function GarmentModel({
       <primitive object={scene} />
       {mesh && createPortal(
         <>
-          {frontPrint && <CustomerPrint mesh={mesh} print={frontPrint} front productId={productId} />}
-          {backPrint && <CustomerPrint mesh={mesh} print={backPrint} front={false} productId={productId} />}
+          {(frontPrint || []).map((p, i) => (
+            <CustomerPrint key={`front-${i}`} mesh={mesh} print={p} front productId={productId} layerIndex={i} />
+          ))}
+          {(backPrint || []).map((p, i) => (
+            <CustomerPrint key={`back-${i}`} mesh={mesh} print={p} front={false} productId={productId} layerIndex={i} />
+          ))}
         </>,
         mesh
       )}

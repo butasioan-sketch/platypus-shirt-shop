@@ -14,8 +14,8 @@ interface ShirtFlipProps {
   perspective?: number;        // Stellschraube 2
   shadow?: string;             // Stellschraube 3
   inertiaFriction?: number;    // Stellschraube 4
-  frontPrint?: { src: string; x?: number; y?: number; scale?: number };
-  backPrint?: { src: string; x?: number; y?: number; scale?: number };
+  frontPrint?: { src: string; x?: number; y?: number; scale?: number }[];
+  backPrint?: { src: string; x?: number; y?: number; scale?: number }[];
   showHint?: boolean;
   showControls?: boolean;
   enableInertia?: boolean;
@@ -163,14 +163,16 @@ export default function ShirtFlip({
     pointerEvents: 'none', filter: `drop-shadow(${shadow})`,
   };
   const wrapStyle: React.CSSProperties = { position: 'relative', height: '100%', aspectRatio: getViewerAspect(productId), maxWidth: '100%' };
-  const renderPrint = (side: PrintSide, pr?: { src: string; x?: number; y?: number; scale?: number }) => pr ? (
-    <img
-      src={pr.src}
-      alt=""
-      draggable={false}
-      style={{ ...getMotifStyle(side, { scale: pr.scale ?? 1, x: pr.x ?? 0, y: pr.y ?? 0 }, productId), zIndex: 2, opacity: 0.98 }}
-    />
-  ) : null;
+  const renderPrint = (side: PrintSide, layers?: { src: string; x?: number; y?: number; scale?: number }[]) =>
+    (layers || []).map((pr, i) => (
+      <img
+        key={i}
+        src={pr.src}
+        alt=""
+        draggable={false}
+        style={{ ...getMotifStyle(side, { scale: pr.scale ?? 1, x: pr.x ?? 0, y: pr.y ?? 0 }, productId), zIndex: 2 + i, opacity: 0.98 }}
+      />
+    ));
   const ctrlBtn: React.CSSProperties = {
     padding: '0.5rem', background: 'transparent', border: 'none', color: '#999',
     borderRadius: '50%', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',

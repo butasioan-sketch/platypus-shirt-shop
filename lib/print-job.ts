@@ -208,17 +208,35 @@ export async function generatePrintPdf(order: Order, designs: DesignRecord[], pr
       // Druckblatt-Seite
       const sheetPage = doc.addPage(A4_PT);
       drawText(sheetPage, bold, `DRUCKBLATT ${sideLabel} — ${d.id}`, MARGIN, ph - MARGIN, 13);
-      const sideTextMeta = d.meta
+
+      // Text-Ebenen zur QA auflisten (freies Multi-Layer-Atelier: mehrere Text-Ebenen pro
+      // Seite moeglich). Legacy-Designs vor dieser Umstellung hatten nur ein einzelnes
+      // frontText/backText-Feld — als Fallback weiter unterstuetzt.
+      const layerMeta = d.meta
+        ? (side === 'front' ? d.meta.frontLayers : d.meta.backLayers) as { kind?: string; text?: string; color?: string }[] | undefined
+        : undefined;
+      const legacyText = d.meta
         ? (side === 'front' ? d.meta.frontText : d.meta.backText) as { text?: string; templateId?: string } | null
         : null;
-      if (sideTextMeta?.text) {
-        const src = sideTextMeta.templateId ? `Vorlage ${sideTextMeta.templateId}` : 'Freitext';
-        drawText(sheetPage, font, `Text-Motiv (${src}): "${sideTextMeta.text}"`, MARGIN, ph - MARGIN - 16, 8.5, rgb(0.45, 0.45, 0.45));
+      const textNoteLines: string[] = [];
+      if (Array.isArray(layerMeta)) {
+        layerMeta.filter((l) => l?.kind === 'text' && l.text).forEach((l, i) => {
+          textNoteLines.push(`Text-Ebene ${i + 1}${l.color ? ` (${l.color})` : ''}: "${l.text}"`);
+        });
+      } else if (legacyText?.text) {
+        const src = legacyText.templateId ? `Vorlage ${legacyText.templateId}` : 'Freitext';
+        textNoteLines.push(`Text-Motiv (${src}): "${legacyText.text}"`);
       }
+      let noteY = ph - MARGIN - 16;
+      for (const line of textNoteLines) {
+        drawText(sheetPage, font, line, MARGIN, noteY, 8.5, rgb(0.45, 0.45, 0.45));
+        noteY -= 11;
+      }
+
       const img = await embedImage(doc, image);
       if (img) {
         const maxW = pw - MARGIN * 2;
-        const maxH = ph - MARGIN * 2 - 30;
+        const maxH = ph - MARGIN * 2 - 30 - Math.max(0, textNoteLines.length - 1) * 11;
         const scale = Math.min(maxW / img.width, maxH / img.height);
         const w = img.width * scale;
         const h = img.height * scale;

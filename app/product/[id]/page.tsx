@@ -13,8 +13,9 @@ import { getProduct, getProductName, getProductDescription, SHIRT_COLORS } from 
 const DesignStudio = dynamic(() => import('@/app/components/DesignStudio'), { ssr: false });
 import type { DesignState } from '@/app/components/DesignStudio';
 import { calcUnitPriceForProduct } from '@/lib/pricing';
-import { renderPrintSheet } from '@/lib/print-export';
-import { renderCustomerViewComposite } from '@/lib/print-customer-view';
+import { renderPrintSheetMulti } from '@/lib/print-export';
+import { renderCustomerViewCompositeMulti } from '@/lib/print-customer-view';
+import { defaultPrintTransform } from '@/lib/print-position';
 import { trackAddToCart, trackViewProduct } from '@/lib/analytics';
 
 export default function ProductPage() {
@@ -30,14 +31,7 @@ export default function ProductPage() {
   const [addLoading, setAddLoading] = useState(false);
   const [added, setAdded] = useState(false);
   const [error, setError] = useState('');
-  const [design, setDesign] = useState<DesignState>({
-    front: null,
-    back: null,
-    frontTransform: { scale: 1, x: 0, y: 0 },
-    backTransform: { scale: 1, x: 0, y: 0 },
-    frontText: null,
-    backText: null,
-  });
+  const [design, setDesign] = useState<DesignState>({ frontLayers: [], backLayers: [] });
   const [editHint, setEditHint] = useState(false);
 
   useEffect(() => {
@@ -56,23 +50,32 @@ export default function ProductPage() {
 
   if (!product) notFound();
 
-  const unitPrice = calcUnitPriceForProduct(id, (design.front ? 1 : 0) + (design.back ? 1 : 0));
+  const totalLayers = design.frontLayers.length + design.backLayers.length;
+  const unitPrice = calcUnitPriceForProduct(id, totalLayers);
   const productName = getProductName(product, locale);
   const colorLabel = activeColor.label[locale] || activeColor.label.de;
 
   const saveDesign = async (): Promise<string | null> => {
-    if (!design.front && !design.back) return null;
+    if (!design.frontLayers.length && !design.backLayers.length) return null;
     try {
+      const hasFront = design.frontLayers.length > 0;
+      const hasBack = design.backLayers.length > 0;
       const [front, back, frontPreview, backPreview] = await Promise.all([
-        design.front ? renderPrintSheet(design.front, design.frontTransform, { format: 'jpeg', quality: 0.92 }) : Promise.resolve(null),
-        design.back ? renderPrintSheet(design.back, design.backTransform, { format: 'jpeg', quality: 0.92 }) : Promise.resolve(null),
-        design.front ? renderCustomerViewComposite('front', design.front, design.frontTransform, id).catch(() => null) : Promise.resolve(null),
-        design.back ? renderCustomerViewComposite('back', design.back, design.backTransform, id).catch(() => null) : Promise.resolve(null),
+        hasFront ? renderPrintSheetMulti('front', design.frontLayers.map((l) => ({ src: l.src, transform: l.transform })), id, { format: 'jpeg', quality: 0.92 }) : Promise.resolve(null),
+        hasBack ? renderPrintSheetMulti('back', design.backLayers.map((l) => ({ src: l.src, transform: l.transform })), id, { format: 'jpeg', quality: 0.92 }) : Promise.resolve(null),
+        hasFront ? renderCustomerViewCompositeMulti('front', design.frontLayers.map((l) => ({ src: l.src, transform: l.transform })), id).catch(() => null) : Promise.resolve(null),
+        hasBack ? renderCustomerViewCompositeMulti('back', design.backLayers.map((l) => ({ src: l.src, transform: l.transform })), id).catch(() => null) : Promise.resolve(null),
       ]);
+      // Ganzes A4-Blatt wird als EINE Einheit auf den Blank gepresst (Sublimation) —
+      // die einzelnen Ebenen haben zwar eigene Positionen INNERHALB des Blatts (siehe
+      // renderPrintSheetMulti), aber das Blatt selbst sitzt an der Standardposition der
+      // Placement-Zone. Deshalb hier immer der Default-Transform fuer die PDF-
+      // Platzierungsseite (Ebene 2), unabhaengig von den Ebenen-eigenen Positionen.
+      const standardTransform = defaultPrintTransform();
       const payload = JSON.stringify({
         front, back, productId: id,
-        frontTransform: design.front ? design.frontTransform : null,
-        backTransform: design.back ? design.backTransform : null,
+        frontTransform: hasFront ? standardTransform : null,
+        backTransform: hasBack ? standardTransform : null,
         frontPreview, backPreview,
         meta: {
           dpi: PRINT_SPEC.dpi,
@@ -80,10 +83,14 @@ export default function ProductPage() {
           heightPx: PRINT_SPEC.heightPx,
           blank: PRINT_SPEC.blank,
           method: PRINT_SPEC.method,
-          // Rohe Text-Info (nicht nur das gerenderte Bild) — Grundlage fuer den
-          // spaeteren Plotter-SVG-Export (Phase 2), der den Text als Vektor braucht.
-          frontText: design.front ? design.frontText : null,
-          backText: design.back ? design.backText : null,
+          // Anzahl Ebenen je Seite — Grundlage der serverseitigen Preisberechnung
+          // (Extra-Motiv-Aufpreis ab dem 3. Bild, siehe lib/pricing.ts + create-checkout).
+          frontLayerCount: design.frontLayers.length,
+          backLayerCount: design.backLayers.length,
+          // Rohe Ebenen-Info (nicht nur das gerenderte Bild) — QA im Druckblatt-PDF und
+          // Grundlage fuer den spaeteren Plotter-SVG-Export (Phase 2, Text als Vektor).
+          frontLayers: design.frontLayers.map((l) => ({ kind: l.kind, text: l.text || null, color: l.color || null })),
+          backLayers: design.backLayers.map((l) => ({ kind: l.kind, text: l.text || null, color: l.color || null })),
         },
       });
       console.log('[saveDesign] payload', (payload.length / 1024 / 1024).toFixed(2), 'MB');
@@ -107,13 +114,13 @@ export default function ProductPage() {
 
   const addToCart = async () => {
     if (!size) { setError(t.product.selectSize); return; }
-    if (!design.front && !design.back) { setError(t.shop.needDesign); return; }
+    if (!design.frontLayers.length && !design.backLayers.length) { setError(t.shop.needDesign); return; }
     setError('');
     setAddLoading(true);
     try {
       const designId = await saveDesign();
       if (!designId) { setError(t.errors.saveDesign); return; }
-      const pages = (design.front ? 1 : 0) + (design.back ? 1 : 0);
+      const pages = totalLayers;
       const cart = JSON.parse(localStorage.getItem('platypus_cart') || '[]');
       cart.push({
         id, name: productName, price: unitPrice, size,
@@ -129,7 +136,7 @@ export default function ProductPage() {
 
   const buyNow = async () => {
     if (!size) { setError(t.product.selectSize); return; }
-    if (!design.front && !design.back) { setError(t.shop.needDesign); return; }
+    if (!design.frontLayers.length && !design.backLayers.length) { setError(t.shop.needDesign); return; }
     setError('');
     setLoading(true);
     try {
@@ -245,18 +252,18 @@ export default function ProductPage() {
           <div className="plt-design-status" style={{
             display: 'flex', alignItems: 'center', gap: '0.6rem',
             padding: '0.65rem 0.9rem', borderRadius: '10px', marginBottom: '1rem',
-            background: (design.front || design.back) ? 'rgba(74,222,128,0.08)' : 'rgba(255,255,255,0.03)',
-            border: `1px solid ${(design.front || design.back) ? 'rgba(74,222,128,0.25)' : 'rgba(255,255,255,0.08)'}`,
+            background: totalLayers > 0 ? 'rgba(74,222,128,0.08)' : 'rgba(255,255,255,0.03)',
+            border: `1px solid ${totalLayers > 0 ? 'rgba(74,222,128,0.25)' : 'rgba(255,255,255,0.08)'}`,
             fontSize: '0.78rem', fontWeight: 600,
-            color: (design.front || design.back) ? '#4ade80' : '#666',
+            color: totalLayers > 0 ? '#4ade80' : '#666',
           }}>
-            <span style={{ fontSize: '1rem' }}>{(design.front || design.back) ? '✓' : '←'}</span>
+            <span style={{ fontSize: '1rem' }}>{totalLayers > 0 ? '✓' : '←'}</span>
             <span>
-              {design.front && design.back
+              {design.frontLayers.length && design.backLayers.length
                 ? `${t.studio.front} & ${t.studio.back} — ${t.studio.twoSides}`
-                : design.front
+                : design.frontLayers.length
                   ? `${t.studio.front} — ${t.studio.oneSide}`
-                  : design.back
+                  : design.backLayers.length
                     ? `${t.studio.back} — ${t.studio.oneSide}`
                     : t.shop.uploadFront}
             </span>

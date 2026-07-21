@@ -82,3 +82,43 @@ export async function renderCustomerViewComposite(
 
   return canvas.toDataURL('image/jpeg', 0.85);
 }
+
+/** Mehrere Motive pro Seite — gleiche Logik wie oben, nur alle Ebenen (Z-Order = Array-Reihenfolge). */
+export async function renderCustomerViewCompositeMulti(
+  side: PrintSide,
+  layers: { src: string; transform: PrintTransform }[],
+  productId: string = '1',
+): Promise<string> {
+  const profile = getGarmentProfile(productId);
+  const targetHeight = Math.round(TARGET_WIDTH * (profile.photoHeight / profile.photoWidth));
+
+  const canvas = document.createElement('canvas');
+  canvas.width = TARGET_WIDTH;
+  canvas.height = targetHeight;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Canvas nicht verfügbar');
+
+  const garmentImg = await loadImage(getGarmentPhotoSrc(side, productId));
+
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, TARGET_WIDTH, targetHeight);
+
+  const garmentScale = Math.min(TARGET_WIDTH / garmentImg.width, targetHeight / garmentImg.height);
+  const garmentW = garmentImg.width * garmentScale;
+  const garmentH = garmentImg.height * garmentScale;
+  const garmentX = (TARGET_WIDTH - garmentW) / 2;
+  const garmentY = (targetHeight - garmentH) / 2;
+  ctx.drawImage(garmentImg, garmentX, garmentY, garmentW, garmentH);
+
+  for (const layer of layers) {
+    const motifImg = await loadImage(layer.src);
+    const rect = getMotifRect(side, layer.transform, productId);
+    const boxX = garmentX + (rect.left / 100) * garmentW;
+    const boxY = garmentY + (rect.top / 100) * garmentH;
+    const boxW = (rect.width / 100) * garmentW;
+    const boxH = (rect.height / 100) * garmentH;
+    drawCover(ctx, motifImg, boxX, boxY, boxW, boxH);
+  }
+
+  return canvas.toDataURL('image/jpeg', 0.85);
+}

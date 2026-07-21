@@ -5,8 +5,17 @@
 import { PRINT_SPEC } from './print-spec';
 
 const FONT_FAMILY = '"Arial Black", system-ui, sans-serif';
-const TEXT_COLOR = '#111111';
+const DEFAULT_TEXT_COLOR = '#111111';
 const MAX_WIDTH_RATIO = 0.84; // Rand links/rechts
+
+/** Dunkle Textfarben zur Auswahl im Atelier — helle/pastellige Farben sublimieren auf weißem
+ *  Stoff kaum sichtbar, daher bewusst auf gut lesbare, dunkle Töne begrenzt. */
+export const TEXT_COLOR_OPTIONS = [
+  { key: 'black', hex: '#111111', label: 'Schwarz' },
+  { key: 'darkgrey', hex: '#3a3a3a', label: 'Dunkelgrau' },
+  { key: 'navy', hex: '#1b2a4a', label: 'Navy' },
+  { key: 'darkred', hex: '#7a1420', label: 'Dunkelrot' },
+] as const;
 
 export interface RenderedTextImage {
   dataUrl: string;
@@ -15,7 +24,7 @@ export interface RenderedTextImage {
 }
 
 /** Rendert `text` zentriert, transparenter Hintergrund, Auto-Fit-Schriftgröße (schrumpft bis es passt, wickelt notfalls in 2 Zeilen). */
-export function renderTextImage(text: string, fontScale: number = 1): RenderedTextImage {
+export function renderTextImage(text: string, fontScale: number = 1, color: string = DEFAULT_TEXT_COLOR): RenderedTextImage {
   const { widthPx, heightPx } = PRINT_SPEC;
   const canvas = document.createElement('canvas');
   canvas.width = widthPx;
@@ -25,7 +34,7 @@ export function renderTextImage(text: string, fontScale: number = 1): RenderedTe
 
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillStyle = TEXT_COLOR;
+  ctx.fillStyle = color;
 
   const maxWidth = widthPx * MAX_WIDTH_RATIO;
   const baseSize = Math.round(widthPx * 0.115 * Math.max(0.5, Math.min(2, fontScale)));

@@ -3,32 +3,29 @@
 import { PRINT_SPEC, getPlacementZoneStyle } from '@/lib/print-spec';
 import { getMotifStyle } from '@/lib/print-position';
 import { useLocale } from '@/app/components/LocaleProvider';
+import type { DesignLayer } from './DesignStudio';
 
 interface ShirtPrintOverlayProps {
   side: 'front' | 'back';
-  imageSrc?: string | null;
-  scale?: number;
-  pos?: { x: number; y: number };
-  showGuide?: boolean;
-  onPointerDown?: (e: React.MouseEvent | React.TouchEvent) => void;
-  interactive?: boolean;
+  layers: DesignLayer[];
+  selectedId?: string | null;
+  onLayerPointerDown?: (e: React.MouseEvent | React.TouchEvent, layer: DesignLayer) => void;
   productId?: string;
 }
 
+/** Rendert ALLE Ebenen der aktuellen Seite gestapelt (Array-Reihenfolge = Z-Order).
+ *  Nur die ausgewählte Ebene ist optisch hervorgehoben — Auswahl/Drag laeuft ueber
+ *  onLayerPointerDown, das DesignStudio uebernimmt Selektion + Positionierung. */
 export default function ShirtPrintOverlay({
   side,
-  imageSrc,
-  scale = 1,
-  pos = { x: 0, y: 0 },
-  showGuide = true,
-  onPointerDown,
-  interactive = false,
+  layers,
+  selectedId = null,
+  onLayerPointerDown,
   productId = '1',
 }: ShirtPrintOverlayProps) {
   const { t } = useLocale();
 
-  if (!imageSrc) {
-    if (!showGuide) return null;
+  if (layers.length === 0) {
     return (
       <div className="plt-print-zone" style={{ ...getPlacementZoneStyle(side, productId), borderRadius: '3px', boxShadow: 'inset 0 0 0 1.5px rgba(255,255,255,0.2)' }}>
         <div className="plt-print-guide">
@@ -42,19 +39,27 @@ export default function ShirtPrintOverlay({
   }
 
   return (
-    <img
-      src={imageSrc}
-      alt={side === 'front' ? t.studio.front : t.studio.back}
-      draggable={false}
-      onMouseDown={interactive ? onPointerDown : undefined}
-      onTouchStart={interactive ? onPointerDown : undefined}
-      style={{
-        ...getMotifStyle(side, { scale, x: pos.x, y: pos.y }, productId),
-        pointerEvents: interactive ? 'auto' : 'none',
-        cursor: interactive ? 'grab' : 'default',
-        borderRadius: '3px',
-        boxShadow: 'inset 0 0 0 1px rgba(226,0,26,0.25)',
-      }}
-    />
+    <>
+      {layers.map((layer) => {
+        const isSelected = layer.id === selectedId;
+        return (
+          <img
+            key={layer.id}
+            src={layer.src}
+            alt={side === 'front' ? t.studio.front : t.studio.back}
+            draggable={false}
+            onMouseDown={(e) => onLayerPointerDown?.(e, layer)}
+            onTouchStart={(e) => onLayerPointerDown?.(e, layer)}
+            style={{
+              ...getMotifStyle(side, layer.transform, productId),
+              pointerEvents: 'auto',
+              cursor: isSelected ? 'grab' : 'pointer',
+              borderRadius: '3px',
+              boxShadow: isSelected ? 'inset 0 0 0 2px #e2001a, 0 0 8px rgba(226,0,26,0.5)' : 'inset 0 0 0 1px rgba(255,255,255,0.2)',
+            }}
+          />
+        );
+      })}
+    </>
   );
 }

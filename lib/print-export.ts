@@ -1,5 +1,5 @@
-import { PRINT_SPEC } from './print-spec';
-import type { PrintTransform } from './print-position';
+import { PRINT_SPEC, type PrintSide } from './print-spec';
+import { getMotifRect, type PrintTransform } from './print-position';
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -27,6 +27,11 @@ function loadImage(src: string): Promise<HTMLImageElement> {
  *
  * Diese Datei rechnet x/y bewusst NICHT ein — das würde den physischen Druckinhalt
  * ändern. Nur mit explizitem Auftrag anders zu handhaben.
+ *
+ * MULTI-LAYER-ATELIER (mehrere Bilder/Texte pro Seite, siehe `renderPrintSheetMulti`
+ * unten): Sobald mehrere Motive einzeln positionierbar sind, ergibt eine globale
+ * "nur scale, x/y global fürs ganze Blatt"-Regel keinen Sinn mehr — jedes Einzelmotiv
+ * braucht seine eigene Position. Dort wird x/y bewusst JE Ebene eingerechnet.
  */
 function drawCover(
   ctx: CanvasRenderingContext2D,
@@ -89,4 +94,49 @@ export async function renderPrintSheet(
 /** Prüft ob ein gerendertes Blatt die Zielauflösung hat */
 export function isPrintReadyDataUrl(dataUrl: string): boolean {
   return (dataUrl.startsWith('data:image/jpeg') || dataUrl.startsWith('data:image/png')) && dataUrl.length > 10_000;
+}
+
+/**
+ * MEHRERE MOTIVE PRO SEITE (freie Platzierung, mehrere Bilder/Texte): jede Ebene bekommt
+ * ihre eigene Position/Größe INNERHALB der Druckfläche, exakt wie im 2D-Editor gezogen —
+ * `getMotifRect` liefert dieselben Prozent-Koordinaten, die auch `ShirtPrintOverlay` und
+ * das 3D-Decal nutzen, hier einfach auf die volle A4-Blattfläche statt auf das Garment-Foto
+ * angewendet. Damit ist "was der Kunde im Editor sieht" == "was auf dem A4-Blatt landet"
+ * WYSIWYG, ohne das alte Einzelmotiv-Zwei-Ebenen-Modell (siehe `renderPrintSheet` oben) zu
+ * verändern. Reihenfolge im Array = Z-Order (erstes Element unten, letztes oben).
+ */
+export async function renderPrintSheetMulti(
+  side: PrintSide,
+  layers: { src: string; transform: PrintTransform }[],
+  productId: string = '1',
+  options?: { background?: string; format?: 'jpeg' | 'png'; quality?: number },
+): Promise<string> {
+  const { widthPx, heightPx } = PRINT_SPEC;
+  const canvas = document.createElement('canvas');
+  canvas.width = widthPx;
+  canvas.height = heightPx;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('Canvas nicht verfügbar');
+
+  ctx.fillStyle = options?.background ?? '#ffffff';
+  ctx.fillRect(0, 0, widthPx, heightPx);
+
+  for (const layer of layers) {
+    const img = await loadImage(layer.src);
+    const rect = getMotifRect(side, layer.transform, productId);
+    const boxX = (rect.left / 100) * widthPx;
+    const boxY = (rect.top / 100) * heightPx;
+    const boxW = (rect.width / 100) * widthPx;
+    const boxH = (rect.height / 100) * heightPx;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, widthPx, heightPx);
+    ctx.clip();
+    drawCover(ctx, img, boxX, boxY, boxW, boxH);
+    ctx.restore();
+  }
+
+  const format = options?.format ?? 'jpeg';
+  const quality = options?.quality ?? (format === 'jpeg' ? 0.92 : undefined);
+  return canvas.toDataURL(`image/${format}`, quality);
 }
