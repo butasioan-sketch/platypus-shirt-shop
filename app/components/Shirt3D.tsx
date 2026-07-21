@@ -165,8 +165,8 @@ export default function Shirt3D({
   // Shorts: Kamera auf Mesh-Mitte (y 0.03..0.98) zentriert, weiter zurück damit
   // Bund + beide Beine vollstaendig im Frame sind; Tee: bisherige Werte unveraendert.
   const isShorts = productId === '2';
-  const cameraPos: [number, number, number] = isShorts ? [0, 0.5, 1.6] : [0, 0.58, 0.85];
-  const orbitTarget: [number, number, number] = isShorts ? [0, 0.5, 0] : [0, 0.53, 0];
+  const cameraPos: [number, number, number] = isShorts ? [0, 0.5, 3.0] : [0, 0.58, 0.85];
+  const orbitTarget: [number, number, number] = isShorts ? [0, 0.45, 0] : [0, 0.53, 0];
 
   return (
     <Canvas
