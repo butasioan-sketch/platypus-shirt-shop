@@ -59,10 +59,15 @@ const TEE_PROFILE: GarmentProfile = {
 };
 
 // Shorts-Fotos: 863×1200 (front) / 864×1200 (back) — gemeinsam auf 864×1200 gerundet.
-// Overlay/Placement per Bildinspektion geschätzt (Bund oben, Saum unten, Seitennaht-Paspel
-// links/rechts ausgespart) — ERSTVERSION, nicht durch physischen Testdruck verifiziert.
-const SHORTS_OVERLAY = { top: 24, left: 25.5, width: 49, height: 50 };
-const SHORTS_PLACEMENT = { top: 12, left: 14, width: 72, height: 74 };
+// Front- und Rückfoto sind unterschiedlich eng zugeschnitten (Front zeigt die Hose
+// näher/randabschneidend, Rückseite mit deutlich mehr Rand links/rechts) — per
+// Pixel-Messung (Gridline-Overlay) verifiziert: Seitennaht-Paspel liegt vorne bei
+// ca. 7–9 % / 90–92 %, hinten aber schon bei ca. 16–19 % / 78–80 %. Da Overlay/
+// Placement für beide Seiten gemeinsam gelten, ist die ENGERE (Rückseiten-)Grenze
+// maßgeblich, sonst würde ein rechts/links gezogenes Motiv auf der Rückseite in die
+// Paspel laufen. Bund-Ende ~10 %, Saum ~86–91 % (hinten enger) — mit Sicherheitsabstand.
+const SHORTS_OVERLAY = { top: 28.5, left: 29, width: 38, height: 39 };
+const SHORTS_PLACEMENT = { top: 14, left: 20, width: 56, height: 68 };
 
 const SHORTS_PROFILE: GarmentProfile = {
   productId: '2',
