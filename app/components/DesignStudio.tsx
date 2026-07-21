@@ -5,16 +5,32 @@ import dynamic from 'next/dynamic';
 import { calcUnitPriceForProduct } from '@/lib/pricing';
 import { PRINT_SPEC, formatSizeMm, NO_PRINT_NOTE, getPlacementZone, getGarmentPhotoSrc, getViewerAspect } from '@/lib/print-spec';
 import { defaultPrintTransform, type PrintTransform } from '@/lib/print-position';
+import { renderTextImage } from '@/lib/print-text';
 import { useLocale } from '@/app/components/LocaleProvider';
 import ShirtPrintOverlay from './ShirtPrintOverlay';
 
 const Shirt3D = dynamic(() => import('./Shirt3D'), { ssr: false });
+
+export interface TextLayerMeta {
+  templateId?: string;
+  text: string;
+  fontScale: number;
+}
+
+export interface Template {
+  id: string;
+  text: string;
+  meaning?: string;
+  category?: string;
+}
 
 export interface DesignState {
   front: string | null;
   back: string | null;
   frontTransform: PrintTransform;
   backTransform: PrintTransform;
+  frontText: TextLayerMeta | null;
+  backText: TextLayerMeta | null;
 }
 
 interface DesignStudioProps {
@@ -40,20 +56,46 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
   const containerRef = useRef<HTMLDivElement>(null);
   const dragStart = useRef<{ mx: number; my: number; px: number; py: number } | null>(null);
 
+  // Text-Motiv: wird als Bild gerendert und lauft danach durch dieselbe Pipeline
+  // wie ein Upload (Zoom/Position/Druckblatt/Kundenblick) — siehe lib/print-text.ts.
+  const [templates, setTemplates] = useState<Template[]>([]);
+  const [inputMode, setInputMode] = useState<'image' | 'text'>('image');
+  const [frontSource, setFrontSource] = useState<'image' | 'text' | null>(null);
+  const [backSource, setBackSource] = useState<'image' | 'text' | null>(null);
+  const [frontTextMeta, setFrontTextMeta] = useState<TextLayerMeta | null>(null);
+  const [backTextMeta, setBackTextMeta] = useState<TextLayerMeta | null>(null);
+  const [textDraft, setTextDraft] = useState('');
+  const [textTemplateId, setTextTemplateId] = useState('');
+  const [textFontScale, setTextFontScale] = useState(1);
+  const [textError, setTextError] = useState('');
+
+  useEffect(() => {
+    fetch('/api/templates')
+      .then((r) => r.json())
+      .then((d) => setTemplates(Array.isArray(d?.templates) ? d.templates : []))
+      .catch(() => {});
+  }, []);
+
   useEffect(() => {
     onDesignChange?.({
       front: frontImg,
       back: backImg,
       frontTransform: { scale: frontScale, x: frontPos.x, y: frontPos.y },
       backTransform: { scale: backScale, x: backPos.x, y: backPos.y },
+      frontText: frontTextMeta,
+      backText: backTextMeta,
     });
-  }, [frontImg, backImg, frontScale, backScale, frontPos, backPos, onDesignChange]);
+  }, [frontImg, backImg, frontScale, backScale, frontPos, backPos, frontTextMeta, backTextMeta, onDesignChange]);
 
   const currentImg = side === 'front' ? frontImg : backImg;
   const currentScale = side === 'front' ? frontScale : backScale;
   const currentPos = side === 'front' ? frontPos : backPos;
+  const currentSource = side === 'front' ? frontSource : backSource;
+  const currentTextMeta = side === 'front' ? frontTextMeta : backTextMeta;
   const setCurrentScale = (v: number) => (side === 'front' ? setFrontScale(v) : setBackScale(v));
   const setCurrentPos = (p: { x: number; y: number }) => (side === 'front' ? setFrontPos(p) : setBackPos(p));
+  const setCurrentSource = (s: 'image' | 'text' | null) => (side === 'front' ? setFrontSource(s) : setBackSource(s));
+  const setCurrentTextMeta = (m: TextLayerMeta | null) => (side === 'front' ? setFrontTextMeta(m) : setBackTextMeta(m));
 
   const switchSide = (newSide: 'front' | 'back') => {
     if (newSide === side) return;
@@ -61,7 +103,7 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
     setTimeout(() => { setSide(newSide); setFlipping(false); }, 280);
   };
 
-  const applyUpload = (dataUrl: string, w: number, h: number) => {
+  const applyUpload = (dataUrl: string, w: number, h: number, source: 'image' | 'text' = 'image') => {
     const ratio = w / h;
     const target = PRINT_SPEC.aspectRatio;
     const sizeLabel = formatSizeMm();
@@ -79,6 +121,7 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
     const tr = defaultPrintTransform();
     if (side === 'front') { setFrontImg(dataUrl); setFrontScale(tr.scale); setFrontPos({ x: tr.x, y: tr.y }); }
     else { setBackImg(dataUrl); setBackScale(tr.scale); setBackPos({ x: tr.x, y: tr.y }); }
+    setCurrentSource(source);
   };
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,17 +131,38 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
     reader.onload = (ev) => {
       const dataUrl = ev.target?.result as string;
       const probe = new window.Image();
-      probe.onload = () => applyUpload(dataUrl, probe.width, probe.height);
-      probe.onerror = () => applyUpload(dataUrl, 0, 0);
+      probe.onload = () => applyUpload(dataUrl, probe.width, probe.height, 'image');
+      probe.onerror = () => applyUpload(dataUrl, 0, 0, 'image');
       probe.src = dataUrl;
     };
     reader.readAsDataURL(file);
     e.target.value = '';
   };
 
-  const removeImg = () => {
+  const applyText = () => {
+    const trimmed = textDraft.trim();
+    if (!trimmed) { setTextError(t.studio.textRequired); return; }
+    if (trimmed.length > 48) { setTextError(t.studio.textTooLong); return; }
+    setTextError('');
+    const { dataUrl, width, height } = renderTextImage(trimmed, textFontScale);
+    applyUpload(dataUrl, width, height, 'text');
+    setCurrentTextMeta({ templateId: textTemplateId || undefined, text: trimmed, fontScale: textFontScale });
+  };
+
+  const editText = () => {
+    if (currentTextMeta) {
+      setTextDraft(currentTextMeta.text);
+      setTextTemplateId(currentTextMeta.templateId || '');
+      setTextFontScale(currentTextMeta.fontScale);
+    }
+    setTextError('');
+    setInputMode('text');
     if (side === 'front') setFrontImg(null); else setBackImg(null);
-    setCurrentPos({ x: 0, y: 0 }); setCurrentScale(1);
+  };
+
+  const removeImg = () => {
+    if (side === 'front') { setFrontImg(null); setFrontTextMeta(null); } else { setBackImg(null); setBackTextMeta(null); }
+    setCurrentPos({ x: 0, y: 0 }); setCurrentScale(1); setCurrentSource(null);
   };
 
   const startDrag = (e: React.MouseEvent | React.TouchEvent) => {
@@ -196,9 +260,65 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
       <input ref={fileRef} type="file" accept="image/*" onChange={handleUpload} style={{ display: 'none' }} />
 
       {!currentImg ? (
-        <button type="button" className="plt-btn-primary" style={{ width: '100%' }} onClick={() => fileRef.current?.click()}>
-          {t.studio.upload} — {sideLabel}
-        </button>
+        <div>
+          <div className="plt-tab-group" style={{ marginBottom: '0.75rem' }}>
+            <button type="button" onClick={() => setInputMode('image')} className={`plt-tab${inputMode === 'image' ? ' plt-tab-active' : ''}`}>
+              {t.studio.imageTab}
+            </button>
+            <button type="button" onClick={() => setInputMode('text')} className={`plt-tab${inputMode === 'text' ? ' plt-tab-active' : ''}`}>
+              {t.studio.textTab}
+            </button>
+          </div>
+
+          {inputMode === 'image' ? (
+            <button type="button" className="plt-btn-primary" style={{ width: '100%' }} onClick={() => fileRef.current?.click()}>
+              {t.studio.upload} — {sideLabel}
+            </button>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+              <select
+                value={textTemplateId}
+                onChange={(e) => {
+                  const id = e.target.value;
+                  setTextTemplateId(id);
+                  const tpl = templates.find((x) => x.id === id);
+                  if (tpl) { setTextDraft(tpl.text); setTextError(''); }
+                }}
+                style={{ width: '100%', background: '#111', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', padding: '0.6rem', fontSize: '0.85rem' }}
+              >
+                <option value="">{t.studio.templatePlaceholder} ({templates.length})</option>
+                {templates.map((tpl) => (
+                  <option key={tpl.id} value={tpl.id}>{tpl.id} · {tpl.text}</option>
+                ))}
+              </select>
+
+              <input
+                type="text"
+                value={textDraft}
+                maxLength={48}
+                placeholder={t.studio.customTextPlaceholder}
+                onChange={(e) => { setTextDraft(e.target.value); setTextTemplateId(''); setTextError(''); }}
+                style={{ width: '100%', background: '#111', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', padding: '0.6rem', fontSize: '0.9rem' }}
+              />
+
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
+                  <span className="plt-label">{t.studio.fontSize}</span>
+                  <span style={{ color: '#666', fontSize: '0.72rem' }}>{textDraft.length}/48</span>
+                </div>
+                <input type="range" min={0.6} max={1.6} step="0.05" value={textFontScale}
+                  onChange={(e) => setTextFontScale(Number(e.target.value))}
+                  style={{ width: '100%', accentColor: '#e2001a', cursor: 'pointer' }} />
+              </div>
+
+              {textError && <p style={{ color: '#f87171', fontSize: '0.72rem', margin: 0 }}>{textError}</p>}
+
+              <button type="button" className="plt-btn-primary" style={{ width: '100%' }} onClick={applyText} disabled={!textDraft.trim()}>
+                {t.studio.applyText} — {sideLabel}
+              </button>
+            </div>
+          )}
+        </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
           <div>
@@ -212,7 +332,7 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
           </div>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             <button type="button" className="plt-btn-secondary" style={{ flex: 1 }} onClick={() => setCurrentPos({ x: 0, y: 0 })}>{t.studio.center}</button>
-            <button type="button" className="plt-btn-secondary" style={{ flex: 1 }} onClick={() => fileRef.current?.click()}>{t.studio.change}</button>
+            <button type="button" className="plt-btn-secondary" style={{ flex: 1 }} onClick={() => currentSource === 'text' ? editText() : fileRef.current?.click()}>{t.studio.change}</button>
             <button type="button" className="plt-btn-secondary" style={{ flex: 1, color: '#f87171' }} onClick={removeImg}>{t.studio.remove}</button>
           </div>
           {uploadHint && (

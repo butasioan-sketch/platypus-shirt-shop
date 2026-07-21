@@ -35,6 +35,8 @@ export default function ProductPage() {
     back: null,
     frontTransform: { scale: 1, x: 0, y: 0 },
     backTransform: { scale: 1, x: 0, y: 0 },
+    frontText: null,
+    backText: null,
   });
   const [editHint, setEditHint] = useState(false);
 
@@ -78,6 +80,10 @@ export default function ProductPage() {
           heightPx: PRINT_SPEC.heightPx,
           blank: PRINT_SPEC.blank,
           method: PRINT_SPEC.method,
+          // Rohe Text-Info (nicht nur das gerenderte Bild) — Grundlage fuer den
+          // spaeteren Plotter-SVG-Export (Phase 2), der den Text als Vektor braucht.
+          frontText: design.front ? design.frontText : null,
+          backText: design.back ? design.backText : null,
         },
       });
       console.log('[saveDesign] payload', (payload.length / 1024 / 1024).toFixed(2), 'MB');

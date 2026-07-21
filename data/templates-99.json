@@ -1,0 +1,798 @@
+{
+  "version": 1,
+  "count": 99,
+  "templates": [
+    {
+      "id": "001",
+      "text": "Wintersonnenwärme",
+      "meaning": "Apricity: Die wohlige Wärme der Sonne an einem kalten Wintertag.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "002",
+      "text": "Aura farmen",
+      "meaning": "Aura Farming: Bewusst so tun, als wäre man mysteriös oder mächtig, um Eindruck zu schinden.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "003",
+      "text": "In den sauren Apfel beißen",
+      "meaning": "Bite the bullet: Eine unangenehme oder schwierige Situation mutig ertragen und durchstehen.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "004",
+      "text": "Liebelei",
+      "meaning": "Dalliance: Eine lockere, oft unverbindliche Liebschaft oder Affäre.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "005",
+      "text": "Bescheidenheit",
+      "meaning": "Demure: Schüchtern, zurückhaltend und vornehm im Auftreten.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "006",
+      "text": "Trocken texten",
+      "meaning": "Dry texting: Kurze, ausweichende Textnachrichten verschicken, oft aus Desinteresse.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "007",
+      "text": "Vater",
+      "meaning": "Father: Eine Person, die führt, unterstützt und Stabilität vermittelt.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "008",
+      "text": "Unverträglichkeit",
+      "meaning": "Fucktose intolerant: Keinerlei Toleranz gegenüber Unsinn, Blödsinn oder Provokationen.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "009",
+      "text": "Unausgegoren",
+      "meaning": "Half-baked: Eine Idee oder ein Plan, der schlecht durchdacht oder unvollständig ist.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "010",
+      "text": "Willkür",
+      "meaning": "Haphazard: Ohne Plan oder System, dem Zufall überlassen.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "011",
+      "text": "Hals über Kopf",
+      "meaning": "Head over heels: Vollkommen und leidenschaftlich verliebt sein.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "012",
+      "text": "Kopflos",
+      "meaning": "Headless: Rücksichtslos, unbesonnen oder ohne nachzudenken handeln.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "013",
+      "text": "J.O.M.O.",
+      "meaning": "Joy of Missing Out: Das wohlige Gefühl, bewusst etwas zu verpassen und Zuhause zu bleiben.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "014",
+      "text": "Sehnsucht nach Unerreichbarem",
+      "meaning": "Kaiho: Eine tiefe Sehnsucht nach etwas Schönem, das man niemals besitzen kann.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "015",
+      "text": "Günstiger Augenblick",
+      "meaning": "Kairós: Der perfekte, gelegene Moment für eine Entscheidung oder Handlung.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "016",
+      "text": "Kakistokratie",
+      "meaning": "Kakistocracy: Eine Regierungsform, in der die unfähigsten oder skrupellosesten Menschen an der Macht sind.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "017",
+      "text": "Schönfärberei",
+      "meaning": "Kalopsia: Der Wahn, dass die Dinge schöner sind, als sie tatsächlich sind.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "018",
+      "text": "Lücke",
+      "meaning": "Lacuna: Eine fehlende Stelle, Lücke oder ein Leerraum in einem Text oder Wissen.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "019",
+      "text": "Spielraum",
+      "meaning": "Leeway: Raum zum Handeln oder Abweichen ohne negativen Konsequenzen.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "020",
+      "text": "Grenzübergang",
+      "meaning": "Liminal: Ein Schwellenzustand oder Übergangsphase zwischen zwei Zuständen oder Orten.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "021",
+      "text": "Verweilen",
+      "meaning": "Linger: Sich an einem Ort länger aufhalten, als nötig ist, oft aus Genuss oder Zögern.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "022",
+      "text": "Großzügig",
+      "meaning": "Magnanimous: Edelmütig, großzügig und nachsichtig gegenüber anderen.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "023",
+      "text": "Verwünschung",
+      "meaning": "Malediction: Ein Fluch, die Äußerung von bösen Wünschen gegenüber jemandem.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "024",
+      "text": "Melancholie",
+      "meaning": "Melancholia: Eine tiefe, oft grundlose Traurigkeit oder Schwermut.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "025",
+      "text": "Fortschrittsglaube",
+      "meaning": "Meliorism: Der Glaube, dass die Welt durch menschliches Handeln besser werden kann.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "026",
+      "text": "Verlogenheit",
+      "meaning": "Mendacity: Die Eigenschaft, unehrlich zu sein, Lügen oder Falschheit.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "027",
+      "text": "Hingabe",
+      "meaning": "Meraki: Etwas mit ganzer Seele, Leidenschaft und Kreativität tun.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "028",
+      "text": "Sinneswandel",
+      "meaning": "Metanoia: Eine grundlegende Veränderung der Denkweise, eine Neuausrichtung des Lebens.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "029",
+      "text": "Charakterstärke",
+      "meaning": "Mettle: Mut, Widerstandsfähigkeit und innere Stärke, um Schwierigkeiten zu bewältigen.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "030",
+      "text": "Kleinigkeit",
+      "meaning": "Minutia: Eine winzige, unbedeutende oder nebensächliche Einzelheit.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "031",
+      "text": "Verlorenheitsgefühl",
+      "meaning": "Monachopsis: Das subtile, unangenehme Gefühl, nicht dazuzugehören oder fehl am Platz zu sein.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "032",
+      "text": "Schneid",
+      "meaning": "Moxie: Mut, Selbstvertrauen, Entschlossenheit und eine Portion Chuzpe.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "033",
+      "text": "Unzählige Menge",
+      "meaning": "Myriad: Eine schier unendlich erscheinende Anzahl von Dingen.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "034",
+      "text": "Geburtskraft",
+      "meaning": "Natality: Die menschliche Fähigkeit, jederzeit neu anzufangen (Hannah Arendt).",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "035",
+      "text": "Schwerverbrecher",
+      "meaning": "Nefarious: Schurkisch, abscheulich oder moralisch verwerflich.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "036",
+      "text": "Wolkenmensch",
+      "meaning": "Nefelibata: Ein Tagträumer, der in seinen eigenen Gedanken und Idealen lebt, fernab der Realität.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "037",
+      "text": "Waldliebhaber",
+      "meaning": "Nemophilist: Ein Mensch, der Wälder und die Stille in der Natur liebt.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "038",
+      "text": "Unwissenheit",
+      "meaning": "Nescience: Mangelndes Wissen oder Bewusstsein, Unkenntnis.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "039",
+      "text": "Wendepunkt",
+      "meaning": "Nodus Tollens: Der Punkt im Leben, an dem man sich so sehr verändert hat, dass man nicht mehr derselbe ist.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "040",
+      "text": "Verstandeserkenntnis",
+      "meaning": "Noetic: Tiefes, intuitives Verstehen, das jenseits von reinem logischem Denken liegt.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "041",
+      "text": "Heimkehrsehnsucht",
+      "meaning": "Nostos: Die tiefe Sehnsucht nach der Rückkehr nach Hause oder zu den eigenen Wurzeln.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "042",
+      "text": "Neubeginn",
+      "meaning": "Novaturient: Der innere Drang, das eigene Leben zu verändern, zu erneuern oder zu transformieren.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "043",
+      "text": "Erhabenheit",
+      "meaning": "Numinous: Ein Gefühl überwältigender Ehrfurcht, das Göttliche oder Geheimnisvolle.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "044",
+      "text": "Aufgebracht",
+      "meaning": "Pistified: Gleichzeitig wütend und fassungslos über die Dummheit anderer sein.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "045",
+      "text": "Regenliebhaber",
+      "meaning": "Pluviophile: Jemand, der Regen und das Rauschen von Wassertropfen liebt.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "046",
+      "text": "Purpurliebhaber",
+      "meaning": "Porphyrophile: Ein Mensch, der die Farbe Lila oder Purpur über alles liebt.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "047",
+      "text": "Wehmut",
+      "meaning": "Saudade: Ein tiefes, melancholisches Verlangen nach etwas oder jemandem, das unerreichbar ist.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "048",
+      "text": "Idiotenblase",
+      "meaning": "Twatosphere: Eine Umgebung, in der sich viele inkompetente oder nervige Personen aufhalten.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "049",
+      "text": "Unerschütterlich",
+      "meaning": "Unscathed: Ohne jegliche Verletzung oder Schaden durch eine schwierige Situation kommen.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "050",
+      "text": "Unergründlich",
+      "meaning": "Unfathomable: Etwas, das so tiefgründig oder komplex ist, dass man es nicht verstehen kann.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "051",
+      "text": "Schwanken",
+      "meaning": "Vacillate: Unentschlossen sein, zwischen zwei Meinungen oder Optionen hin- und herwechseln.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "052",
+      "text": "Launenhaftigkeit",
+      "meaning": "Vagary: Unerwartete, oft seltsame und unberechenbare Veränderungen oder Einfälle.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "053",
+      "text": "Landstreicher",
+      "meaning": "Vagrant: Eine obdachlose Person, die von Ort zu Ort zieht.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "054",
+      "text": "Eitel",
+      "meaning": "Vainglorious: Übermäßig stolz auf die eigenen Erfolge, prahlerisch.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "055",
+      "text": "Bunt",
+      "meaning": "Variegated: Mehrfarbig, mit unterschiedlichen Farben oder Mustern (wie bei Blättern).",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "056",
+      "text": "Vegetieren",
+      "meaning": "Vegetate: Ein träges Leben ohne geistige oder körperliche Aktivität führen.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "057",
+      "text": "Den Verstand verlieren",
+      "meaning": "To lose one's marbles: Den Verstand, die Kontrolle oder die Vernunft verlieren.",
+      "category": "word",
+      "lang": "en-de",
+      "maxChars": 48
+    },
+    {
+      "id": "058",
+      "text": "Energiesparmodus",
+      "meaning": "Lustig: Nicht faul — ich bin im Energiesparmodus.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "059",
+      "text": "Montags-Abonnement",
+      "meaning": "Lustig: Montag abonniert, Kündigungsfrist unbekannt.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "060",
+      "text": "Kaffee hält mich erträglich",
+      "meaning": "Lustig: Kaffee macht mich nicht wach — er macht mich erträglich.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "061",
+      "text": "Morgen trainiere ich",
+      "meaning": "Lustig: Sport? Morgen. Versprochen. Wie gestern.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "062",
+      "text": "Sixpack unter dem Stoff",
+      "meaning": "Lustig: Ich hab Sixpack — unter dem Shirt.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "063",
+      "text": "Schokolade ist Pflicht",
+      "meaning": "Lustig: Schokolade ist Pflicht. Alles andere optional.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "064",
+      "text": "Star in meinem Kopf",
+      "meaning": "Lustig: Ich bin ein Star — nur in meinem Kopf.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "065",
+      "text": "Montag verpasst",
+      "meaning": "Lustig: Montag? Hab ich verpasst. Wann war das?",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "066",
+      "text": "Sport ist ein Wort",
+      "meaning": "Lustig: Sport? Ich dachte, das ist nur ein Wort.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "067",
+      "text": "Keine Lust, nicht unhöflich",
+      "meaning": "Lustig: Nicht unhöflich — nur keine Lust.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "068",
+      "text": "Erwachsen optional",
+      "meaning": "Lustig: Erwachsen werden ist optional. Abgewählt.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "069",
+      "text": "Alles gut. Fast.",
+      "meaning": "Lustig: Alles gut. Fast.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "070",
+      "text": "Mein Shirt spricht",
+      "meaning": "Lustig: Mein Shirt sagt mehr als ich.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "071",
+      "text": "Büro = Kaffeewarte",
+      "meaning": "Lustig: Büro ist da, wo ich auf Kaffee warte.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "072",
+      "text": "Voll im Kopf — nutzlos",
+      "meaning": "Lustig: Kopf voll. Mit unnützen Dingen.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "073",
+      "text": "Zu spät, Zeitmanagement",
+      "meaning": "Lustig: Zu spät? Das ist Zeitmanagement.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "074",
+      "text": "Nachtschicht optional",
+      "meaning": "Lustig: Schlafen ist keine Schwäche, es ist Strategie.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "075",
+      "text": "WiFi > Menschen",
+      "meaning": "Lustig: Heute brauche ich WiFi, keine Menschen.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "076",
+      "text": "Deadline war gestern",
+      "meaning": "Lustig: Die Deadline war gestern. Ich auch.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "077",
+      "text": "Snack-Pause ewig",
+      "meaning": "Lustig: Nur kurz Snack. Seit drei Stunden.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "078",
+      "text": "Mute im echten Leben",
+      "meaning": "Lustig: Stumm geschaltet. Auch offline.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "079",
+      "text": "Batterie bei 2 Prozent",
+      "meaning": "Lustig: Soziale Batterie: 2 %.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "080",
+      "text": "Plan B ist Kaffee",
+      "meaning": "Lustig: Plan A gescheitert. Plan B: Kaffee.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "081",
+      "text": "Ich und meine Decke",
+      "meaning": "Lustig: Treffen abgesagt — Decke und ich hatten was.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "082",
+      "text": "Laufen? Später",
+      "meaning": "Lustig: Joggen steht im Kalender. Unter „irgendwann“.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "083",
+      "text": "Outdoor-Sofa",
+      "meaning": "Lustig: Outdoor: Sofa auf den Balkon stellen.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "084",
+      "text": "Regen ist Stimmung",
+      "meaning": "Lustig: Regen ist kein Wetter — es ist Stimmung.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "085",
+      "text": "On Me. Punkt.",
+      "meaning": "Brand: On Me. Words are not just words.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "086",
+      "text": "Worte in die Faser",
+      "meaning": "Brand: Worte in die Faser. Nicht auf den Stoff.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "087",
+      "text": "Statement sitzt",
+      "meaning": "Brand: Statement sitzt. Wie du es siehst.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "088",
+      "text": "Weiß als Leinwand",
+      "meaning": "Brand: Weiß ist die Leinwand. Du bist die Farbe.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "089",
+      "text": "Maßgefertigt im Kopf",
+      "meaning": "Brand: Erst im Kopf. Dann auf Bestellung.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "090",
+      "text": "Kein Aufkleber-Leben",
+      "meaning": "Brand: Kein Aufkleber. Kein Verblassen. Dein Text.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "091",
+      "text": "Trail & Tee",
+      "meaning": "Outdoor: Trail für Trail. Text für Text.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "092",
+      "text": "Kilometer zählen",
+      "meaning": "Outdoor: Kilometer zählen. Ausreden nicht.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "093",
+      "text": "Wind kennt dich",
+      "meaning": "Outdoor: Der Wind kennt dich. Dein Shirt auch.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "094",
+      "text": "Kein Empfang nötig",
+      "meaning": "Outdoor: Kein Empfang. Kein Problem. Nur Statement.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "095",
+      "text": "Hustle im Schlafmodus",
+      "meaning": "Lustig: Hustle culture? Ich bin im Schlafmodus.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "096",
+      "text": "Meeting-Überlebender",
+      "meaning": "Lustig: Überlebt: drei Meetings ohne Kaffee.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "097",
+      "text": "Reply later forever",
+      "meaning": "Lustig: Reply later. Seit 2019.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "098",
+      "text": "Inbox zero Traum",
+      "meaning": "Lustig: Inbox zero — ein schöner Traum.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    },
+    {
+      "id": "099",
+      "text": "Plot twist: Pause",
+      "meaning": "Lustig: Plot twist: Ich mache Pause.",
+      "category": "funny",
+      "lang": "de",
+      "maxChars": 48
+    }
+  ]
+}
