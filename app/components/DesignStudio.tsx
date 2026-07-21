@@ -68,6 +68,7 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
   const [textTemplateId, setTextTemplateId] = useState('');
   const [textFontScale, setTextFontScale] = useState(1);
   const [textError, setTextError] = useState('');
+  const [templateQuery, setTemplateQuery] = useState('');
 
   useEffect(() => {
     fetch('/api/templates')
@@ -100,7 +101,14 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
   const switchSide = (newSide: 'front' | 'back') => {
     if (newSide === side) return;
     setFlipping(true);
-    setTimeout(() => { setSide(newSide); setFlipping(false); }, 280);
+    setTimeout(() => {
+      setSide(newSide);
+      setFlipping(false);
+      const nextSource = newSide === 'front' ? frontSource : backSource;
+      const nextTextMeta = newSide === 'front' ? frontTextMeta : backTextMeta;
+      if (nextSource === 'text') { prefillText(nextTextMeta); setInputMode('text'); }
+      else if (nextSource === 'image') setInputMode('image');
+    }, 280);
   };
 
   const applyUpload = (dataUrl: string, w: number, h: number, source: 'image' | 'text' = 'image') => {
@@ -122,6 +130,9 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
     if (side === 'front') { setFrontImg(dataUrl); setFrontScale(tr.scale); setFrontPos({ x: tr.x, y: tr.y }); }
     else { setBackImg(dataUrl); setBackScale(tr.scale); setBackPos({ x: tr.x, y: tr.y }); }
     setCurrentSource(source);
+    // Upload eines echten Bilds ersetzt ein evtl. vorher gesetztes Text-Motiv auf dieser Seite —
+    // sonst würde saveDesign veraltete frontText/backText-Metadaten neben dem neuen Bild speichern.
+    if (source === 'image') setCurrentTextMeta(null);
   };
 
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -149,15 +160,18 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
     setCurrentTextMeta({ templateId: textTemplateId || undefined, text: trimmed, fontScale: textFontScale });
   };
 
-  const editText = () => {
-    if (currentTextMeta) {
-      setTextDraft(currentTextMeta.text);
-      setTextTemplateId(currentTextMeta.templateId || '');
-      setTextFontScale(currentTextMeta.fontScale);
+  const prefillText = (meta: TextLayerMeta | null) => {
+    if (meta) {
+      setTextDraft(meta.text);
+      setTextTemplateId(meta.templateId || '');
+      setTextFontScale(meta.fontScale);
     }
     setTextError('');
-    setInputMode('text');
-    if (side === 'front') setFrontImg(null); else setBackImg(null);
+  };
+
+  const openTab = (mode: 'image' | 'text') => {
+    if (mode === 'text' && currentSource === 'text') prefillText(currentTextMeta);
+    setInputMode(mode);
   };
 
   const removeImg = () => {
@@ -191,6 +205,16 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
 
   const printData = (img: string | null, scale: number, pos: { x: number; y: number }) =>
     img ? { src: img, x: pos.x, y: pos.y, scale } : undefined;
+
+  const filteredTemplates = (() => {
+    const q = templateQuery.trim().toLowerCase();
+    if (!q) return templates;
+    return templates.filter((tpl) =>
+      tpl.text.toLowerCase().includes(q) ||
+      (tpl.meaning || '').toLowerCase().includes(q) ||
+      (tpl.category || '').toLowerCase().includes(q));
+  })();
+  const selectedTemplate = templates.find((tpl) => tpl.id === textTemplateId) || null;
 
   const sideLabel = side === 'front' ? t.studio.front : t.studio.back;
   const priceSuffix = frontImg && backImg ? t.studio.twoSides : (frontImg || backImg) ? t.studio.oneSide : '';
@@ -259,67 +283,94 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
 
       <input ref={fileRef} type="file" accept="image/*" onChange={handleUpload} style={{ display: 'none' }} />
 
-      {!currentImg ? (
-        <div>
-          <div className="plt-tab-group" style={{ marginBottom: '0.75rem' }}>
-            <button type="button" onClick={() => setInputMode('image')} className={`plt-tab${inputMode === 'image' ? ' plt-tab-active' : ''}`}>
-              {t.studio.imageTab}
-            </button>
-            <button type="button" onClick={() => setInputMode('text')} className={`plt-tab${inputMode === 'text' ? ' plt-tab-active' : ''}`}>
-              {t.studio.textTab}
-            </button>
-          </div>
+      <div className="plt-tab-group" style={{ marginBottom: '0.75rem' }}>
+        <button type="button" onClick={() => openTab('image')} className={`plt-tab${inputMode === 'image' ? ' plt-tab-active' : ''}`}>
+          {t.studio.imageTab}
+        </button>
+        <button type="button" onClick={() => openTab('text')} className={`plt-tab${inputMode === 'text' ? ' plt-tab-active' : ''}`}>
+          {t.studio.textTab}
+        </button>
+      </div>
 
-          {inputMode === 'image' ? (
-            <button type="button" className="plt-btn-primary" style={{ width: '100%' }} onClick={() => fileRef.current?.click()}>
-              {t.studio.upload} — {sideLabel}
-            </button>
-          ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-              <select
-                value={textTemplateId}
-                onChange={(e) => {
-                  const id = e.target.value;
-                  setTextTemplateId(id);
-                  const tpl = templates.find((x) => x.id === id);
-                  if (tpl) { setTextDraft(tpl.text); setTextError(''); }
-                }}
-                style={{ width: '100%', background: '#111', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', padding: '0.6rem', fontSize: '0.85rem' }}
-              >
-                <option value="">{t.studio.templatePlaceholder} ({templates.length})</option>
-                {templates.map((tpl) => (
-                  <option key={tpl.id} value={tpl.id}>{tpl.id} · {tpl.text}</option>
-                ))}
-              </select>
-
-              <input
-                type="text"
-                value={textDraft}
-                maxLength={48}
-                placeholder={t.studio.customTextPlaceholder}
-                onChange={(e) => { setTextDraft(e.target.value); setTextTemplateId(''); setTextError(''); }}
-                style={{ width: '100%', background: '#111', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', padding: '0.6rem', fontSize: '0.9rem' }}
-              />
-
-              <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
-                  <span className="plt-label">{t.studio.fontSize}</span>
-                  <span style={{ color: '#666', fontSize: '0.72rem' }}>{textDraft.length}/48</span>
-                </div>
-                <input type="range" min={0.6} max={1.6} step="0.05" value={textFontScale}
-                  onChange={(e) => setTextFontScale(Number(e.target.value))}
-                  style={{ width: '100%', accentColor: '#e2001a', cursor: 'pointer' }} />
-              </div>
-
-              {textError && <p style={{ color: '#f87171', fontSize: '0.72rem', margin: 0 }}>{textError}</p>}
-
-              <button type="button" className="plt-btn-primary" style={{ width: '100%' }} onClick={applyText} disabled={!textDraft.trim()}>
-                {t.studio.applyText} — {sideLabel}
-              </button>
-            </div>
+      {inputMode === 'image' ? (
+        <div style={{ marginBottom: '0.65rem' }}>
+          {currentSource === 'text' && currentImg && (
+            <p style={{ color: '#fbbf24', fontSize: '0.68rem', margin: '0 0 0.5rem' }}>{t.studio.imageReplacesText}</p>
           )}
+          <button type="button" className="plt-btn-primary" style={{ width: '100%' }} onClick={() => fileRef.current?.click()}>
+            {currentSource === 'image' && currentImg ? t.studio.changeImage : t.studio.upload} — {sideLabel}
+          </button>
         </div>
       ) : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginBottom: '0.65rem' }}>
+          {currentSource === 'image' && currentImg && (
+            <p style={{ color: '#fbbf24', fontSize: '0.68rem', margin: 0 }}>{t.studio.textReplacesImage}</p>
+          )}
+
+          <input
+            type="text"
+            value={templateQuery}
+            placeholder={t.studio.templateSearchPlaceholder}
+            onChange={(e) => setTemplateQuery(e.target.value)}
+            style={{ width: '100%', background: '#111', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', padding: '0.6rem', fontSize: '0.85rem' }}
+          />
+
+          <div style={{ maxHeight: '150px', overflowY: 'auto', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }}>
+            {filteredTemplates.length === 0 ? (
+              <p style={{ color: '#666', fontSize: '0.75rem', padding: '0.6rem', margin: 0 }}>{t.studio.noTemplatesFound}</p>
+            ) : (
+              filteredTemplates.map((tpl) => (
+                <button
+                  key={tpl.id}
+                  type="button"
+                  onClick={() => { setTextTemplateId(tpl.id); setTextDraft(tpl.text); setTextError(''); }}
+                  style={{
+                    display: 'block', width: '100%', textAlign: 'left', padding: '0.5rem 0.6rem',
+                    background: textTemplateId === tpl.id ? 'rgba(226,0,26,0.15)' : 'transparent',
+                    border: 'none', borderBottom: '1px solid rgba(255,255,255,0.06)', cursor: 'pointer',
+                  }}
+                >
+                  <span style={{ display: 'block', color: '#fff', fontSize: '0.85rem', fontWeight: 600 }}>{tpl.text}</span>
+                  {tpl.meaning && <span style={{ display: 'block', color: '#888', fontSize: '0.7rem', marginTop: '0.1rem' }}>{tpl.meaning}</span>}
+                </button>
+              ))
+            )}
+          </div>
+
+          {selectedTemplate?.meaning && (
+            <p style={{ color: '#888', fontSize: '0.72rem', margin: 0 }}>
+              <strong style={{ color: '#aaa' }}>{t.studio.meaningLabel}:</strong> {selectedTemplate.meaning}
+            </p>
+          )}
+
+          <input
+            type="text"
+            value={textDraft}
+            maxLength={48}
+            placeholder={t.studio.customTextPlaceholder}
+            onChange={(e) => { setTextDraft(e.target.value); setTextTemplateId(''); setTextError(''); }}
+            style={{ width: '100%', background: '#111', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', padding: '0.6rem', fontSize: '0.9rem' }}
+          />
+
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
+              <span className="plt-label">{t.studio.fontSize}</span>
+              <span style={{ color: '#666', fontSize: '0.72rem' }}>{textDraft.length}/48</span>
+            </div>
+            <input type="range" min={0.6} max={1.6} step="0.05" value={textFontScale}
+              onChange={(e) => setTextFontScale(Number(e.target.value))}
+              style={{ width: '100%', accentColor: '#e2001a', cursor: 'pointer' }} />
+          </div>
+
+          {textError && <p style={{ color: '#f87171', fontSize: '0.72rem', margin: 0 }}>{textError}</p>}
+
+          <button type="button" className="plt-btn-primary" style={{ width: '100%' }} onClick={applyText} disabled={!textDraft.trim()}>
+            {t.studio.applyText} — {sideLabel}
+          </button>
+        </div>
+      )}
+
+      {currentImg && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
@@ -332,7 +383,6 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
           </div>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             <button type="button" className="plt-btn-secondary" style={{ flex: 1 }} onClick={() => setCurrentPos({ x: 0, y: 0 })}>{t.studio.center}</button>
-            <button type="button" className="plt-btn-secondary" style={{ flex: 1 }} onClick={() => currentSource === 'text' ? editText() : fileRef.current?.click()}>{t.studio.change}</button>
             <button type="button" className="plt-btn-secondary" style={{ flex: 1, color: '#f87171' }} onClick={removeImg}>{t.studio.remove}</button>
           </div>
           {uploadHint && (

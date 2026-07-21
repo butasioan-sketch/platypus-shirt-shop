@@ -208,6 +208,13 @@ export async function generatePrintPdf(order: Order, designs: DesignRecord[], pr
       // Druckblatt-Seite
       const sheetPage = doc.addPage(A4_PT);
       drawText(sheetPage, bold, `DRUCKBLATT ${sideLabel} — ${d.id}`, MARGIN, ph - MARGIN, 13);
+      const sideTextMeta = d.meta
+        ? (side === 'front' ? d.meta.frontText : d.meta.backText) as { text?: string; templateId?: string } | null
+        : null;
+      if (sideTextMeta?.text) {
+        const src = sideTextMeta.templateId ? `Vorlage ${sideTextMeta.templateId}` : 'Freitext';
+        drawText(sheetPage, font, `Text-Motiv (${src}): "${sideTextMeta.text}"`, MARGIN, ph - MARGIN - 16, 8.5, rgb(0.45, 0.45, 0.45));
+      }
       const img = await embedImage(doc, image);
       if (img) {
         const maxW = pw - MARGIN * 2;

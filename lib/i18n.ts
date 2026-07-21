@@ -10,6 +10,7 @@ export const translations = {
       cart: 'Warenkorb',
       shipping: 'Versand',
       about: 'Über uns',
+      shirt: 'Shirt',
       shorts: 'Shorts',
     },
     hero: {
@@ -77,6 +78,12 @@ export const translations = {
       applyText: 'Text anwenden',
       textRequired: 'Bitte Text eingeben.',
       textTooLong: 'Maximal 48 Zeichen.',
+      templateSearchPlaceholder: 'Vorlage suchen (Text, Bedeutung, Kategorie)…',
+      noTemplatesFound: 'Keine Vorlage gefunden.',
+      meaningLabel: 'Bedeutung',
+      textReplacesImage: 'Hinweis: Text anwenden ersetzt das aktuelle Bild auf dieser Seite.',
+      imageReplacesText: 'Hinweis: Neues Bild hochladen ersetzt den aktuellen Text auf dieser Seite.',
+      changeImage: 'Bild ändern',
     },
     errors: {
       addCart: 'Fehler beim Hinzufügen',
@@ -179,6 +186,7 @@ export const translations = {
       cart: 'Coș',
       shipping: 'Livrare',
       about: 'Despre noi',
+      shirt: 'Tricou',
       shorts: 'Pantaloni scurți',
     },
     hero: {
@@ -246,6 +254,12 @@ export const translations = {
       applyText: 'Aplică text',
       textRequired: 'Te rugăm să introduci un text.',
       textTooLong: 'Maximum 48 caractere.',
+      templateSearchPlaceholder: 'Caută model (text, semnificație, categorie)…',
+      noTemplatesFound: 'Niciun model găsit.',
+      meaningLabel: 'Semnificație',
+      textReplacesImage: 'Notă: aplicarea textului înlocuiește imaginea curentă de pe această față.',
+      imageReplacesText: 'Notă: încărcarea unei imagini noi înlocuiește textul curent de pe această față.',
+      changeImage: 'Schimbă imaginea',
     },
     errors: {
       addCart: 'Eroare la adăugare',
@@ -348,6 +362,7 @@ export const translations = {
       cart: 'Cart',
       shipping: 'Shipping',
       about: 'About',
+      shirt: 'Shirt',
       shorts: 'Shorts',
     },
     hero: {
@@ -415,6 +430,12 @@ export const translations = {
       applyText: 'Apply text',
       textRequired: 'Please enter some text.',
       textTooLong: 'Maximum 48 characters.',
+      templateSearchPlaceholder: 'Search templates (text, meaning, category)…',
+      noTemplatesFound: 'No template found.',
+      meaningLabel: 'Meaning',
+      textReplacesImage: 'Note: applying text replaces the current image on this side.',
+      imageReplacesText: 'Note: uploading a new image replaces the current text on this side.',
+      changeImage: 'Change image',
     },
     errors: {
       addCart: 'Could not add to cart',
