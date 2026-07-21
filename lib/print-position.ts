@@ -53,8 +53,9 @@ export function getDecalDimensions(
   bboxSize: { x: number; y: number; z: number },
   side: PrintSide,
   transform: PrintTransform,
+  productId: string = '1',
 ): { w: number; h: number } {
-  const r = getMotifRect(side, transform);
+  const r = getMotifRect(side, transform, productId);
   return { w: bboxSize.x * (r.width / 100), h: bboxSize.y * (r.height / 100) };
 }
 
@@ -65,8 +66,9 @@ export function getDecalPosition(
   side: PrintSide,
   transform: PrintTransform,
   front: boolean,
+  productId: string = '1',
 ): [number, number, number] {
-  const r = getMotifRect(side, transform);
+  const r = getMotifRect(side, transform, productId);
   const cxPct = r.left + r.width / 2;
   const cyPct = r.top + r.height / 2;
   const dirX = front ? 1 : -1;

@@ -15,20 +15,28 @@ interface Shirt3DProps {
   enableTouch?: boolean;
   /** static = statisches Bild (Startseite), flip = 2D-Editor-Fallback (Design-Studio) */
   fallback?: 'static' | 'flip';
-  /** Foto-Quellen für den Fallback (kein GLB-Modell vorhanden, z.B. Shorts) — default: Shirt-Fotos */
+  /** Foto-Quellen für den Fallback (kein GLB-Modell vorhanden) — default: Shirt-Fotos */
   frontSrc?: string;
   backSrc?: string;
   productId?: string;
 }
 
-const MODEL_PATH = '/models/shirt-white-v2.glb';
+/** GLB pro productId — gleiche 3D-Pipeline (Decals + manuelles Orbit) für Tee und Shorts. */
+const MODEL_PATHS: Record<string, string> = {
+  '1': '/models/shirt-white-v2.glb',
+  '2': '/models/shorts-white-v1.glb',
+};
+
+function getModelPath(productId?: string): string | null {
+  const id = productId || '1';
+  return MODEL_PATHS[id] ?? null;
+}
 
 // === KUNDENMOTIV ALS DECAL ===
-// Position wird dynamisch aus der Bounding-Box des Shirt-Meshes abgeleitet.
-// print.x / print.y: -50..+50 (% aus 2D-Editor, 0 = Mitte der nutzbaren Fläche, y+ = nach unten)
-// print.scale: Multiplikator (Slider, 1 = 100 % A4-Größe) — identisches Mapping wie im 2D-Editor.
-function CustomerPrint({ mesh, print, front }:
-  { mesh: THREE.Mesh; print: PrintData; front: boolean }) {
+// Position wird dynamisch aus der Bounding-Box des Garment-Meshes abgeleitet.
+// print.x / print.y: -50..+50 (% aus 2D-Editor); print.scale: Multiplikator — wie 2D-Editor.
+function CustomerPrint({ mesh, print, front, productId }:
+  { mesh: THREE.Mesh; print: PrintData; front: boolean; productId: string }) {
   const tex = useTexture(print.src);
   tex.anisotropy = 8;
 
@@ -39,19 +47,20 @@ function CustomerPrint({ mesh, print, front }:
     const s = new THREE.Vector3(); bb.getSize(s);
     const side = front ? 'front' : 'back';
     const transform = { scale: print.scale || 1, x: print.x, y: print.y };
-    const { w, h } = getDecalDimensions({ x: s.x, y: s.y, z: s.z }, side, transform);
+    const { w, h } = getDecalDimensions({ x: s.x, y: s.y, z: s.z }, side, transform, productId);
     const position = getDecalPosition(
       { x: c.x, y: c.y, z: c.z },
       { x: s.x, y: s.y, z: s.z },
       side,
       transform,
       front,
+      productId,
     );
     return {
       pos: position,
       size: [w, h, Math.max(s.z * 1.5, 0.1)] as [number, number, number],
     };
-  }, [mesh, print.x, print.y, print.scale, front]);
+  }, [mesh, print.x, print.y, print.scale, front, productId]);
   return (
     <Decal position={pos} rotation={[0, front ? 0 : Math.PI, 0]} scale={size}>
       <meshStandardMaterial
@@ -67,9 +76,15 @@ function CustomerPrint({ mesh, print, front }:
   );
 }
 
-// === SHIRT-MODELL ===
-function ShirtModel({ frontPrint, backPrint, shirtColor = '#ffffff' }: Shirt3DProps) {
-  const { scene } = useGLTF(MODEL_PATH);
+// === GARMENT-MODELL (Tee oder Shorts — modelPath) ===
+function GarmentModel({
+  modelPath,
+  productId,
+  frontPrint,
+  backPrint,
+  shirtColor = '#ffffff',
+}: Shirt3DProps & { modelPath: string; productId: string }) {
+  const { scene } = useGLTF(modelPath);
   const [mesh, setMesh] = useState<THREE.Mesh | null>(null);
 
   useEffect(() => {
@@ -90,18 +105,18 @@ function ShirtModel({ frontPrint, backPrint, shirtColor = '#ffffff' }: Shirt3DPr
         metalness: 0,
       });
       b.geometry.computeBoundingBox();
-      console.log('[Shirt3D] Decal-Mesh:', b.name,
+      console.log('[Shirt3D] product', productId, 'mesh:', b.name,
         'bbox:', JSON.stringify(b.geometry.boundingBox));
       setMesh(b);
     }
-  }, [scene, shirtColor]);
+  }, [scene, shirtColor, productId]);
   return (
     <>
       <primitive object={scene} />
       {mesh && createPortal(
         <>
-          {frontPrint && <CustomerPrint mesh={mesh} print={frontPrint} front />}
-          {backPrint && <CustomerPrint mesh={mesh} print={backPrint} front={false} />}
+          {frontPrint && <CustomerPrint mesh={mesh} print={frontPrint} front productId={productId} />}
+          {backPrint && <CustomerPrint mesh={mesh} print={backPrint} front={false} productId={productId} />}
         </>,
         mesh
       )}
@@ -115,20 +130,19 @@ export default function Shirt3D({
   fallback = 'flip',
   ...props
 }: Shirt3DProps) {
-  // Das GLB-Modell existiert nur fuer den Tee (productId '1'). Fuer alle anderen
-  // Produkte (z.B. Shorts) nie den globalen Modell-Pfad pruefen — sonst wuerde
-  // faelschlich das Shirt-3D-Modell auf einer anderen Produktseite gerendert.
-  const supportsModel = !props.productId || props.productId === '1';
+  const productId = props.productId || '1';
+  const modelPath = getModelPath(productId);
+  const supportsModel = Boolean(modelPath);
   const [modelExists, setModelExists] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (!supportsModel) { setModelExists(false); return; }
-    fetch(MODEL_PATH, { method: 'HEAD' })
+    if (!supportsModel || !modelPath) { setModelExists(false); return; }
+    fetch(modelPath, { method: 'HEAD' })
       .then((r) => setModelExists(r.ok))
       .catch(() => setModelExists(false));
-  }, [supportsModel]);
+  }, [supportsModel, modelPath]);
 
-  if (modelExists === null || !modelExists) {
+  if (modelExists === null || !modelExists || !modelPath) {
     if (fallback === 'static') {
       return <StaticShirtPreview shadow="0 12px 32px rgba(0,0,0,0.55)" />;
     }
@@ -144,9 +158,15 @@ export default function Shirt3D({
       />
     );
   }
+
+  // Shorts: Kamera etwas tiefer / näher; Tee: bisherige Werte
+  const isShorts = productId === '2';
+  const cameraPos: [number, number, number] = isShorts ? [0, 0.45, 1.1] : [0, 0.58, 0.85];
+  const orbitTarget: [number, number, number] = isShorts ? [0, 0.4, 0] : [0, 0.53, 0];
+
   return (
     <Canvas
-      camera={{ position: [0, 0.58, 0.85], fov: 40 }}
+      camera={{ position: cameraPos, fov: 40 }}
       dpr={[1, 2]}
       style={{ width: '100%', height: '100%', background: 'transparent' }}
     >
@@ -154,13 +174,13 @@ export default function Shirt3D({
         <ambientLight intensity={0.7} />
         <directionalLight position={[2, 4, 3]} intensity={1.1} />
         <directionalLight position={[-3, 2, -2]} intensity={0.4} />
-        <ShirtModel {...props} />
+        <GarmentModel {...props} modelPath={modelPath} productId={productId} />
         <OrbitControls
           enablePan={false}
           minDistance={0.3}
-          maxDistance={2}
+          maxDistance={2.5}
           autoRotate={false}
-          target={[0, 0.53, 0]}
+          target={orbitTarget}
           enableRotate={enableTouch}
           enableZoom={enableTouch}
         />
@@ -169,4 +189,5 @@ export default function Shirt3D({
   );
 }
 
-useGLTF.preload(MODEL_PATH);
+useGLTF.preload('/models/shirt-white-v2.glb');
+useGLTF.preload('/models/shorts-white-v1.glb');
