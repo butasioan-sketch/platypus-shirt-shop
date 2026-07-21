@@ -58,7 +58,7 @@ function buildStatusHtml(title: string, body: string, orderId: string, isDeliver
     <p style="color:#444;font-size:12px;line-height:1.6">
       <a href="${siteUrl}/tracking" style="color:#888;text-decoration:none">Sendungsverfolgung</a>
       &nbsp;·&nbsp;
-      <a href="mailto:butasioan@googlemail.com" style="color:#888;text-decoration:none">Kontakt</a>
+      <a href="${siteUrl}/versand" style="color:#888;text-decoration:none">Kontakt</a>
     </p>
   </div>`;
 }
@@ -196,7 +196,7 @@ export async function POST(request: NextRequest) {
           ${t.cta} →
         </a>
         <p style="color:#444;font-size:12px;line-height:1.6;margin-top:24px">
-          <a href="mailto:butasioan@googlemail.com" style="color:#888;text-decoration:none">Kontakt</a>
+          <a href="${siteUrl}/versand" style="color:#888;text-decoration:none">Kontakt</a>
         </p>
       </div>`;
       const subject = `PLATYPUS — ${t.subject}`;

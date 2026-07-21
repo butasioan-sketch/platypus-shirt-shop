@@ -22,9 +22,8 @@ export default function DatenschutzPage() {
 
         <h2 style={S.h2}>Verantwortlicher</h2>
         <p style={S.p}>
-          I. Butas · PLATYPUS · On Me<br />
-          E-Mail: <a href="mailto:butasioan@googlemail.com" style={{ color: '#e2001a', textDecoration: 'none' }}>butasioan@googlemail.com</a><br />
-          Tel. +49 157 77283535
+          PLATYPUS · On Me — Angaben folgen nach Gewerbeanmeldung<br />
+          Vollständige Anbieterkennzeichnung wird vor Aufnahme des entgeltlichen Angebots ergänzt.
         </p>
 
         <h2 style={S.h2}>Bestelldaten</h2>
@@ -43,7 +42,7 @@ export default function DatenschutzPage() {
         <p style={S.p}>Wir nutzen Browser-LocalStorage für den Warenkorb und deine Spracheinstellung — ohne Tracking-Zweck. Analyse- und Marketing-Cookies (Google Analytics, Meta Pixel, TikTok) werden erst nach deiner ausdrücklichen Einwilligung über den Cookie-Banner aktiviert. Du kannst diese Einwilligung jederzeit zurückziehen (Seite neu laden → Cookie-Banner erscheint erneut).</p>
 
         <h2 style={S.h2}>Deine Rechte</h2>
-        <p style={S.p}>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch (Art. 15–21 DSGVO). Anfragen bitte per E-Mail an <a href="mailto:butasioan@googlemail.com" style={{ color: '#e2001a', textDecoration: 'none' }}>butasioan@googlemail.com</a>. Außerdem besteht ein Beschwerderecht bei der zuständigen Datenschutzbehörde.</p>
+        <p style={S.p}>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerspruch (Art. 15–21 DSGVO). Kontaktmöglichkeit für Anfragen folgt nach Gewerbeanmeldung (siehe Impressum). Außerdem besteht ein Beschwerderecht bei der zuständigen Datenschutzbehörde.</p>
 
         <h2 style={S.h2}>Hosting</h2>
         <p style={S.p}>Der Shop wird auf Vercel Inc. (340 S Lemon Ave #4133, Walnut, CA 91789, USA) gehostet. Vercel verarbeitet IP-Adressen und Server-Logs gemäß eigener Datenschutzrichtlinie.</p>

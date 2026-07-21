@@ -39,14 +39,15 @@ export async function GET(request: NextRequest) {
 
 async function sendAlert(siteUrl: string, details: Record<string, unknown>) {
   const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) { console.error('[health-cron] DOWN:', details); return; }
+  const adminEmail = process.env.ADMIN_ALERT_EMAIL || process.env.ADMIN_EMAIL;
+  if (!apiKey || !adminEmail) { console.error('[health-cron] DOWN (kein Alert-Versand, ENV fehlt):', details); return; }
 
   await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       from: 'PLATYPUS <onboarding@resend.dev>',
-      to: 'butasioan@googlemail.com',
+      to: adminEmail,
       subject: `⚠ PLATYPUS DOWN — ${new Date().toISOString()}`,
       html: `<p style="font-family:monospace">Site or API unresponsive.<br/><br/>${JSON.stringify(details, null, 2).replace(/\n/g, '<br/>')}<br/><br/><a href="${siteUrl}">${siteUrl}</a></p>`,
     }),

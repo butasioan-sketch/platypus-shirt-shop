@@ -3,14 +3,11 @@ import SiteHeader from '@/app/components/SiteHeader';
 
 export const metadata: Metadata = {
   title: 'Impressum | PLATYPUS',
-  description: 'Impressum und Kontaktdaten von PLATYPUS — I. Butas, Premium Custom Shirts.',
+  description: 'Impressum und Kontaktdaten von PLATYPUS — Premium Custom Shirts.',
 };
 
 const OPERATOR = {
-  name: 'I. Butas',
   brand: 'PLATYPUS · On Me',
-  email: 'butasioan@googlemail.com',
-  phone: '+49 157 77283535',
   country: 'Deutschland',
 };
 
@@ -32,28 +29,27 @@ export default function ImpressumPage() {
         <div style={S.section}>
           <p style={S.label}>Betreiber</p>
           <p style={S.value}>
-            <strong>{OPERATOR.name}</strong><br />
-            {OPERATOR.brand}<br />
+            <strong>{OPERATOR.brand}</strong><br />
             {OPERATOR.country}
           </p>
-          <p style={{ color: '#666', fontSize: '0.78rem', marginTop: '0.35rem' }}>Postanschrift wird ergänzt</p>
+          <p style={{ color: '#666', fontSize: '0.78rem', marginTop: '0.35rem' }}>Angaben folgen nach Gewerbeanmeldung</p>
         </div>
 
         <div style={S.section}>
           <p style={S.label}>Kontakt</p>
-          <p style={S.value}>
-            Telefon: <a href={`tel:${OPERATOR.phone.replace(/\s/g, '')}`} style={{ color: '#e2001a', textDecoration: 'none' }}>{OPERATOR.phone}</a><br />
-            E-Mail: <a href={`mailto:${OPERATOR.email}`} style={{ color: '#e2001a', textDecoration: 'none' }}>{OPERATOR.email}</a>
-          </p>
+          <p style={S.value}>E-Mail-Adresse folgt</p>
         </div>
 
         <div style={S.section}>
           <p style={S.label}>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</p>
-          <p style={S.value}>{OPERATOR.name}</p>
+          <p style={S.value}>{OPERATOR.brand} — Angaben folgen nach Gewerbeanmeldung</p>
         </div>
 
         <div style={{ marginTop: '2.5rem', color: '#555', fontSize: '0.82rem', lineHeight: 1.6 }}>
           <p>
+            Vollständige Anbieterkennzeichnung wird vor Aufnahme des entgeltlichen Angebots ergänzt.
+          </p>
+          <p style={{ marginTop: '0.5rem' }}>
             Plattform der EU-Kommission zur Online-Streitbeilegung:{' '}
             <a href="https://ec.europa.eu/consumers/odr" style={{ color: '#666' }}>ec.europa.eu/consumers/odr</a>
           </p>

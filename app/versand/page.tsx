@@ -68,11 +68,7 @@ export default function VersandPage() {
             <ol style={{ paddingLeft: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.35rem', lineHeight: 1.6 }}>
               <li>Foto des Fehlers machen</li>
               <li>
-                E-Mail an{' '}
-                <a href="mailto:butasioan@googlemail.com" style={{ color: '#e2001a', textDecoration: 'none', fontWeight: 600 }}>
-                  butasioan@googlemail.com
-                </a>{' '}
-                mit Bestellnummer (PLT-…) + Foto
+                Kontaktmöglichkeit folgt in Kürze — bitte Bestellnummer (PLT-…) + Foto bereithalten
               </li>
               <li>Wir melden uns innerhalb von 48 Stunden mit Lösung</li>
             </ol>

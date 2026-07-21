@@ -47,8 +47,6 @@ const organizationSchema = {
       name: 'PLATYPUS',
       url: siteUrl,
       logo: `${siteUrl}/logo.jpeg`,
-      email: 'butasioan@googlemail.com',
-      telephone: '+491577728353',
     },
     {
       '@type': 'WebSite',
