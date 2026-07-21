@@ -1,11 +1,12 @@
 'use client';
 import React, { Suspense, useEffect, useMemo, useState } from 'react';
 import { Canvas, createPortal } from '@react-three/fiber';
-import { OrbitControls, useGLTF, Decal, useTexture } from '@react-three/drei';
+import { OrbitControls, useGLTF, Decal, useTexture, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import ShirtFlip from './ShirtFlip';
 import StaticShirtPreview from './StaticShirtPreview';
 import { getDecalDimensions, getDecalPosition } from '@/lib/print-position';
+import { getViewerAspect } from '@/lib/print-spec';
 
 interface PrintData { src: string; x: number; y: number; scale: number; }
 interface Shirt3DProps {
@@ -135,6 +136,24 @@ function GarmentModel({
   );
 }
 
+/** Sichtbarer Lade-Platzhalter waehrend das GLB geladen/geparst wird — vorher
+ *  war hier `fallback={null}` (nichts), was auf dem dunklen Seiten-Hintergrund wie
+ *  ein "kaputter schwarzer Kasten" wirkte statt wie ein Ladezustand. `Html fullscreen`
+ *  (drei) ueberlagert die Canvas-Flaeche mit echtem DOM statt einem Three.js-Objekt,
+ *  da ein <Suspense> innerhalb von <Canvas> nur R3F-renderbare Fallbacks akzeptiert. */
+function ModelLoadingSkeleton({ productId }: { productId: string }) {
+  return (
+    <Html fullscreen>
+      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{
+          width: '55%', aspectRatio: getViewerAspect(productId), borderRadius: '16px',
+          background: 'rgba(255,255,255,0.06)', animation: 'plt-glb-pulse 1.3s ease-in-out infinite',
+        }} />
+      </div>
+    </Html>
+  );
+}
+
 // === HAUPTKOMPONENTE ===
 export default function Shirt3D({
   enableTouch = true,
@@ -143,17 +162,8 @@ export default function Shirt3D({
 }: Shirt3DProps) {
   const productId = props.productId || '1';
   const modelPath = getModelPath(productId);
-  const supportsModel = Boolean(modelPath);
-  const [modelExists, setModelExists] = useState<boolean | null>(null);
 
-  useEffect(() => {
-    if (!supportsModel || !modelPath) { setModelExists(false); return; }
-    fetch(modelPath, { method: 'HEAD' })
-      .then((r) => setModelExists(r.ok))
-      .catch(() => setModelExists(false));
-  }, [supportsModel, modelPath]);
-
-  if (modelExists === null || !modelExists || !modelPath) {
+  if (!modelPath) {
     if (fallback === 'static') {
       return <StaticShirtPreview shadow="0 12px 32px rgba(0,0,0,0.55)" />;
     }
@@ -185,7 +195,7 @@ export default function Shirt3D({
       dpr={[1, 2]}
       style={{ width: '100%', height: '100%', background: 'transparent' }}
     >
-      <Suspense fallback={null}>
+      <Suspense fallback={<ModelLoadingSkeleton productId={productId} />}>
         <ambientLight intensity={0.7} />
         <directionalLight position={[2, 4, 3]} intensity={1.1} />
         <directionalLight position={[-3, 2, -2]} intensity={0.4} />

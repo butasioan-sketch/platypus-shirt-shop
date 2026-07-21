@@ -474,6 +474,13 @@ input, select, textarea {
   100% { transform: scale(1); }
 }
 
+/* 3D-Viewer Lade-Skeleton (Shirt3D) — Puls statt starrem Platzhalter, damit sofort
+   erkennbar ist "es laedt", nicht "kaputt/schwarz". */
+@keyframes plt-glb-pulse {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 1; }
+}
+
 .plt-btn-cart-added {
   animation: plt-cart-success 0.35s ease;
 }

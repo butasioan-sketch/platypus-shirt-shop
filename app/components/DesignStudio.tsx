@@ -9,7 +9,18 @@ import { renderTextImage, TEXT_COLOR_OPTIONS } from '@/lib/print-text';
 import { useLocale } from '@/app/components/LocaleProvider';
 import ShirtPrintOverlay from './ShirtPrintOverlay';
 
-const Shirt3D = dynamic(() => import('./Shirt3D'), { ssr: false });
+// Ohne `loading` zeigte next/dynamic waehrend des JS-Chunk-Ladens (three.js/fiber/
+// drei-Bundle) buchstaeblich nichts an — auf dem dunklen Seiten-Hintergrund sah das
+// wie ein kaputter schwarzer Kasten aus, nicht wie ein Ladezustand (Ursache des vom
+// User gemeldeten "schwarzer Viewer" beim ersten Klick auf 360°).
+const Shirt3D = dynamic(() => import('./Shirt3D'), {
+  ssr: false,
+  loading: () => (
+    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div style={{ width: '55%', height: '55%', borderRadius: '16px', background: 'rgba(255,255,255,0.06)', animation: 'plt-glb-pulse 1.3s ease-in-out infinite' }} />
+    </div>
+  ),
+});
 
 /** Frei vom Kunden bestimmt: jede Ebene (Bild oder Text) hat eigene Position/Größe —
  *  kein vorgeschriebener Katalog, keine Pflicht-Motive. Siehe REPORT-ATELIER-FREI-KUNDE.md */
