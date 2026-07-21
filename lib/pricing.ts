@@ -1,10 +1,15 @@
 // Einzige Wahrheit fuer Produktpreise — Essential Collection (Tee + Shorts) + Bundle.
 // Serverseitig (create-checkout) MUSS dieselben Funktionen nutzen wie hier — Client-Preise
 // werden nie vertraut.
-
-export const PRICE_TEE = 39.99;
+//
+// Stand 21.07.2026 (Launch-Preise, siehe FINAL-CLAUDE-LAUNCH-21-07.md +
+// PREISE-REAL-JN827-JN387-21-07.md): Tee-Blank ist jetzt real James & Nicholson JN827
+// (EK 16,40€ brutto, vorher grob ~4,70€ angenommen) — 39.99 liesse nur noch ~12€ Marge
+// nach Arbeit/Stripe. 44.99 haelt die Marge bei ~43%. Shorts (JN387, EK 10,60€) bleibt
+// bei 39.99 (~53% Marge). Bundle 74.99 (statt 69.99) spart weiterhin 9.99€ ggue. Einzelkauf.
+export const PRICE_TEE = 44.99;
 export const PRICE_SHORTS = 39.99;
-export const PRICE_BUNDLE_ESSENTIAL = 69.99; // 1x Tee + 1x Shorts als Paar
+export const PRICE_BUNDLE_ESSENTIAL = 74.99; // 1x Tee + 1x Shorts als Paar
 
 // BASE-Preis deckt INCLUDED_IMAGES Motiv-Slots ab (heute: vorne + hinten = 2).
 // Jedes weitere Bild (z.B. kuenftiges Multi-Panel) kostet EXTRA_IMAGE_PRICE zusaetzlich, pro Teil.

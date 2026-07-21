@@ -36,12 +36,12 @@ Siehe `.env.example`. Production-Secrets auf Vercel — `npx vercel env ls`.
 - PDF hat zusätzlich Seite "KUNDENBLICK" pro Seite (Shirt-Foto + Motiv exakt wie Atelier/360°) — `lib/print-customer-view.ts`, `designs.front_preview`/`back_preview`. Reklamations-Nachweis. Legacy ohne Preview: Fallback-Text.
 - Preis: `lib/pricing.ts` — PRODUCT_FLAT pro productId (Tee/Shorts je 39.99€), INCLUDED_IMAGES (2) Motiv-Slots, jedes weitere Bild +EXTRA_IMAGE_PRICE (2.99€) pro Teil. Essential Set (1x Tee + 1x Shorts): PRICE_BUNDLE_ESSENTIAL (69.99€), automatisch via `calcMerchandiseTotal`/`isBundleEligible` sobald beide im Warenkorb sind.
 - Produktabhängige Druck-Kalibrierung: `lib/print-spec.ts` `GARMENT_PROFILES` (Foto, Overlay, Placement, Blank pro productId) statt globalem Singleton — `getGarmentProfile(productId)`. `getMotifRect`/`getMotifStyle`/PDF nehmen alle einen `productId`-Parameter (default '1').
-- No-Print-Zonen (Schulter/Seitennaht/Kragen/Saum): `NO_PRINT_NOTE` in `lib/print-spec.ts`, im Atelier-UI und PDF-Platzierungsdiagramm (gestrichelt) sichtbar.
+- No-Print-Zonen: `getNoPrintNote(productId)` in `lib/print-spec.ts` — produktspezifisch (Tee: Schulter/Seitennaht/Kragen/Saum; Shorts: Kordelbund/Seitennaht-Paspel/Schritt/Saum), im Atelier-UI und PDF-Platzierungsdiagramm (gestrichelt) sichtbar.
 
 ## Produkt-Roadmap (Essential Collection — genau 2 Produkte, beide LIVE)
 - Brand: `Essential Collection` · `AirFit Pro [Shorts]` · `AirFit Performance Fabric · Unisex · Maßgefertigt auf Bestellung`
 - Alles weiß · 100 % Polyester · gleicher System-Aufbau (Atelier, 360°, Freeze, PDF)
-- **P1 AirFit Pro** T-Shirt Unisex — LIVE (Blank B&C TM062, 140 g/m²)
+- **P1 AirFit Pro** T-Shirt Unisex — LIVE (Blank **JN827**, 165 g/m² — Code aktualisiert 21.07; Fotos bleiben bestehend, kein JN827-Rückenfoto vorhanden)
 - **P2 AirFit Pro Shorts** Unisex — LIVE
   - Blank: **James & Nicholson JN387** (Sweat-Shorts), 100 % PE, **135 g/m²**, S–XXL, Kordelbund, ohne Innenslip. Fotos: `public/airfit-shorts-front.png`/`back.png`, Overlay/Placement = Erstversion (nicht physisch getestet)
   - PDF-Analyse: `~/Downloads/James & Nicholson Unisex Basic Team Shorts Sweat-Shorts JN387, 10,60 €.pdf`
@@ -49,8 +49,9 @@ Siehe `.env.example`. Production-Secrets auf Vercel — `npx vercel env ls`.
   - Noch offen: physischer Testdruck zur Verifikation der Overlay-Kalibrierung
 - Kein P3/P4 (Boxer / Sport-Unterwäsche nicht im Sortiment)
 - **Preise (verbindlich):** `~/Schreibtisch/MeinVault/ClaudeData/PREISE-UND-BUNDLE-ESSENTIAL.md`
-  - Tee **39,99 €** · Shorts **39,99 €** · **Essential Set** (Tee+Shorts) **69,99 €**
-  - Extra-Motiv ab 3. Bild: **+2,99 €** · COGS grob Tee ~5,15 / Shorts ~11,05
+  - **Final (Jonny-OK 21.07):** Tee **44,99 €** · Shorts **39,99 €** · Set **74,99 €** (Blank JN827/JN387, real EK 16,40€/10,60€ brutto)
+  - Extra-Motiv ab 3. Bild: **+2,99 €**
+  - Master: `~/Schreibtisch/MeinVault/ClaudeData/FINAL-CLAUDE-LAUNCH-21-07.md`
   - Claude-Bau: Abschnitt „CLAUDE — KOMPLETT-PASTE“ in PREISE-UND-BUNDLE-ESSENTIAL.md
 
 ## 3D-Model-Library (Polyester-first)

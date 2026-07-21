@@ -31,33 +31,36 @@ export interface Product {
 // ESSENTIAL COLLECTION — genau 2 Produkte (alles weiß, 100% Polyester / AirFit Performance Fabric,
 // gleicher Aufbau: Atelier, 360°, Freeze, PDF). Brand-Zeile:
 //   Essential Collection · AirFit Pro [Shorts] · AirFit Performance Fabric · Unisex · Maßgefertigt
-// P1 + P2 LIVE. Essential Set (1x Tee + 1x Shorts) = 69.99 (siehe lib/pricing.ts).
+// P1 + P2 LIVE. Essential Set (1x Tee + 1x Shorts) = 74.99 (siehe lib/pricing.ts, Stand 21.07.2026).
 // Shorts-Overlay/Placement (lib/print-spec.ts GARMENT_PROFILES['2']) ist eine ERSTVERSION,
 // visuell aus den Referenzfotos geschätzt — noch nicht durch physischen Testdruck verifiziert.
 // Siehe: ~/Schreibtisch/MeinVault/ClaudeData/BRAND-ESSENTIAL-COLLECTION-2PRODUKTE.md
+// Preis/Blank-Update 21.07.2026: Tee-Blank final auf James & Nicholson JN827 (100% PE, 165 g/m²,
+// EK 16,40€ brutto) umgestellt — siehe FINAL-CLAUDE-LAUNCH-21-07.md + PREISE-REAL-JN827-JN387-21-07.md.
+// Fotos bleiben vorerst die bestehenden (kein JN827-Rückenfoto vorhanden), nur Blank/Preis/Copy aktualisiert.
 export const PRODUCTS: Product[] = [
   {
     id: '1',
     slug: 'essential-polyester',
-    price: 39.99,
+    price: 44.99,
     color: '#f5f5f5',
     textColor: '#000',
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
     fits: ['Unisex'],
     colors: SHIRT_COLORS,
-    material: 'AirFit Performance Fabric — Performance-Polyester-Strick (sublimationsgeeignet)',
-    weight: '140g/m²',
+    material: 'AirFit Performance Fabric — 100% Polyester (165 g/m², sublimationsgeeignet)',
+    weight: '165g/m²',
     name: {
       de: 'AirFit Pro',
       ro: 'AirFit Pro',
       en: 'AirFit Pro',
     },
     description: {
-      de: 'AirFit Performance Fabric · 140 g/m² · Vollflächiger Sublimationsdruck 210 × 297 mm · Unisex',
-      ro: 'AirFit Performance Fabric · 140 g/m² · Sublimare integrală 210 × 297 mm · Unisex',
-      en: 'AirFit Performance Fabric · 140 gsm · Full-area sublimation 210 × 297 mm · Unisex',
+      de: 'AirFit Performance Fabric · 165 g/m² · Vollflächiger Sublimationsdruck 210 × 297 mm · Unisex',
+      ro: 'AirFit Performance Fabric · 165 g/m² · Sublimare integrală 210 × 297 mm · Unisex',
+      en: 'AirFit Performance Fabric · 165 gsm · Full-area sublimation 210 × 297 mm · Unisex',
     },
-    tags: ['essential', 'polyester', 'sublimation', 'hell', 'basic', 'tee'],
+    tags: ['essential', 'polyester', 'sublimation', 'hell', 'basic', 'tee', 'jn827'],
     active: true,
     createdAt: '2026-01-01',
   },
