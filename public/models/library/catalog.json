@@ -1,0 +1,128 @@
+{
+  "version": 1,
+  "policy": "Only activate garments after polyester blank is sourced and product specs exist. Assets in inactive/ are staged only.",
+  "activeProducts": [
+    "1",
+    "2"
+  ],
+  "pendingMaterialPolicy": "polyester_first",
+  "assets": [
+    {
+      "id": "cap-white-v1",
+      "path": "/models/library/inactive/cap-white-v1.glb",
+      "bytes": 53556,
+      "verts": 1468,
+      "faces": 2424,
+      "extents": [
+        0.638615174887236,
+        0.4974387688816916,
+        1.0
+      ],
+      "active": false,
+      "productId": null,
+      "materialTarget": "polyester_pending",
+      "notes": "Baseball/cap mesh — NOT activated; wait until polyester blank sourced",
+      "category": "cap",
+      "source": "Downloads/obj.zip objCAP.obj"
+    },
+    {
+      "id": "shorts-white-v1",
+      "path": "/models/shorts-white-v1.glb",
+      "bytes": 3525836,
+      "verts": 76305,
+      "faces": 141114,
+      "extents": [
+        1.0,
+        0.9932000041007996,
+        0.7268619239330292
+      ],
+      "active": true,
+      "productId": "2",
+      "category": "shorts",
+      "materialTarget": "polyester_jn387",
+      "source": "TurboSquid Kids Pant Design 1996470 / GLTF.zip optimized",
+      "notes": "Active for product 2; kids pant base — calibrate; polyester blank JN387"
+    },
+    {
+      "id": "shirt-white-v2",
+      "path": "/models/shirt-white-v2.glb",
+      "bytes": 833552,
+      "verts": 175056,
+      "faces": 258462,
+      "extents": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "active": true,
+      "productId": "1",
+      "category": "tee",
+      "materialTarget": "polyester_bc_tm062",
+      "source": "existing shop asset",
+      "notes": "Active AirFit Pro tee"
+    },
+    {
+      "id": "staged-obj",
+      "path": "/models/library/inactive/staged-obj.glb",
+      "bytes": 25138788,
+      "verts": 676977,
+      "faces": 1192180,
+      "extents": [
+        0.9841656687126468,
+        1.0,
+        0.46360836007590633
+      ],
+      "active": false,
+      "productId": null,
+      "materialTarget": "polyester_pending",
+      "category": "unknown",
+      "source": "Downloads nested obj pack: obj.obj",
+      "notes": "Staged inactive — activate only after polyester blank + product specs"
+    }
+  ],
+  "inventory": {
+    "downloads_raw": [
+      {
+        "file": "GLTF.zip",
+        "role": "kids_pant_source",
+        "status": "converted_to_shorts-white-v1"
+      },
+      {
+        "file": "FBX.zip / FBX.rar / fbx.rar",
+        "role": "same_or_other_garment_fbx",
+        "status": "fbx_extract_limited_no_assimp"
+      },
+      {
+        "file": "FbxCap.fbx / obj.zip (objCAP)",
+        "role": "cap",
+        "status": "obj_converted_cap-white-v1_inactive"
+      },
+      {
+        "file": "OBJ.rar nested obj.zip",
+        "role": "extra_mesh_pack",
+        "status": "processed_if_obj_found"
+      },
+      {
+        "file": "maps/texture/uvmap/render/zprj rars",
+        "role": "textures_renders_clo",
+        "status": "not_in_web_runtime"
+      },
+      {
+        "file": "JN387 webp+pdf",
+        "role": "polyester_blank_reference",
+        "status": "in_use_product_2"
+      }
+    ],
+    "policy": {
+      "polyester_first": true,
+      "do_not_activate_without_blank": true,
+      "active_product_ids": [
+        "1",
+        "2"
+      ],
+      "inactive_dir": "/models/library/inactive/",
+      "reason": "Nur Polyester-Artikel mit gesourctem Blank aktivieren; weitere Artikel (Cap, etc.) nur library staging."
+    }
+  },
+  "updated": "2026-07-21"
+}
