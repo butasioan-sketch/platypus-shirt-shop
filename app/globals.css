@@ -169,7 +169,7 @@ input, select, textarea {
   .editor-col > div:last-child {
     height: auto !important;
   }
-  .hero-essential-strip {
+  .hero-collection-grid {
     grid-template-columns: 1fr !important;
   }
 }
