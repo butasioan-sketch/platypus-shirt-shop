@@ -162,15 +162,18 @@ export default function Shirt3D({
     );
   }
 
-  // Shorts: Kamera auf Mesh-Mitte (y 0.03..0.98) zentriert, weiter zurück damit
-  // Bund + beide Beine vollstaendig im Frame sind; Tee: bisherige Werte unveraendert.
+  // Shorts: Kamera auf Mesh-Mitte, weiter zurück; Tee: bisherige Werte.
+  // WICHTIG: maxDistance muss >= |cameraPos| sein — sonst klemmt OrbitControls
+  // die Kamera und das GLB wirkt „kaputt“ / unsichtbar (Shorts war z=3 > max 2.5).
   const isShorts = productId === '2';
-  const cameraPos: [number, number, number] = isShorts ? [0, 0.5, 3.0] : [0, 0.58, 0.85];
+  const cameraPos: [number, number, number] = isShorts ? [0, 0.5, 2.2] : [0, 0.58, 0.85];
   const orbitTarget: [number, number, number] = isShorts ? [0, 0.45, 0] : [0, 0.53, 0];
+  const minDistance = isShorts ? 0.8 : 0.3;
+  const maxDistance = isShorts ? 5.0 : 2.5;
 
   return (
     <Canvas
-      camera={{ position: cameraPos, fov: 40 }}
+      camera={{ position: cameraPos, fov: isShorts ? 35 : 40 }}
       dpr={[1, 2]}
       style={{ width: '100%', height: '100%', background: 'transparent' }}
     >
@@ -181,8 +184,8 @@ export default function Shirt3D({
         <GarmentModel {...props} modelPath={modelPath} productId={productId} />
         <OrbitControls
           enablePan={false}
-          minDistance={0.3}
-          maxDistance={2.5}
+          minDistance={minDistance}
+          maxDistance={maxDistance}
           autoRotate={false}
           target={orbitTarget}
           enableRotate={enableTouch}
