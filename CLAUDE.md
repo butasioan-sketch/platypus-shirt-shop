@@ -8,6 +8,7 @@
 - Pfad: `~/Schreibtisch/platypus-shirt-shop`
 - Live: https://platypus-shirt-shop.vercel.app
 - Owner: butasioan@googlemail.com
+- **Claude-Index (Live-Stand + offene Aufgaben):** `~/Schreibtisch/MeinVault/ClaudeData/CLAUDE-INDEX-PLATYPUS-LIVE.md`
 
 ## Befehle
 ```bash
