@@ -2,7 +2,7 @@
 // Ebene 1 (Druckblatt) vs Ebene 2 (Platzierung) — siehe lib/print-export.ts Kommentar.
 
 import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from 'pdf-lib';
-import { PRINT_SPEC, formatSizeMm, getPlacementZone, getGarmentProfile, NO_PRINT_NOTE, type PrintSide } from './print-spec';
+import { PRINT_SPEC, formatSizeMm, getPlacementZone, getGarmentProfile, getNoPrintNote, type PrintSide } from './print-spec';
 import { getMotifRect, defaultPrintTransform, type PrintTransform } from './print-position';
 import type { DesignRecord } from './db';
 import type { Order } from './types';
@@ -73,7 +73,11 @@ export function buildPrintJobPayload(orderId: string, designs: DesignRecord[]): 
     printSpec: {
       widthMm: PRINT_SPEC.widthMm, heightMm: PRINT_SPEC.heightMm, dpi: PRINT_SPEC.dpi,
       widthPx: PRINT_SPEC.widthPx, heightPx: PRINT_SPEC.heightPx,
-      blank: PRINT_SPEC.blank, method: PRINT_SPEC.method,
+      // Bestellungen koennen Tee + Shorts gemischt enthalten (unterschiedliche Blanks) —
+      // Zusammenfassung aller vorkommenden Blanks statt des global-falschen PRINT_SPEC.blank
+      // (das ist nur der A4/dpi-Teil, produktuebergreifend gleich; der Blank ist es nicht).
+      blank: Array.from(new Set(designs.map((d) => getGarmentProfile(d.productId || '1').blank))).join(' · ') || PRINT_SPEC.blank,
+      method: PRINT_SPEC.method,
     },
     designs: designs.map((d) => {
       const productId = d.productId || '1';
@@ -258,7 +262,7 @@ export async function generatePrintPdf(order: Order, designs: DesignRecord[], pr
         py -= 30;
         drawText(placePage, font, 'A4-Transfer so auf Blank positionieren (rot = Motiv-Bereich, gestrichelt = nutzbare Zone):', MARGIN, py, 9);
         py -= 14;
-        drawText(placePage, font, NO_PRINT_NOTE, MARGIN, py, 7.5, rgb(0.55, 0.55, 0.55));
+        drawText(placePage, font, getNoPrintNote(designProductId), MARGIN, py, 7.5, rgb(0.55, 0.55, 0.55));
         py -= 16;
         drawPlacementDiagram(placePage, MARGIN, MARGIN, pw - MARGIN * 2, py - MARGIN, placement, designProductId);
       }

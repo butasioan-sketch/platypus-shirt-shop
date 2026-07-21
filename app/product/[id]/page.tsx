@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic';
 import SiteHeader from '@/app/components/SiteHeader';
 import TrustIcon from '@/app/components/TrustIcon';
 import { useLocale } from '@/app/components/LocaleProvider';
-import { formatSizeMm, PRINT_SPEC } from '@/lib/print-spec';
+import { formatSizeMm, PRINT_SPEC, getGarmentProfile } from '@/lib/print-spec';
 import { getProduct, getProductName, getProductDescription, SHIRT_COLORS } from '@/lib/products';
 
 const DesignStudio = dynamic(() => import('@/app/components/DesignStudio'), { ssr: false });
@@ -81,7 +81,7 @@ export default function ProductPage() {
           dpi: PRINT_SPEC.dpi,
           widthPx: PRINT_SPEC.widthPx,
           heightPx: PRINT_SPEC.heightPx,
-          blank: PRINT_SPEC.blank,
+          blank: getGarmentProfile(id).blank,
           method: PRINT_SPEC.method,
           // Anzahl Ebenen je Seite — Grundlage der serverseitigen Preisberechnung
           // (Extra-Motiv-Aufpreis ab dem 3. Bild, siehe lib/pricing.ts + create-checkout).

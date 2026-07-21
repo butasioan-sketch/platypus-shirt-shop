@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { calcUnitPriceForProduct } from '@/lib/pricing';
-import { PRINT_SPEC, formatSizeMm, NO_PRINT_NOTE, getPlacementZone, getGarmentPhotoSrc, getViewerAspect } from '@/lib/print-spec';
+import { PRINT_SPEC, formatSizeMm, getNoPrintNote, getPlacementZone, getGarmentPhotoSrc, getViewerAspect } from '@/lib/print-spec';
 import { defaultPrintTransform, type PrintTransform } from '@/lib/print-position';
 import { renderTextImage, TEXT_COLOR_OPTIONS } from '@/lib/print-text';
 import { useLocale } from '@/app/components/LocaleProvider';
@@ -413,7 +413,7 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
             {t.studio.dragHint.replace('{size}', formatSizeMm())}
           </p>
           <p className="plt-label" style={{ textAlign: 'center', margin: 0, color: '#444', fontSize: '0.65rem' }}>
-            {NO_PRINT_NOTE}
+            {getNoPrintNote(productId)}
           </p>
         </div>
       )}

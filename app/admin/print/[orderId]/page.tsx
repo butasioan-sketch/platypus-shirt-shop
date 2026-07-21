@@ -1,5 +1,5 @@
 import { getOrderById, getDesignById, type DesignRecord } from '@/lib/db';
-import { PRINT_SPEC, formatSizeMm } from '@/lib/print-spec';
+import { PRINT_SPEC, formatSizeMm, getGarmentProfile } from '@/lib/print-spec';
 import { orderDesignIds } from '@/lib/order-review';
 
 export default async function PrintView({ params }: { params: Promise<{ orderId: string }> }) {
@@ -12,6 +12,9 @@ export default async function PrintView({ params }: { params: Promise<{ orderId:
     .filter((d): d is DesignRecord => d !== null);
   const hasDesign = designs.some((d) => d.frontImage || d.backImage);
   const missingDesign = !hasDesign;
+  // Bestellung kann Tee + Shorts gemischt enthalten (unterschiedliche Blanks) —
+  // alle vorkommenden Blanks zusammenfassen statt des global-falschen PRINT_SPEC.blank.
+  const blanksUsed = Array.from(new Set(designs.map((d) => getGarmentProfile(d.productId || '1').blank)));
 
   return (
     <div style={{ fontFamily: 'system-ui, sans-serif', padding: '2rem', maxWidth: 900, margin: '0 auto', color: '#111', background: '#fff', minHeight: '100vh' }}>
@@ -61,7 +64,7 @@ export default async function PrintView({ params }: { params: Promise<{ orderId:
       <div style={{ background: '#f8f8f8', borderRadius: 8, padding: '1rem', marginBottom: '2rem', fontSize: '0.85rem', lineHeight: 1.6 }}>
         <strong>Druckstandard</strong><br />
         Format: {formatSizeMm()} Hochformat · {PRINT_SPEC.dpi} dpi · {PRINT_SPEC.widthPx} × {PRINT_SPEC.heightPx} px<br />
-        Blank: {PRINT_SPEC.blank} · Methode: {PRINT_SPEC.method}<br />
+        Blank: {blanksUsed.length ? blanksUsed.join(' · ') : PRINT_SPEC.blank} · Methode: {PRINT_SPEC.method}<br />
         Epson SC-F100: Papier A4, „Actual size“ / 100 % — kein Fit-to-Page
       </div>
 
@@ -132,7 +135,7 @@ export default async function PrintView({ params }: { params: Promise<{ orderId:
       ))}
 
       <p style={{ fontSize: '0.75rem', color: '#999', borderTop: '1px solid #ddd', paddingTop: '1rem' }}>
-        {PRINT_SPEC.method} · {PRINT_SPEC.blank} · {PRINT_SPEC.widthMm} × {PRINT_SPEC.heightMm} mm Hochformat ({PRINT_SPEC.dpi} dpi = {PRINT_SPEC.widthPx} × {PRINT_SPEC.heightPx} px).
+        {PRINT_SPEC.method} · {blanksUsed.length ? blanksUsed.join(' · ') : PRINT_SPEC.blank} · {PRINT_SPEC.widthMm} × {PRINT_SPEC.heightMm} mm Hochformat ({PRINT_SPEC.dpi} dpi = {PRINT_SPEC.widthPx} × {PRINT_SPEC.heightPx} px).
         Motive in Originalauflösung — Download oder Rechtsklick → Bild speichern → Epson SC-F100.
       </p>
     </div>

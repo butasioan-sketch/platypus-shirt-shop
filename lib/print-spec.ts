@@ -1,5 +1,10 @@
 // Einzige Wahrheit: Druckfläche, Maße, Viewer-Drehgeschwindigkeit
-// Overlay kalibriert auf B&C TM062 (Gr. L) + Shirt-Fotos 1024×1536 px
+// Overlay/Placement/mmReferenceHeight sind auf den BESTEHENDEN Foto-Satz kalibriert
+// (ehem. B&C TM062, 1024×1536 px) — der Blank-Bezug (TEE_PROFILE.blank) wurde am
+// 21.07.2026 auf James & Nicholson JN827 aktualisiert (finale Produktentscheidung),
+// die Fotos selbst NICHT getauscht (kein JN827-Rückenfoto vorhanden — siehe
+// FINAL-CLAUDE-LAUNCH-21-07.md Abschnitt 6). Kein Halb-Update: Maße/mm bleiben die
+// bisherige Näherung, nicht neu erfunden für JN827.
 
 export const SHIRT_PHOTO = {
   width: 1024,
@@ -23,8 +28,16 @@ const OVERLAY_BACK = { top: 29.9, left: 34.5, width: 28.9, height: 27.3 };
 const PLACEMENT_FRONT = { top: 20, left: 20, width: 60, height: 58 };
 const PLACEMENT_BACK = { top: 20, left: 20, width: 60, height: 58 };
 
-/** Kurzer Hinweistext für UI/PDF — No-Print-Zonen menschenlesbar. */
-export const NO_PRINT_NOTE = 'Schulterbereich, Seitennaht (unter den Armen), Kragen und Saum sind bewusst ausgespart.';
+/** Kurzer Hinweistext für UI/PDF — No-Print-Zonen menschenlesbar, produktabhängig
+ *  (Tee und Shorts haben unterschiedliche Nähte/Zonen — siehe getNoPrintNote unten). */
+const NO_PRINT_NOTE_BY_PRODUCT: Record<string, string> = {
+  '1': 'Schulterbereich, Seitennaht (unter den Armen), Kragen und Saum sind bewusst ausgespart.',
+  '2': 'Kordelbund, Seitennaht-Paspel, Schritt und Saum sind bewusst ausgespart.',
+};
+
+export function getNoPrintNote(productId: string = '1'): string {
+  return NO_PRINT_NOTE_BY_PRODUCT[productId] || NO_PRINT_NOTE_BY_PRODUCT['1'];
+}
 
 // === PRODUKT-PROFILE (Garment-Kalibrierung pro productId) ===
 // Jedes Produkt hat eigene Fotos + eigene Overlay/Placement-Kalibrierung —
@@ -51,8 +64,8 @@ const TEE_PROFILE: GarmentProfile = {
   photoHeight: SHIRT_PHOTO.height,
   overlay: { front: OVERLAY_FRONT, back: OVERLAY_BACK },
   placement: { front: PLACEMENT_FRONT, back: PLACEMENT_BACK },
-  blank: 'B&C TM062',
-  weightGsm: 140,
+  blank: 'James & Nicholson JN827',
+  weightGsm: 165,
   frontSrc: '/airfit-front-t.png',
   backSrc: '/airfit-back-t.png',
   mmReferenceHeight: 740 + 110, // shirtLengthMm + collarOffsetMm (Gr. L)
