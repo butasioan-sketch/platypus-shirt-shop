@@ -53,6 +53,11 @@ Siehe `.env.example`. Production-Secrets auf Vercel — `npx vercel env ls`.
   - Extra-Motiv ab 3. Bild: **+2,99 €** · COGS grob Tee ~5,15 / Shorts ~11,05
   - Claude-Bau: Abschnitt „CLAUDE — KOMPLETT-PASTE“ in PREISE-UND-BUNDLE-ESSENTIAL.md
 
+## 3D-Model-Library (Polyester-first)
+- `public/models/library/catalog.json` — Maschinen-Index aller GLBs (aktiv + inaktiv), `README.md` daneben = Policy.
+- Aktiv (in `MODEL_PATHS`/`products.ts`): nur `shirt-white-v2.glb` (P1) und `shorts-white-v1.glb` (P2).
+- `library/inactive/` — gestagte Meshes für zukünftige Artikel (z. B. Cap), **nicht** in `MODEL_PATHS`/`products.ts` verdrahtet. Aktivierung erst nach: Polyester-Blank gesourct + Preis + Print-Profile + Jonny-OK.
+
 ## Regeln
 - Vor Deploy: `./p build`
 - Preise auf Homepage seit 19.07.2026 erlaubt (Essential Collection zeigt Tee/Shorts/Set-Preis explizit, Jonny-OK)
