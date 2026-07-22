@@ -26,26 +26,62 @@
       "source": "Downloads/obj.zip objCAP.obj"
     },
     {
-      "id": "shorts-white-v1",
+      "id": "shorts-sport-white-v1",
       "path": "/models/shorts-white-v1.glb",
-      "bytes": 3525836,
-      "verts": 76305,
-      "faces": 141114,
+      "bytes": 772132,
+      "verts": 22107,
+      "faces": 34784,
       "extents": [
+        0.9622799999999999,
         1.0,
-        0.9932000041007996,
-        0.7268619239330292
+        0.5633899999999999
       ],
       "active": true,
       "productId": "2",
       "category": "shorts",
       "materialTarget": "polyester_jn387",
-      "source": "TurboSquid Kids Pant Design 1996470 / GLTF.zip optimized",
-      "notes": "Active for product 2; kids pant base — calibrate; polyester blank JN387"
+      "source": "Downloads/Shorts-SportOBJ.rar (objShorts.obj) — converted white via Grok 22.07.2026, see .tmp-shorts-sport/out/SHORTS-SPORT-CONVERT.md",
+      "notes": "Active for product 2 since 22.07.2026 (replaced TurboSquid kids-pant, see shorts-white-kids-pant-backup.glb). Solid white vertex colors, no pack textures baked in. Generic sport-shorts silhouette, still NOT modeled 1:1 on JN387 — visual approximation. License: confirm commercial rights for Shorts-Sport asset before live sales."
     },
     {
-      "id": "shirt-white-v2",
+      "id": "tee-t_shirt-white-v1",
       "path": "/models/shirt-white-v2.glb",
+      "bytes": 4326576,
+      "verts": 122543,
+      "faces": 237938,
+      "extents": [
+        0.9302999999999999,
+        1.0,
+        0.4405299999999999
+      ],
+      "active": true,
+      "productId": "1",
+      "category": "tee",
+      "materialTarget": "polyester_pending",
+      "source": "Downloads/t_shirt.glb — converted/centered white via Grok 22.07.2026, see .tmp-shorts-sport/out/DOWNLOADS-MODELS-INVENTORY-22-07.md",
+      "notes": "Active for product 1 since 22.07.2026 (replaced old tiny B&C-TM062-scaled mesh, see shirt-white-v2-backup.glb). No vertex colors/material baked in — relies on MeshStandardMaterial white in Shirt3D.tsx. Generic tee silhouette, NOT modeled on JN827 (no colorblocking possible either way — single-material render path). Fallback if this looks wrong in 360°: tee-joe-white-v1 (see below). License: confirm commercial rights for t_shirt asset before live sales."
+    },
+    {
+      "id": "tee-joe-white-v1",
+      "path": "/models/library/inactive/tee-joe-white-v1.glb",
+      "bytes": 6933340,
+      "verts": 204431,
+      "faces": 373280,
+      "extents": [
+        0.9696599999999999,
+        1.0,
+        0.4479
+      ],
+      "active": false,
+      "productId": null,
+      "materialTarget": "polyester_pending",
+      "category": "tee",
+      "source": "Downloads/joe_productions_white_shirt.glb — converted/centered white via Grok 22.07.2026",
+      "notes": "Staged fallback for productId 1 if tee-t_shirt-white-v1 looks wrong in 360° QA — heavier (6.7MB, ~204k verts) than tee-t_shirt-white-v1. Not wired into MODEL_PATHS unless swapped in. License: confirm commercial rights before live sales."
+    },
+    {
+      "id": "shirt-white-v2-backup",
+      "path": "/models/library/inactive/shirt-white-v2-backup.glb",
       "bytes": 833552,
       "verts": 175056,
       "faces": 258462,
@@ -54,12 +90,30 @@
         0.0,
         0.0
       ],
-      "active": true,
-      "productId": "1",
-      "category": "tee",
+      "active": false,
+      "productId": null,
       "materialTarget": "polyester_bc_tm062",
-      "source": "existing shop asset",
-      "notes": "Active AirFit Pro tee"
+      "category": "tee",
+      "source": "existing shop asset (was live as shirt-white-v2.glb until 22.07.2026)",
+      "notes": "Backup of the previous live Tee mesh, kept for rollback. Superseded by tee-t_shirt-white-v1."
+    },
+    {
+      "id": "shorts-white-kids-pant-backup",
+      "path": "/models/library/inactive/shorts-white-kids-pant-backup.glb",
+      "bytes": 3525836,
+      "verts": 76305,
+      "faces": 141114,
+      "extents": [
+        1.0,
+        0.9932000041007996,
+        0.7268619239330292
+      ],
+      "active": false,
+      "productId": null,
+      "materialTarget": "polyester_jn387",
+      "category": "shorts",
+      "source": "TurboSquid Kids Pant Design 1996470 / GLTF.zip optimized (was live as shorts-white-v1.glb until 22.07.2026)",
+      "notes": "Backup of the previous live Shorts mesh, kept for rollback. Superseded by shorts-sport-white-v1."
     },
     {
       "id": "staged-obj",
@@ -111,6 +165,21 @@
         "file": "JN387 webp+pdf",
         "role": "polyester_blank_reference",
         "status": "in_use_product_2"
+      },
+      {
+        "file": "Shorts-SportOBJ.rar",
+        "role": "shorts_white_pair_source",
+        "status": "converted_to_shorts-white-v1_active_22-07"
+      },
+      {
+        "file": "t_shirt.glb",
+        "role": "tee_white_pair_source_primary",
+        "status": "converted_to_shirt-white-v2_active_22-07"
+      },
+      {
+        "file": "joe_productions_white_shirt.glb",
+        "role": "tee_white_pair_source_fallback",
+        "status": "converted_staged_inactive_tee-joe-white-v1"
       }
     ],
     "policy": {
@@ -124,5 +193,5 @@
       "reason": "Nur Polyester-Artikel mit gesourctem Blank aktivieren; weitere Artikel (Cap, etc.) nur library staging."
     }
   },
-  "updated": "2026-07-21"
+  "updated": "2026-07-22"
 }

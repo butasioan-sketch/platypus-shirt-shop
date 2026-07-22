@@ -53,3 +53,8 @@ backups/
 diagnose.txt
 *.bak
 backups/
+
+# Rohe 3D-Konvertierungs-Workdirs (Marketplace-Texturen/Rohdaten — nie ins Repo,
+# siehe public/models/library/README.md "Nicht im Runtime-Bundle"). Fertige weisse
+# GLBs liegen stattdessen unter public/models/library/inactive/.
+.tmp-shorts-sport/

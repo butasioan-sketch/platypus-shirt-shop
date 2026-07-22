@@ -104,13 +104,20 @@ function GarmentModel({
     });
     if (best) {
       const b = best as THREE.Mesh;
+      // Marketplace-OBJ/GLB-Konvertierungen (22.07.2026 weißes Paar, wie zuvor der
+      // Shorts-Platzhalter) liefern oft keine NORMAL-Attribute — ohne die rendert
+      // MeshStandardMaterial das Mesh schwarz/unbeleuchtet statt weiss.
+      if (!b.geometry.attributes.normal) {
+        b.geometry.computeVertexNormals();
+      }
       b.material = new THREE.MeshStandardMaterial({
         color: new THREE.Color(shirtColor),
         roughness: 0.65,
         metalness: 0,
-        // Shorts-Platzhalter ist prozedural erzeugt (Ring-Loft) — DoubleSide als
-        // Absicherung gegen Winding-Fehler, ohne Risiko fuer das geprüfte Tee-GLB.
-        side: productId === '2' ? THREE.DoubleSide : THREE.FrontSide,
+        // Beide aktiven Meshes (seit 22.07.2026) sind frisch aus Marketplace-OBJ/GLB
+        // konvertiert, Winding-Richtung nicht verifiziert — DoubleSide fuer beide als
+        // Absicherung, damit kein Mesh durch Backface-Culling unsichtbar wird.
+        side: THREE.DoubleSide,
       });
       b.geometry.computeBoundingBox();
       console.log('[Shirt3D] product', productId, 'mesh:', b.name,
@@ -180,14 +187,18 @@ export default function Shirt3D({
     );
   }
 
-  // Shorts: Kamera auf Mesh-Mitte, weiter zurück; Tee: bisherige Werte.
+  // Kamera-Kalibrierung fuer das weisse GLB-Paar (22.07.2026, tee-t_shirt-white-v1 /
+  // shorts-sport-white-v1) — beide Meshes sind zentriert, max-extent auf 1.0 skaliert
+  // (per gltf-transform inspect vermessen), anders als die alten Meshes (Tee war winzig,
+  // max-extent ~0.28; Shorts sass auf y=0 statt zentriert). orbitTarget = jeweiliger
+  // Bounding-Box-Mittelpunkt der neuen Meshes, nicht mehr die alten Werte.
   // WICHTIG: maxDistance muss >= |cameraPos| sein — sonst klemmt OrbitControls
-  // die Kamera und das GLB wirkt „kaputt“ / unsichtbar (Shorts war z=3 > max 2.5).
+  // die Kamera und das GLB wirkt „kaputt“ / unsichtbar.
   const isShorts = productId === '2';
-  const cameraPos: [number, number, number] = isShorts ? [0, 0.5, 2.2] : [0, 0.58, 0.85];
-  const orbitTarget: [number, number, number] = isShorts ? [0, 0.45, 0] : [0, 0.53, 0];
-  const minDistance = isShorts ? 0.8 : 0.3;
-  const maxDistance = isShorts ? 5.0 : 2.5;
+  const cameraPos: [number, number, number] = isShorts ? [0, -0.15, 2.15] : [0, -0.04, 1.95];
+  const orbitTarget: [number, number, number] = isShorts ? [0, -0.18, 0] : [0, -0.04, 0];
+  const minDistance = isShorts ? 0.9 : 0.8;
+  const maxDistance = isShorts ? 4.5 : 4.0;
 
   return (
     <Canvas
