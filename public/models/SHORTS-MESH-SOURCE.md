@@ -1,5 +1,19 @@
 # Shorts mesh source
 
+## Photo map (22.07.2026 evening)
+
+- Product photos `public/airfit-shorts-front.png` + `airfit-shorts-back.png` baked as atlas
+  `public/models/shorts-photo-atlas.png` (left=front, right=back).
+- Mesh `shorts-white-v1.glb` has planar front/back UVs (Python) so 360° looks like the shop photo.
+- `Shirt3D` applies atlas as `map` for productId `2` (not pure white).
+- Backup pre-photo: `library/inactive/shorts-white-v1-before-photo-map.glb`
+- Limit: mesh shape is still Kids-Pant geometry — photo is projected, not a 1:1 scan.
+
+**Claude QA finding (22.07.2026, see REPORT-SHORTS-PHOTO-MAP.md for full evidence):** technically working (atlas loads 200, UVs present, material.map set, 0 console errors), but the visual result does not clearly read as "shop photo look" yet:
+- Front-on 360° view: pixel-sampled interior of the leg is near-flat (183–199 grayscale range, no piping visible) — reads as plain white at normal viewing distance.
+- 3/4 side-angle view: visible texture smear/ghosting artifact near the side seam (not clean fabric detail).
+- Recommend reviewing the screenshots in `beweise/shorts-photo-map-22-07/` closely (especially `08-diag-side-view-ARTIFACT.png`) before deploying — the improvement over pure white may not be as visible live as intended.
+
 ## Active again since 22.07.2026 (rollback): TurboSquid "Kids Pant Design" (as shorts-white-v1.glb)
 
 - Product: **Kids Pant Design** (TurboSquid ID 1996470), vendor digitalfashionwear.com

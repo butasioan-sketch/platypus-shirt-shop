@@ -24,16 +24,17 @@ interface Shirt3DProps {
 }
 
 /**
- * GLB pro productId — weiße Blank-Meshes + Kunden-Decals.
- * Parameter (Jonny 22.07.2026):
- * - komplett weiß, Decal = Kundenmotiv
- * - Tee: shirt-white-v2.glb (stabiles Backup-Mesh)
- * - Shorts: shorts-white-v1.glb (Kids-Pant-Base, optisch brauchbarer als Sport-Schrott)
+ * GLB pro productId — Tee weiß; Shorts mit Produktfoto-Atlas (Front/Back planar)
+ * auf das Mesh gebacken (public/models/shorts-photo-atlas.png + UVs im GLB).
+ * Kundenmotiv weiterhin als Decal oben drauf.
  */
 const MODEL_PATHS: Record<string, string> = {
   '1': '/models/shirt-white-v2.glb',
   '2': '/models/shorts-white-v1.glb',
 };
+
+/** Fallback-Atlas falls das GLB die Map nicht mitbringt */
+const SHORTS_PHOTO_ATLAS = '/models/shorts-photo-atlas.png';
 
 function getModelPath(productId?: string): string | null {
   const id = productId || '1';
@@ -46,14 +47,53 @@ const WHITE_MAT = {
   side: THREE.DoubleSide as THREE.Side,
 };
 
-/** Weißes Standard-Material für jedes Teil-Mesh im GLB (nicht nur das größte). */
-function makeGarmentMaterial(color: string): THREE.MeshStandardMaterial {
+/** Weißes Standard-Material (Tee) oder Foto-Atlas (Shorts). */
+function makeGarmentMaterial(
+  color: string,
+  map?: THREE.Texture | null,
+): THREE.MeshStandardMaterial {
+  if (map) {
+    map.colorSpace = THREE.SRGBColorSpace;
+    map.flipY = false; // glTF-UVs: flipY false
+    map.needsUpdate = true;
+  }
   return new THREE.MeshStandardMaterial({
     color: new THREE.Color(color),
-    roughness: WHITE_MAT.roughness,
+    map: map ?? null,
+    roughness: map ? 0.72 : WHITE_MAT.roughness,
     metalness: WHITE_MAT.metalness,
     side: WHITE_MAT.side,
   });
+}
+
+/** Planare UVs aus Bounding-Box (Fallback, wenn GLB keine UVs hat). */
+function ensurePlanarUVs(geometry: THREE.BufferGeometry): void {
+  if (geometry.getAttribute('uv')) return;
+  geometry.computeBoundingBox();
+  const bb = geometry.boundingBox;
+  if (!bb) return;
+  const pos = geometry.getAttribute('position');
+  if (!pos) return;
+  const size = new THREE.Vector3();
+  bb.getSize(size);
+  const uvs = new Float32Array(pos.count * 2);
+  const zMid = (bb.min.z + bb.max.z) * 0.5;
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i);
+    const y = pos.getY(i);
+    const z = pos.getZ(i);
+    let u = (x - bb.min.x) / Math.max(size.x, 1e-6);
+    const v = (y - bb.min.y) / Math.max(size.y, 1e-6);
+    // Atlas: links Front (0..0.5), rechts Back (0.5..1) — wie Python-Bake
+    if (z >= zMid) {
+      u = u * 0.5;
+    } else {
+      u = 0.5 + (1 - u) * 0.5;
+    }
+    uvs[i * 2] = u;
+    uvs[i * 2 + 1] = v;
+  }
+  geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
 }
 
 // === KUNDENMOTIV ALS DECAL ===
@@ -101,8 +141,8 @@ function CustomerPrint({ mesh, print, front, productId, layerIndex = 0 }:
 }
 
 // === GARMENT-MODELL ===
-// WICHTIG: ALLE Meshes im GLB weiß färben + Normalen sicherstellen.
-// Früher: nur größtes Mesh → Rest blieb dunkel/grau/texturiert = "Schrott"-Look.
+// Alle Meshes: Normalen + Material.
+// Tee: weiß. Shorts: Produktfoto-Atlas (Front/Back) — Mesh-Form bleibt, Look ≈ Shop-Foto.
 function GarmentModel({
   modelPath,
   productId,
@@ -111,19 +151,29 @@ function GarmentModel({
   shirtColor = '#ffffff',
 }: Shirt3DProps & { modelPath: string; productId: string }) {
   const { scene } = useGLTF(modelPath);
+  const isShorts = productId === '2';
+  // Atlas-Datei existiert immer; wird nur bei Shorts als Map gesetzt (Hooks dürfen nicht conditional sein)
+  const atlasTex = useTexture(SHORTS_PHOTO_ATLAS);
   const [decalMesh, setDecalMesh] = useState<THREE.Mesh | null>(null);
 
   useEffect(() => {
     let bestMesh: THREE.Mesh | null = null;
     let bestCount = 0;
-    const white = makeGarmentMaterial(shirtColor);
+
+    // Shorts: Foto-Atlas; Tee: reines Weiß (atlasTex ungenutzt)
+    const baseMap = isShorts ? atlasTex : null;
+    if (baseMap) {
+      baseMap.colorSpace = THREE.SRGBColorSpace;
+      baseMap.flipY = false;
+      baseMap.needsUpdate = true;
+    }
+    const matTemplate = makeGarmentMaterial(shirtColor, baseMap);
 
     scene.traverse((o) => {
       if (!(o as THREE.Mesh).isMesh) return;
       const m = o as THREE.Mesh;
       if (!m.geometry) return;
 
-      // Normalen: ohne NORMAL rendert MeshStandardMaterial schwarz/flach
       if (!m.geometry.attributes.normal) {
         m.geometry.computeVertexNormals();
       } else {
@@ -131,7 +181,11 @@ function GarmentModel({
         if (!n || n.count === 0) m.geometry.computeVertexNormals();
       }
 
-      // Jedes Teil-Mesh: reines Weiß (Kunden-Decal separat)
+      // Shorts: UVs für Atlas (im GLB gebacken ODER planar nachrechnen)
+      if (isShorts) {
+        ensurePlanarUVs(m.geometry);
+      }
+
       if (Array.isArray(m.material)) {
         m.material.forEach((mat) => {
           if (mat && 'dispose' in mat) (mat as THREE.Material).dispose();
@@ -139,7 +193,11 @@ function GarmentModel({
       } else if (m.material && 'dispose' in m.material) {
         (m.material as THREE.Material).dispose();
       }
-      m.material = white.clone();
+      m.material = matTemplate.clone();
+      if (baseMap) {
+        (m.material as THREE.MeshStandardMaterial).map = baseMap;
+        (m.material as THREE.MeshStandardMaterial).needsUpdate = true;
+      }
       m.castShadow = false;
       m.receiveShadow = false;
 
@@ -154,11 +212,11 @@ function GarmentModel({
       const b = bestMesh as THREE.Mesh;
       b.geometry.computeBoundingBox();
       // eslint-disable-next-line no-console
-      console.log('[Shirt3D] product', productId, 'decalMesh:', b.name,
+      console.log('[Shirt3D] product', productId, 'photoMap', isShorts, 'decalMesh:', b.name,
         'verts', bestCount, 'bbox', JSON.stringify(b.geometry.boundingBox));
       setDecalMesh(b);
     }
-  }, [scene, shirtColor, productId]);
+  }, [scene, shirtColor, productId, isShorts, atlasTex]);
 
   return (
     <>

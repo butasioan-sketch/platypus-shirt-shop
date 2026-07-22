@@ -46,7 +46,7 @@
     {
       "id": "shorts-white-kids-pant-backup",
       "path": "/models/shorts-white-v1.glb",
-      "bytes": 3525836,
+      "bytes": 3754992,
       "verts": 76305,
       "faces": 141114,
       "extents": [
@@ -58,8 +58,8 @@
       "productId": "2",
       "category": "shorts",
       "materialTarget": "polyester_jn387",
-      "source": "TurboSquid Kids Pant Design 1996470 / GLTF.zip optimized (proven backup)",
-      "notes": "ACTIVE AGAIN since 22.07.2026 (rollback — Grok/Jonny decision), same reasoning as shirt-white-v2-backup. Visually a kids'-pants base, not a sport-shorts silhouette, but renders reliably (every sub-mesh white, no grey patches). Camera in Shirt3D.tsx reverted to the original values for this mesh's scale."
+      "source": "TurboSquid Kids Pant Design 1996470 / GLTF.zip optimized (proven backup), now with baked front/back planar UVs (Python, 22.07.2026 evening) for the photo-atlas map",
+      "notes": "ACTIVE, same Kids-Pant geometry as before, but as of 22.07.2026 evening also carries baked TEXCOORD_0 UVs so Shirt3D.tsx can apply /models/shorts-photo-atlas.png (left=airfit-shorts-front.png, right=airfit-shorts-back.png) as the material map for productId 2, instead of pure white. Pre-photo-map version backed up at inactive/shorts-white-v1-before-photo-map.glb (MD5 identical to shorts-white-kids-pant-backup's original bytes). CLAUDE QA FINDING (22.07.2026, see REPORT-SHORTS-PHOTO-MAP.md): the photo map is technically wired correctly (atlas loads, UVs present, no console errors) but the visual payoff is weak — front-on 360° view reads as near-flat white (pixel-sampled 183-199 range in the leg interior, no piping visible), and a 3/4 side-angle view shows a visible texture smear/ghosting artifact near the side seam. NOT a clear 'looks like the shop photo' result yet. Camera unchanged from the previous rollback."
     },
     {
       "id": "tee-t_shirt-white-v1",
