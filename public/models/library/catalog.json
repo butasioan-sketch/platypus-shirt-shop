@@ -44,9 +44,9 @@
       "notes": "ACTIVE AGAIN since 22.07.2026 (rollback — Grok/Jonny decision). Briefly replaced same-day by tee-t_shirt-white-v1 (marketplace asset), but that only painted the LARGEST sub-mesh white, leaving other sub-meshes visibly grey/textured (\"Schrott\"-Look) once deployed. Root cause fixed in Shirt3D.tsx (every mesh in the scene now gets painted + gets normals if missing), but Jonny/Grok chose to keep this proven single-mesh backup active rather than re-risk the marketplace asset. Camera in Shirt3D.tsx reverted to the original values for this mesh's scale. WARNING: do not run any gltf-transform/trimesh re-export on this file — a prior attempt collapsed the scene's root transform (see 'extents: 0' above, a known quirk of this specific file, not a corruption)."
     },
     {
-      "id": "shorts-adult-sport-white-v2",
+      "id": "shorts-sport-adult-FINAL",
       "path": "/models/shorts-white-v1.glb",
-      "bytes": 1037088,
+      "bytes": 771792,
       "verts": 22086,
       "faces": 34784,
       "extents": [
@@ -58,8 +58,8 @@
       "productId": "2",
       "category": "shorts",
       "materialTarget": "polyester_jn387",
-      "source": "Downloads/Shorts-SportOBJ.rar (objShorts.obj) — same source as the earlier shorts-sport-white-v1 attempt, re-exported by Grok 22.07.2026 night WITH baked NORMAL attribute this time (previous export lacked normals)",
-      "notes": "ACTIVE since 22.07.2026 night — replaces the TurboSquid Kids-Pant mesh entirely (both the plain-white and the photo-mapped version). Same tee-parity pipeline as productId 1: single MeshStandardMaterial, pure white, no photo/atlas texture, customer motif via Decal only. Adult sport-shorts silhouette (drawstring waistband, correct adult proportions), confirmed visually distinct from the kids-pant look. Camera recalibrated in Shirt3D.tsx for this mesh's centering (bbox center y≈-0.18, not 0 — camera target [0,0,0] is a slight approximation but framed acceptably per Playwright evidence in beweise/shorts-tee-parity-22-07/). Backups: inactive/shorts-white-kids-pant-backup.glb (original kids-pant), inactive/shorts-white-v1-kids-photo-last.glb (kids-pant + photo-atlas attempt, commit c684fb7). License: Shorts-Sport marketplace asset — confirm commercial rights before live sales."
+      "source": "Downloads/Shorts-SportOBJ.rar (objShorts.obj) — same geometry as shorts-adult-sport-white-v2 (identical bbox/verts/faces), re-exported by Grok 22.07.2026 night WITHOUT baked NORMAL this time (COLOR_0+POSITION only, ~265KB smaller). Shirt3D.tsx's existing computeVertexNormals() fallback handles this at runtime — verified visually identical to the normals-baked version, no shading difference.",
+      "notes": "ACTIVE since 22.07.2026 night (third shorts-mesh iteration this saga) — replaces shorts-adult-sport-white-v2 (still available at ready-for-claude/shorts-adult-sport-white-v2.glb, 1,037,088 bytes, with baked normals). Same tee-parity pipeline as productId 1: single MeshStandardMaterial, pure white, no photo/atlas texture, customer motif via Decal only. Adult sport-shorts silhouette (drawstring waistband, correct proportions) — visually confirmed identical quality to the previous (normals-baked) version, see beweise/shorts-sport-final-22-07/. Kids-Pant mesh is now explicitly retired: inactive/DEAD-kids-pant-DO-NOT-USE.glb (MD5-identical duplicate of shorts-white-kids-pant-backup.glb). Fab.com purchase ranking for a future 1:1 blank match documented in ready-for-claude/SHORTS-FAB-RANKING-AND-STATUS.md (doc only, no purchase made). License: Shorts-Sport marketplace asset — confirm commercial rights before live sales."
     },
     {
       "id": "tee-t_shirt-white-v1",
