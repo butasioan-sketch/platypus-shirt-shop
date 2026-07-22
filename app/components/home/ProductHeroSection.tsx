@@ -3,7 +3,6 @@ import { Locale, getTranslation } from '@/lib/i18n';
 import { getAllProducts, getProductName, getProduct, type Product } from '@/lib/products';
 import { PRICE_TEE, PRICE_SHORTS, PRICE_BUNDLE_ESSENTIAL } from '@/lib/pricing';
 import ProductHeroViewer from '@/app/components/ProductHeroViewer';
-import ShortsHeroViewer from '@/app/components/ShortsHeroViewer';
 
 const TEE_HREF = '/product/1';
 const SHORTS_HREF = '/product/2';
@@ -82,7 +81,7 @@ export default function ProductHeroSection({ locale }: { locale: Locale }) {
         {shorts && (
           <ProductCard
             href={SHORTS_HREF}
-            viewer={<ShortsHeroViewer height={CARD_HEIGHT} variant="dark" />}
+            viewer={<ProductHeroViewer height={CARD_HEIGHT} productId="2" />}
             badgeLabel={t.brand.collection}
             name={getProductName(shorts as Product, locale)}
             price={PRICE_SHORTS}

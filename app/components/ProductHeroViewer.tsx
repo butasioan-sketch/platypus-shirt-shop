@@ -8,7 +8,13 @@ const Shirt3D = dynamic(() => import('./Shirt3D'), {
   loading: () => <StaticShirtPreview shadow="0 12px 32px rgba(0,0,0,0.55)" />,
 });
 
-export default function ProductHeroViewer({ height = 400 }: { height?: number }) {
+interface ProductHeroViewerProps {
+  height?: number;
+  /** '1' Tee (default), '2' Shorts — nur der GLB-Pfad in Shirt3D haengt davon ab. */
+  productId?: string;
+}
+
+export default function ProductHeroViewer({ height = 400, productId = '1' }: ProductHeroViewerProps) {
   return (
     <div style={{ width: '100%', maxWidth: 400, height, margin: '0 auto', position: 'relative' }}>
       <div style={{
@@ -20,7 +26,7 @@ export default function ProductHeroViewer({ height = 400 }: { height?: number })
       <div style={{ position: 'relative', zIndex: 1, width: '100%', height: '100%', transition: 'transform 0.2s ease' }}
         className="hero-shirt-viewer"
       >
-        <Shirt3D enableTouch={false} fallback="static" />
+        <Shirt3D enableTouch={false} fallback="static" productId={productId} />
       </div>
     </div>
   );
