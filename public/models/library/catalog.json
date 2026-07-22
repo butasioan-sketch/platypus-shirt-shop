@@ -44,22 +44,22 @@
       "notes": "ACTIVE AGAIN since 22.07.2026 (rollback — Grok/Jonny decision). Briefly replaced same-day by tee-t_shirt-white-v1 (marketplace asset), but that only painted the LARGEST sub-mesh white, leaving other sub-meshes visibly grey/textured (\"Schrott\"-Look) once deployed. Root cause fixed in Shirt3D.tsx (every mesh in the scene now gets painted + gets normals if missing), but Jonny/Grok chose to keep this proven single-mesh backup active rather than re-risk the marketplace asset. Camera in Shirt3D.tsx reverted to the original values for this mesh's scale. WARNING: do not run any gltf-transform/trimesh re-export on this file — a prior attempt collapsed the scene's root transform (see 'extents: 0' above, a known quirk of this specific file, not a corruption)."
     },
     {
-      "id": "shorts-white-kids-pant-backup",
+      "id": "shorts-adult-sport-white-v2",
       "path": "/models/shorts-white-v1.glb",
-      "bytes": 3754992,
-      "verts": 76305,
-      "faces": 141114,
+      "bytes": 1037088,
+      "verts": 22086,
+      "faces": 34784,
       "extents": [
+        0.9622795975208282,
         1.0,
-        0.9932000041007996,
-        0.7268619239330292
+        0.5633901953697205
       ],
       "active": true,
       "productId": "2",
       "category": "shorts",
       "materialTarget": "polyester_jn387",
-      "source": "TurboSquid Kids Pant Design 1996470 / GLTF.zip optimized (proven backup), now with baked front/back planar UVs (Python, 22.07.2026 evening) for the photo-atlas map",
-      "notes": "ACTIVE, same Kids-Pant geometry as before, but as of 22.07.2026 evening also carries baked TEXCOORD_0 UVs so Shirt3D.tsx can apply /models/shorts-photo-atlas.png (left=airfit-shorts-front.png, right=airfit-shorts-back.png) as the material map for productId 2, instead of pure white. Pre-photo-map version backed up at inactive/shorts-white-v1-before-photo-map.glb (MD5 identical to shorts-white-kids-pant-backup's original bytes). CLAUDE QA FINDING (22.07.2026, see REPORT-SHORTS-PHOTO-MAP.md): the photo map is technically wired correctly (atlas loads, UVs present, no console errors) but the visual payoff is weak — front-on 360° view reads as near-flat white (pixel-sampled 183-199 range in the leg interior, no piping visible), and a 3/4 side-angle view shows a visible texture smear/ghosting artifact near the side seam. NOT a clear 'looks like the shop photo' result yet. Camera unchanged from the previous rollback."
+      "source": "Downloads/Shorts-SportOBJ.rar (objShorts.obj) — same source as the earlier shorts-sport-white-v1 attempt, re-exported by Grok 22.07.2026 night WITH baked NORMAL attribute this time (previous export lacked normals)",
+      "notes": "ACTIVE since 22.07.2026 night — replaces the TurboSquid Kids-Pant mesh entirely (both the plain-white and the photo-mapped version). Same tee-parity pipeline as productId 1: single MeshStandardMaterial, pure white, no photo/atlas texture, customer motif via Decal only. Adult sport-shorts silhouette (drawstring waistband, correct adult proportions), confirmed visually distinct from the kids-pant look. Camera recalibrated in Shirt3D.tsx for this mesh's centering (bbox center y≈-0.18, not 0 — camera target [0,0,0] is a slight approximation but framed acceptably per Playwright evidence in beweise/shorts-tee-parity-22-07/). Backups: inactive/shorts-white-kids-pant-backup.glb (original kids-pant), inactive/shorts-white-v1-kids-photo-last.glb (kids-pant + photo-atlas attempt, commit c684fb7). License: Shorts-Sport marketplace asset — confirm commercial rights before live sales."
     },
     {
       "id": "tee-t_shirt-white-v1",
@@ -112,8 +112,26 @@
       "productId": null,
       "category": "shorts",
       "materialTarget": "polyester_jn387",
-      "source": "Downloads/Shorts-SportOBJ.rar (objShorts.obj) — converted white via Grok 22.07.2026",
-      "notes": "INACTIVE since 22.07.2026 (was briefly live same day, reverted alongside the tee for the same multi-primitive-white-paint bug). Duplicate copy exists at inactive/shorts-white-v1-marketplace-schrott.glb (identical MD5, just renamed by Grok's revert pass — redundant, harmless). Do NOT reactivate without a visual Jonny-OK. License: confirm commercial rights before live sales."
+      "source": "Downloads/Shorts-SportOBJ.rar (objShorts.obj) — converted white via Grok 22.07.2026 (first export, no NORMAL attribute)",
+      "notes": "SUPERSEDED by shorts-adult-sport-white-v2 (same source, re-exported with normals baked in, active since 22.07.2026 night). This first export is kept only as a historical record — it was briefly live same day, reverted alongside the tee for the multi-primitive-white-paint bug, unrelated to why it was superseded here. Duplicate copy exists at inactive/shorts-white-v1-marketplace-schrott.glb (identical MD5, just renamed by Grok's earlier revert pass — redundant, harmless)."
+    },
+    {
+      "id": "shorts-white-v1-kids-photo-last",
+      "path": "/models/library/inactive/shorts-white-v1-kids-photo-last.glb",
+      "bytes": 3754992,
+      "verts": 76305,
+      "faces": 141114,
+      "extents": [
+        1.0,
+        0.9932000041007996,
+        0.7268619239330292
+      ],
+      "active": false,
+      "productId": null,
+      "category": "shorts",
+      "materialTarget": "polyester_jn387",
+      "source": "TurboSquid Kids Pant Design 1996470, with baked front/back planar UVs for the photo-atlas attempt (commit c684fb7, 22.07.2026 evening)",
+      "notes": "SUPERSEDED same evening/night by shorts-adult-sport-white-v2 — kept as historical record of the photo-atlas-on-kids-pant attempt. See REPORT-SHORTS-PHOTO-MAP.md for why that attempt was abandoned (weak visual result + side-seam texture artifact)."
     },
     {
       "id": "staged-obj",
@@ -200,5 +218,5 @@
       "seeAlso": "/models/library/ready-for-claude/ (staging folder with A/B candidates + READY-MANIFEST.json, curated by Grok, not wired into MODEL_PATHS)"
     }
   },
-  "updated": "2026-07-22"
+  "updated": "2026-07-22 night — shorts = adult sport mesh, tee-parity pipeline (no photo-atlas)"
 }
