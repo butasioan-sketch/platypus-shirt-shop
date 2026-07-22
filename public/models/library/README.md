@@ -8,10 +8,14 @@
 
 ## Active (Shop)
 
-| id | productId | path | blank |
-|----|-----------|------|-------|
-| shirt-white-v2 | 1 | `/models/shirt-white-v2.glb` | Polyester B&C TM062 |
-| shorts-white-v1 | 2 | `/models/shorts-white-v1.glb` | Polyester JN387 (Mesh: TurboSquid kids pant base) |
+| id | productId | path | Mesh-Materialtarget (catalog.json) | Shop-Blank (lib/print-spec.ts, aktuell) |
+|----|-----------|------|-------------------------------------|-------------------------------------------|
+| shirt-white-v2 | 1 | `/models/shirt-white-v2.glb` | `polyester_bc_tm062` (unveraendert seit Erstellung) | James & Nicholson JN827 (seit 21.07.2026 — nur Text/Preis, Mesh NICHT neu kalibriert) |
+| shorts-white-v1 | 2 | `/models/shorts-white-v1.glb` | `polyester_jn387` | James & Nicholson JN387 (Mesh: TurboSquid Kids-Pant-Base, nicht 1:1 modelliert) |
+
+**Wichtig:** Die Tee-GLB-Geometrie/Material wurde nie an JN827 angepasst — sie stammt weiterhin vom
+alten TM062-Shooting. Das Mesh ist einfarbig (eine `MeshStandardMaterial`, siehe `Shirt3D.tsx`),
+kann daher ohnehin kein Colorblocking zeigen. Siehe REPORT-AUDIT-WEBSHOP-DOWNLOADS-22-07.md.
 
 ## Inactive (staged)
 

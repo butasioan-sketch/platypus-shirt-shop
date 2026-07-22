@@ -92,6 +92,8 @@ export const translations = {
       moveForward: 'Nach vorne',
       moveBackward: 'Nach hinten',
       newText: 'Neuer Text (weitere Ebene)',
+      calibrationPhotoNote: 'Foto: Kalibrierungs-Vorschau · Blank: {blank}, {gsm} g/m²',
+      preview360Note: '3D-Vorschau zum Positionieren · finales Aussehen siehe Vorder-/Rückseite (Foto)',
     },
     errors: {
       addCart: 'Fehler beim Hinzufügen',
@@ -276,6 +278,8 @@ export const translations = {
       moveForward: 'În față',
       moveBackward: 'În spate',
       newText: 'Text nou (strat suplimentar)',
+      calibrationPhotoNote: 'Foto: previzualizare de calibrare · Articol: {blank}, {gsm} g/m²',
+      preview360Note: 'Previzualizare 3D pentru poziționare · aspectul final: vezi foto față/spate',
     },
     errors: {
       addCart: 'Eroare la adăugare',
@@ -460,6 +464,8 @@ export const translations = {
       moveForward: 'Bring forward',
       moveBackward: 'Send backward',
       newText: 'New text (extra layer)',
+      calibrationPhotoNote: 'Photo: calibration preview · Blank: {blank}, {gsm} gsm',
+      preview360Note: '3D preview for positioning · final look: see front/back photo',
     },
     errors: {
       addCart: 'Could not add to cart',

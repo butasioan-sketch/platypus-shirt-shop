@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import { calcUnitPriceForProduct } from '@/lib/pricing';
-import { PRINT_SPEC, formatSizeMm, getNoPrintNote, getPlacementZone, getGarmentPhotoSrc, getViewerAspect } from '@/lib/print-spec';
+import { PRINT_SPEC, formatSizeMm, getNoPrintNote, getPlacementZone, getGarmentPhotoSrc, getViewerAspect, getGarmentProfile } from '@/lib/print-spec';
 import { defaultPrintTransform, type PrintTransform } from '@/lib/print-position';
 import { renderTextImage, TEXT_COLOR_OPTIONS } from '@/lib/print-text';
 import { useLocale } from '@/app/components/LocaleProvider';
@@ -51,6 +51,11 @@ const genId = () => `L-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 
 export default function DesignStudio({ productId = '1', onDesignChange }: DesignStudioProps) {
   const { t } = useLocale();
+  const profile = getGarmentProfile(productId);
+  // Tee-Atelierfoto ist noch das alte einfarbige Blank-Foto, nicht JN827 (das hat
+  // Kontrast-Einsaetze an Schulter/Seite) — siehe REPORT-AUDIT-WEBSHOP-DOWNLOADS-22-07.md.
+  // Shorts-Foto ist bereits das reale JN387-Foto (Hash-verifiziert), braucht keinen Hinweis.
+  const photoIsCalibrationPreview = productId === '1';
   const [side, setSide] = useState<'front' | 'back'>('front');
   const [preview360, setPreview360] = useState(false);
   const [flipping, setFlipping] = useState(false);
@@ -253,16 +258,21 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
       </div>
 
       {preview360 ? (
-        <div style={{ width: '100%', aspectRatio: getViewerAspect(productId), marginBottom: '1rem' }}>
-          <Shirt3D
-            frontPrint={frontLayers.map((l) => ({ src: l.src, x: l.transform.x, y: l.transform.y, scale: l.transform.scale }))}
-            backPrint={backLayers.map((l) => ({ src: l.src, x: l.transform.x, y: l.transform.y, scale: l.transform.scale }))}
-            frontSrc={getGarmentPhotoSrc('front', productId)}
-            backSrc={getGarmentPhotoSrc('back', productId)}
-            productId={productId}
-            fallback="flip"
-          />
-        </div>
+        <>
+          <div style={{ width: '100%', aspectRatio: getViewerAspect(productId), marginBottom: '0.5rem' }}>
+            <Shirt3D
+              frontPrint={frontLayers.map((l) => ({ src: l.src, x: l.transform.x, y: l.transform.y, scale: l.transform.scale }))}
+              backPrint={backLayers.map((l) => ({ src: l.src, x: l.transform.x, y: l.transform.y, scale: l.transform.scale }))}
+              frontSrc={getGarmentPhotoSrc('front', productId)}
+              backSrc={getGarmentPhotoSrc('back', productId)}
+              productId={productId}
+              fallback="flip"
+            />
+          </div>
+          <p className="plt-label" style={{ textAlign: 'center', margin: '0 0 1rem', color: '#555', fontSize: '0.68rem' }}>
+            {t.studio.preview360Note}
+          </p>
+        </>
       ) : (
         <div
           ref={containerRef}
@@ -291,6 +301,12 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
             productId={productId}
           />
         </div>
+      )}
+
+      {!preview360 && photoIsCalibrationPreview && (
+        <p className="plt-label" style={{ textAlign: 'center', margin: '-0.6rem 0 1rem', color: '#555', fontSize: '0.68rem' }}>
+          {t.studio.calibrationPhotoNote.replace('{blank}', profile.blank).replace('{gsm}', String(profile.weightGsm))}
+        </p>
       )}
 
       <input ref={fileRef} type="file" accept="image/*" onChange={handleUpload} style={{ display: 'none' }} />

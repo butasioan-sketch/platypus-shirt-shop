@@ -126,7 +126,11 @@ export const PRINT_SPEC = {
   aspectRatio: 210 / 297,
   sides: ['front', 'back'] as const,
   method: 'sublimation' as const,
-  blank: 'B&C TM062',
+  /** Nur Fallback falls ein Druckauftrag ohne jedes Design vorliegt (Edge-Case) —
+   *  der eigentliche Blank-Name kommt produktabhaengig aus GARMENT_PROFILES.
+   *  War frueher faelschlich 'B&C TM062' fest eingetragen, obwohl kein aktives
+   *  Produkt (mehr) diesen Blank fuehrt. */
+  blank: 'kein Design zugeordnet',
   shirtSizeRef: 'L' as const,
   shirtLengthMm: 740,
   collarOffsetMm: 110,
