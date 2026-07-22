@@ -23,7 +23,13 @@ interface Shirt3DProps {
   productId?: string;
 }
 
-/** GLB pro productId — gleiche 3D-Pipeline (Decals + manuelles Orbit) für Tee und Shorts. */
+/**
+ * GLB pro productId — weiße Blank-Meshes + Kunden-Decals.
+ * Parameter (Jonny 22.07.2026):
+ * - komplett weiß, Decal = Kundenmotiv
+ * - Tee: shirt-white-v2.glb (stabiles Backup-Mesh)
+ * - Shorts: shorts-white-v1.glb (Kids-Pant-Base, optisch brauchbarer als Sport-Schrott)
+ */
 const MODEL_PATHS: Record<string, string> = {
   '1': '/models/shirt-white-v2.glb',
   '2': '/models/shorts-white-v1.glb',
@@ -34,9 +40,24 @@ function getModelPath(productId?: string): string | null {
   return MODEL_PATHS[id] ?? null;
 }
 
+const WHITE_MAT = {
+  roughness: 0.62,
+  metalness: 0,
+  side: THREE.DoubleSide as THREE.Side,
+};
+
+/** Weißes Standard-Material für jedes Teil-Mesh im GLB (nicht nur das größte). */
+function makeGarmentMaterial(color: string): THREE.MeshStandardMaterial {
+  return new THREE.MeshStandardMaterial({
+    color: new THREE.Color(color),
+    roughness: WHITE_MAT.roughness,
+    metalness: WHITE_MAT.metalness,
+    side: WHITE_MAT.side,
+  });
+}
+
 // === KUNDENMOTIV ALS DECAL ===
-// Position wird dynamisch aus der Bounding-Box des Garment-Meshes abgeleitet.
-// print.x / print.y: -50..+50 (% aus 2D-Editor); print.scale: Multiplikator — wie 2D-Editor.
+// Position aus Bounding-Box des Haupt-Meshes (größtes Mesh) — wie 2D-Editor %.
 function CustomerPrint({ mesh, print, front, productId, layerIndex = 0 }:
   { mesh: THREE.Mesh; print: PrintData; front: boolean; productId: string; layerIndex?: number }) {
   const tex = useTexture(print.src);
@@ -58,8 +79,6 @@ function CustomerPrint({ mesh, print, front, productId, layerIndex = 0 }:
       front,
       productId,
     );
-    // Mehrere Ebenen auf derselben Seite: minimale Z-Staffelung gegen Z-Fighting
-    // zwischen uebereinanderliegenden Decals (Reihenfolge = Stapel, wie im Editor).
     position[2] += (front ? 1 : -1) * layerIndex * 0.0015;
     return {
       pos: position,
@@ -81,7 +100,9 @@ function CustomerPrint({ mesh, print, front, productId, layerIndex = 0 }:
   );
 }
 
-// === GARMENT-MODELL (Tee oder Shorts — modelPath) ===
+// === GARMENT-MODELL ===
+// WICHTIG: ALLE Meshes im GLB weiß färben + Normalen sicherstellen.
+// Früher: nur größtes Mesh → Rest blieb dunkel/grau/texturiert = "Schrott"-Look.
 function GarmentModel({
   modelPath,
   productId,
@@ -90,64 +111,73 @@ function GarmentModel({
   shirtColor = '#ffffff',
 }: Shirt3DProps & { modelPath: string; productId: string }) {
   const { scene } = useGLTF(modelPath);
-  const [mesh, setMesh] = useState<THREE.Mesh | null>(null);
+  const [decalMesh, setDecalMesh] = useState<THREE.Mesh | null>(null);
 
   useEffect(() => {
-    let best: THREE.Mesh | null = null;
+    let bestMesh: THREE.Mesh | null = null;
     let bestCount = 0;
+    const white = makeGarmentMaterial(shirtColor);
+
     scene.traverse((o) => {
+      if (!(o as THREE.Mesh).isMesh) return;
       const m = o as THREE.Mesh;
-      if (m.isMesh && m.geometry) {
-        const n = m.geometry.attributes.position?.count ?? 0;
-        if (n > bestCount) { best = m; bestCount = n; }
+      if (!m.geometry) return;
+
+      // Normalen: ohne NORMAL rendert MeshStandardMaterial schwarz/flach
+      if (!m.geometry.attributes.normal) {
+        m.geometry.computeVertexNormals();
+      } else {
+        const n = m.geometry.attributes.normal;
+        if (!n || n.count === 0) m.geometry.computeVertexNormals();
+      }
+
+      // Jedes Teil-Mesh: reines Weiß (Kunden-Decal separat)
+      if (Array.isArray(m.material)) {
+        m.material.forEach((mat) => {
+          if (mat && 'dispose' in mat) (mat as THREE.Material).dispose();
+        });
+      } else if (m.material && 'dispose' in m.material) {
+        (m.material as THREE.Material).dispose();
+      }
+      m.material = white.clone();
+      m.castShadow = false;
+      m.receiveShadow = false;
+
+      const count = m.geometry.attributes.position?.count ?? 0;
+      if (count > bestCount) {
+        bestMesh = m;
+        bestCount = count;
       }
     });
-    if (best) {
-      const b = best as THREE.Mesh;
-      // Marketplace-OBJ/GLB-Konvertierungen (22.07.2026 weißes Paar, wie zuvor der
-      // Shorts-Platzhalter) liefern oft keine NORMAL-Attribute — ohne die rendert
-      // MeshStandardMaterial das Mesh schwarz/unbeleuchtet statt weiss.
-      if (!b.geometry.attributes.normal) {
-        b.geometry.computeVertexNormals();
-      }
-      b.material = new THREE.MeshStandardMaterial({
-        color: new THREE.Color(shirtColor),
-        roughness: 0.65,
-        metalness: 0,
-        // Beide aktiven Meshes (seit 22.07.2026) sind frisch aus Marketplace-OBJ/GLB
-        // konvertiert, Winding-Richtung nicht verifiziert — DoubleSide fuer beide als
-        // Absicherung, damit kein Mesh durch Backface-Culling unsichtbar wird.
-        side: THREE.DoubleSide,
-      });
+
+    if (bestMesh) {
+      const b = bestMesh as THREE.Mesh;
       b.geometry.computeBoundingBox();
-      console.log('[Shirt3D] product', productId, 'mesh:', b.name,
-        'bbox:', JSON.stringify(b.geometry.boundingBox));
-      setMesh(b);
+      // eslint-disable-next-line no-console
+      console.log('[Shirt3D] product', productId, 'decalMesh:', b.name,
+        'verts', bestCount, 'bbox', JSON.stringify(b.geometry.boundingBox));
+      setDecalMesh(b);
     }
   }, [scene, shirtColor, productId]);
+
   return (
     <>
       <primitive object={scene} />
-      {mesh && createPortal(
+      {decalMesh && createPortal(
         <>
           {(frontPrint || []).map((p, i) => (
-            <CustomerPrint key={`front-${i}`} mesh={mesh} print={p} front productId={productId} layerIndex={i} />
+            <CustomerPrint key={`front-${i}`} mesh={decalMesh} print={p} front productId={productId} layerIndex={i} />
           ))}
           {(backPrint || []).map((p, i) => (
-            <CustomerPrint key={`back-${i}`} mesh={mesh} print={p} front={false} productId={productId} layerIndex={i} />
+            <CustomerPrint key={`back-${i}`} mesh={decalMesh} print={p} front={false} productId={productId} layerIndex={i} />
           ))}
         </>,
-        mesh
+        decalMesh,
       )}
     </>
   );
 }
 
-/** Sichtbarer Lade-Platzhalter waehrend das GLB geladen/geparst wird — vorher
- *  war hier `fallback={null}` (nichts), was auf dem dunklen Seiten-Hintergrund wie
- *  ein "kaputter schwarzer Kasten" wirkte statt wie ein Ladezustand. `Html fullscreen`
- *  (drei) ueberlagert die Canvas-Flaeche mit echtem DOM statt einem Three.js-Objekt,
- *  da ein <Suspense> innerhalb von <Canvas> nur R3F-renderbare Fallbacks akzeptiert. */
 function ModelLoadingSkeleton({ productId }: { productId: string }) {
   return (
     <Html fullscreen>
@@ -187,29 +217,27 @@ export default function Shirt3D({
     );
   }
 
-  // Kamera-Kalibrierung fuer das weisse GLB-Paar (22.07.2026, tee-t_shirt-white-v1 /
-  // shorts-sport-white-v1) — beide Meshes sind zentriert, max-extent auf 1.0 skaliert
-  // (per gltf-transform inspect vermessen), anders als die alten Meshes (Tee war winzig,
-  // max-extent ~0.28; Shorts sass auf y=0 statt zentriert). orbitTarget = jeweiliger
-  // Bounding-Box-Mittelpunkt der neuen Meshes, nicht mehr die alten Werte.
-  // WICHTIG: maxDistance muss >= |cameraPos| sein — sonst klemmt OrbitControls
-  // die Kamera und das GLB wirkt „kaputt“ / unsichtbar.
+  // Kamera für STABILE Meshes (Rollback 22.07.2026 — proven backups, nicht Marketplace-Schrott).
+  // maxDistance MUSS >= |camera z| sein (sonst Orbit clamp → unsichtbar).
   const isShorts = productId === '2';
-  const cameraPos: [number, number, number] = isShorts ? [0, -0.15, 2.15] : [0, -0.04, 1.95];
-  const orbitTarget: [number, number, number] = isShorts ? [0, -0.18, 0] : [0, -0.04, 0];
-  const minDistance = isShorts ? 0.9 : 0.8;
-  const maxDistance = isShorts ? 4.5 : 4.0;
+  const cameraPos: [number, number, number] = isShorts ? [0, 0.5, 2.2] : [0, 0.58, 0.85];
+  const orbitTarget: [number, number, number] = isShorts ? [0, 0.45, 0] : [0, 0.53, 0];
+  const minDistance = isShorts ? 0.8 : 0.3;
+  const maxDistance = isShorts ? 5.0 : 2.5;
 
   return (
     <Canvas
       camera={{ position: cameraPos, fov: isShorts ? 35 : 40 }}
       dpr={[1, 2]}
       style={{ width: '100%', height: '100%', background: 'transparent' }}
+      gl={{ antialias: true, alpha: true }}
     >
       <Suspense fallback={<ModelLoadingSkeleton productId={productId} />}>
-        <ambientLight intensity={0.7} />
-        <directionalLight position={[2, 4, 3]} intensity={1.1} />
-        <directionalLight position={[-3, 2, -2]} intensity={0.4} />
+        {/* Helles, weiches Licht — weiße Textilien brauchen genug Ambient + Key */}
+        <ambientLight intensity={0.85} />
+        <directionalLight position={[2.5, 4, 3]} intensity={1.15} />
+        <directionalLight position={[-2.5, 2, -2]} intensity={0.45} />
+        <directionalLight position={[0, 1, 4]} intensity={0.35} />
         <GarmentModel {...props} modelPath={modelPath} productId={productId} />
         <OrbitControls
           enablePan={false}

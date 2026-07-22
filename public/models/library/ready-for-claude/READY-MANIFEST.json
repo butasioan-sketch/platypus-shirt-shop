@@ -1,0 +1,102 @@
+{
+  "strategy": "stable_backups_as_primary_white_glb",
+  "active": {
+    "tee": "shirt-white-v2.glb (from tee-stable-white-v2 / old proven backup)",
+    "shorts": "shorts-white-v1.glb (from kids-pant backup re-white)"
+  },
+  "camera_recommended": {
+    "1": {
+      "cameraPos": [
+        0,
+        0.0,
+        1.2
+      ],
+      "orbitTarget": [
+        0,
+        0.0,
+        0
+      ],
+      "minDistance": 0.5,
+      "maxDistance": 3.5,
+      "fov": 40
+    },
+    "2": {
+      "cameraPos": [
+        0,
+        0.0,
+        1.6
+      ],
+      "orbitTarget": [
+        0,
+        0.0,
+        0
+      ],
+      "minDistance": 0.6,
+      "maxDistance": 4.0,
+      "fov": 35
+    }
+  },
+  "jobs": [
+    {
+      "name": "tee-stable-white-v2.glb",
+      "path": "/home/jonny/Schreibtisch/platypus-shirt-shop/public/models/library/ready-for-claude/tee-stable-white-v2.glb",
+      "extents": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "verts": 175056,
+      "faces": 258462
+    },
+    {
+      "name": "shorts-stable-white-v1.glb",
+      "path": "/home/jonny/Schreibtisch/platypus-shirt-shop/public/models/library/ready-for-claude/shorts-stable-white-v1.glb",
+      "extents": [
+        1.0,
+        0.9932000041007996,
+        0.7268619239330292
+      ],
+      "verts": 76305,
+      "faces": 141114
+    },
+    {
+      "name": "tee-marketplace-tshirt-white.glb",
+      "path": "/home/jonny/Schreibtisch/platypus-shirt-shop/public/models/library/ready-for-claude/tee-marketplace-tshirt-white.glb",
+      "extents": [
+        0.9306315313561162,
+        1.0,
+        0.4405271953155184
+      ],
+      "verts": 118865,
+      "faces": 237938
+    },
+    {
+      "name": "tee-marketplace-joe-white.glb",
+      "path": "/home/jonny/Schreibtisch/platypus-shirt-shop/public/models/library/ready-for-claude/tee-marketplace-joe-white.glb",
+      "extents": [
+        0.9696602690813396,
+        1.0,
+        0.4478952555871132
+      ],
+      "verts": 186662,
+      "faces": 373280
+    },
+    {
+      "name": "shorts-marketplace-sport-white.glb",
+      "path": "/home/jonny/Schreibtisch/platypus-shirt-shop/public/models/library/ready-for-claude/shorts-marketplace-sport-white.glb",
+      "extents": [
+        0.9622796475887299,
+        1.0,
+        0.5633901953697205
+      ],
+      "verts": 17487,
+      "faces": 34784
+    }
+  ],
+  "params": {
+    "color": "pure white",
+    "decals": "customer motif only",
+    "blank_goal": "polyester unisex white >=140gsm",
+    "no_side_stripes_required_in_mesh": true
+  }
+}

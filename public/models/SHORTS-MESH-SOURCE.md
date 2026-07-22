@@ -1,17 +1,17 @@
 # Shorts mesh source
 
-## Active since 22.07.2026: shorts-sport-white-v1 (as shorts-white-v1.glb)
-
-- Source: `~/Downloads/Shorts-SportOBJ.rar` → `obj/objShorts.obj` (~2.7 MB)
-- Converted white via Grok, 22.07.2026 — see `.tmp-shorts-sport/out/SHORTS-SPORT-CONVERT.md`
-- Solid white vertex colors (`COLOR_0`), no pack textures (`color.jpg` etc.) baked in — clean Decal base
-- 22 107 verts / 34 784 faces, centered, max-extent scaled to 1.0 — **772 132 bytes**
-- Generic sport-shorts silhouette. **Not modeled 1:1 on JN387** — visual approximation only, same caveat as the mesh it replaced
-- License: free marketplace asset — confirm commercial rights on the product page before live sales
-
-## Superseded: TurboSquid "Kids Pant Design" (was live until 22.07.2026)
+## Active again since 22.07.2026 (rollback): TurboSquid "Kids Pant Design" (as shorts-white-v1.glb)
 
 - Product: **Kids Pant Design** (TurboSquid ID 1996470), vendor digitalfashionwear.com
-- Backed up at `public/models/library/inactive/shorts-white-kids-pant-backup.glb` (3 525 836 bytes, ~76 305 verts / ~141 114 faces)
-- Replaced because it was heavier (~3.5 MB) and visibly a kids'-pants base, not a sport-shorts silhouette
-- Kept for rollback — do not delete without a further Jonny-OK
+- 76 305 verts / 141 114 faces, **3 525 836 bytes**
+- Visually a kids'-pants base, not a sport-shorts silhouette — known limitation, kept because it renders reliably (every sub-mesh white, no grey patches, proven in production before)
+- License: TurboSquid free asset — confirm commercial rights before live sales
+
+## Reverted same-day: shorts-sport-white-v1 (was live for a few hours on 22.07.2026)
+
+- Source: `~/Downloads/Shorts-SportOBJ.rar` → `obj/objShorts.obj` (~2.7 MB), converted white via Grok
+- 22 107 verts / 34 784 faces, centered, max-extent scaled to 1.0 — 772 132 bytes
+- **Why reverted:** the mesh has multiple primitives/sub-meshes; the Shirt3D.tsx code at the time only painted the LARGEST sub-mesh white via `MeshStandardMaterial` — other sub-meshes stayed grey/textured once deployed live ("Schrott"-Look), which wasn't visible in the local single-primitive smoke test before deploy.
+- Root cause is now fixed in `Shirt3D.tsx` (every mesh in `scene.traverse` gets painted + gets normals if missing) — but Jonny/Grok chose to keep the proven Kids-Pant backup active rather than re-risk this asset. Do **not** reactivate without a visual Jonny-OK.
+- Staged at `public/models/library/inactive/shorts-sport-white-v1.glb` (also duplicated as `shorts-white-v1-marketplace-schrott.glb`, identical MD5 — redundant copy from the revert pass, harmless)
+- License: confirm commercial rights before live sales

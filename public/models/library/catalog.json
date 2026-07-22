@@ -26,26 +26,44 @@
       "source": "Downloads/obj.zip objCAP.obj"
     },
     {
-      "id": "shorts-sport-white-v1",
-      "path": "/models/shorts-white-v1.glb",
-      "bytes": 772132,
-      "verts": 22107,
-      "faces": 34784,
+      "id": "shirt-white-v2-backup",
+      "path": "/models/shirt-white-v2.glb",
+      "bytes": 833552,
+      "verts": 175056,
+      "faces": 258462,
       "extents": [
-        0.9622799999999999,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "active": true,
+      "productId": "1",
+      "category": "tee",
+      "materialTarget": "polyester_bc_tm062",
+      "source": "existing shop asset (proven backup)",
+      "notes": "ACTIVE AGAIN since 22.07.2026 (rollback — Grok/Jonny decision). Briefly replaced same-day by tee-t_shirt-white-v1 (marketplace asset), but that only painted the LARGEST sub-mesh white, leaving other sub-meshes visibly grey/textured (\"Schrott\"-Look) once deployed. Root cause fixed in Shirt3D.tsx (every mesh in the scene now gets painted + gets normals if missing), but Jonny/Grok chose to keep this proven single-mesh backup active rather than re-risk the marketplace asset. Camera in Shirt3D.tsx reverted to the original values for this mesh's scale. WARNING: do not run any gltf-transform/trimesh re-export on this file — a prior attempt collapsed the scene's root transform (see 'extents: 0' above, a known quirk of this specific file, not a corruption)."
+    },
+    {
+      "id": "shorts-white-kids-pant-backup",
+      "path": "/models/shorts-white-v1.glb",
+      "bytes": 3525836,
+      "verts": 76305,
+      "faces": 141114,
+      "extents": [
         1.0,
-        0.5633899999999999
+        0.9932000041007996,
+        0.7268619239330292
       ],
       "active": true,
       "productId": "2",
       "category": "shorts",
       "materialTarget": "polyester_jn387",
-      "source": "Downloads/Shorts-SportOBJ.rar (objShorts.obj) — converted white via Grok 22.07.2026, see .tmp-shorts-sport/out/SHORTS-SPORT-CONVERT.md",
-      "notes": "Active for product 2 since 22.07.2026 (replaced TurboSquid kids-pant, see shorts-white-kids-pant-backup.glb). Solid white vertex colors, no pack textures baked in. Generic sport-shorts silhouette, still NOT modeled 1:1 on JN387 — visual approximation. License: confirm commercial rights for Shorts-Sport asset before live sales."
+      "source": "TurboSquid Kids Pant Design 1996470 / GLTF.zip optimized (proven backup)",
+      "notes": "ACTIVE AGAIN since 22.07.2026 (rollback — Grok/Jonny decision), same reasoning as shirt-white-v2-backup. Visually a kids'-pants base, not a sport-shorts silhouette, but renders reliably (every sub-mesh white, no grey patches). Camera in Shirt3D.tsx reverted to the original values for this mesh's scale."
     },
     {
       "id": "tee-t_shirt-white-v1",
-      "path": "/models/shirt-white-v2.glb",
+      "path": "/models/library/inactive/tee-t_shirt-white-v1.glb",
       "bytes": 4326576,
       "verts": 122543,
       "faces": 237938,
@@ -54,12 +72,12 @@
         1.0,
         0.4405299999999999
       ],
-      "active": true,
-      "productId": "1",
-      "category": "tee",
+      "active": false,
+      "productId": null,
       "materialTarget": "polyester_pending",
-      "source": "Downloads/t_shirt.glb — converted/centered white via Grok 22.07.2026, see .tmp-shorts-sport/out/DOWNLOADS-MODELS-INVENTORY-22-07.md",
-      "notes": "Active for product 1 since 22.07.2026 (replaced old tiny B&C-TM062-scaled mesh, see shirt-white-v2-backup.glb). No vertex colors/material baked in — relies on MeshStandardMaterial white in Shirt3D.tsx. Generic tee silhouette, NOT modeled on JN827 (no colorblocking possible either way — single-material render path). Fallback if this looks wrong in 360°: tee-joe-white-v1 (see below). License: confirm commercial rights for t_shirt asset before live sales."
+      "category": "tee",
+      "source": "Downloads/t_shirt.glb — converted/centered white via Grok 22.07.2026",
+      "notes": "INACTIVE since 22.07.2026 (was briefly live same day — see shirt-white-v2-backup notes for why it was reverted). Multi-primitive GLB: only the largest sub-mesh was being painted white by the old Shirt3D.tsx code, other sub-meshes stayed grey/textured once deployed live. Do NOT reactivate without a visual Jonny-OK, even though the Shirt3D.tsx root-cause fix (paint all meshes) now exists — it was not re-tested against this specific asset. Duplicate copy exists at inactive/shirt-white-v2-marketplace-schrott.glb (identical MD5, just renamed by Grok's revert pass — redundant, harmless). License: confirm commercial rights before live sales."
     },
     {
       "id": "tee-joe-white-v1",
@@ -77,43 +95,25 @@
       "materialTarget": "polyester_pending",
       "category": "tee",
       "source": "Downloads/joe_productions_white_shirt.glb — converted/centered white via Grok 22.07.2026",
-      "notes": "Staged fallback for productId 1 if tee-t_shirt-white-v1 looks wrong in 360° QA — heavier (6.7MB, ~204k verts) than tee-t_shirt-white-v1. Not wired into MODEL_PATHS unless swapped in. License: confirm commercial rights before live sales."
+      "notes": "Staged fallback for productId 1, never activated. Heavier (6.7MB, ~204k verts) than tee-t_shirt-white-v1. Not wired into MODEL_PATHS. License: confirm commercial rights before live sales."
     },
     {
-      "id": "shirt-white-v2-backup",
-      "path": "/models/library/inactive/shirt-white-v2-backup.glb",
-      "bytes": 833552,
-      "verts": 175056,
-      "faces": 258462,
+      "id": "shorts-sport-white-v1",
+      "path": "/models/library/inactive/shorts-sport-white-v1.glb",
+      "bytes": 772132,
+      "verts": 22107,
+      "faces": 34784,
       "extents": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "active": false,
-      "productId": null,
-      "materialTarget": "polyester_bc_tm062",
-      "category": "tee",
-      "source": "existing shop asset (was live as shirt-white-v2.glb until 22.07.2026)",
-      "notes": "Backup of the previous live Tee mesh, kept for rollback. Superseded by tee-t_shirt-white-v1."
-    },
-    {
-      "id": "shorts-white-kids-pant-backup",
-      "path": "/models/library/inactive/shorts-white-kids-pant-backup.glb",
-      "bytes": 3525836,
-      "verts": 76305,
-      "faces": 141114,
-      "extents": [
+        0.9622799999999999,
         1.0,
-        0.9932000041007996,
-        0.7268619239330292
+        0.5633899999999999
       ],
       "active": false,
       "productId": null,
-      "materialTarget": "polyester_jn387",
       "category": "shorts",
-      "source": "TurboSquid Kids Pant Design 1996470 / GLTF.zip optimized (was live as shorts-white-v1.glb until 22.07.2026)",
-      "notes": "Backup of the previous live Shorts mesh, kept for rollback. Superseded by shorts-sport-white-v1."
+      "materialTarget": "polyester_jn387",
+      "source": "Downloads/Shorts-SportOBJ.rar (objShorts.obj) — converted white via Grok 22.07.2026",
+      "notes": "INACTIVE since 22.07.2026 (was briefly live same day, reverted alongside the tee for the same multi-primitive-white-paint bug). Duplicate copy exists at inactive/shorts-white-v1-marketplace-schrott.glb (identical MD5, just renamed by Grok's revert pass — redundant, harmless). Do NOT reactivate without a visual Jonny-OK. License: confirm commercial rights before live sales."
     },
     {
       "id": "staged-obj",
@@ -169,17 +169,17 @@
       {
         "file": "Shorts-SportOBJ.rar",
         "role": "shorts_white_pair_source",
-        "status": "converted_to_shorts-white-v1_active_22-07"
+        "status": "converted_to_inactive_shorts-sport-white-v1_reverted_22-07"
       },
       {
         "file": "t_shirt.glb",
         "role": "tee_white_pair_source_primary",
-        "status": "converted_to_shirt-white-v2_active_22-07"
+        "status": "converted_to_inactive_tee-t_shirt-white-v1_reverted_22-07"
       },
       {
         "file": "joe_productions_white_shirt.glb",
         "role": "tee_white_pair_source_fallback",
-        "status": "converted_staged_inactive_tee-joe-white-v1"
+        "status": "converted_staged_inactive_tee-joe-white-v1_never_activated"
       }
     ],
     "policy": {
@@ -191,6 +191,13 @@
       ],
       "inactive_dir": "/models/library/inactive/",
       "reason": "Nur Polyester-Artikel mit gesourctem Blank aktivieren; weitere Artikel (Cap, etc.) nur library staging."
+    },
+    "rollback_22-07": {
+      "what": "Marketplace tee/shorts pair (t_shirt/Shorts-Sport) was live for a few hours on 22.07.2026, then reverted back to the proven pre-existing meshes.",
+      "why": "Multi-primitive GLBs only had their LARGEST sub-mesh painted white by the old Shirt3D.tsx code — other sub-meshes stayed grey/textured once deployed live (\"Schrott\"-Look), not visible in local single-primitive test renders.",
+      "codeFix": "Shirt3D.tsx now paints every mesh in scene.traverse (not just the largest) and computes vertex normals per-mesh if missing — see git history for the exact commit.",
+      "assetDecision": "Jonny/Grok chose to keep the proven backups active rather than re-risk the marketplace assets even with the code fix. Marketplace pair stays staged inactive, needs a visual Jonny-OK before any future reactivation.",
+      "seeAlso": "/models/library/ready-for-claude/ (staging folder with A/B candidates + READY-MANIFEST.json, curated by Grok, not wired into MODEL_PATHS)"
     }
   },
   "updated": "2026-07-22"
