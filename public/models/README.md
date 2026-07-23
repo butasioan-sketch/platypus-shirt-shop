@@ -1,6 +1,6 @@
 # 3D-Modelle (Garment)
 
-**Workflow (Optimieren, Einbinden, Kamera kalibrieren):** siehe [`GLB-WORKFLOW.md`](./GLB-WORKFLOW.md) — dort auch `npm run optimize-glb`, Code-Stellen in `Shirt3D.tsx` und die Regeln (weiß bleiben, Kids-Pant nicht reaktivieren).
+**Workflow (Optimieren, Einbinden, Kamera kalibrieren):** siehe [`GLB-WORKFLOW.md`](./GLB-WORKFLOW.md) — dort auch `npm run make-shop-glb` (Blender weiß + optimieren in einem Schritt) und `npm run optimize-glb` (nur optimieren, `simplify` per Default aus), Code-Stellen in `Shirt3D.tsx` und die Regeln (weiß bleiben, Kids-Pant nicht reaktivieren).
 
 | Datei | productId | Hinweis |
 |-------|-----------|---------|

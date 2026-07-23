@@ -18,13 +18,24 @@ Jedes Kleidungsstück im Shop:
 | Blender | optional, für weiße Material-Export / Retopo |
 | npm script | `npm run optimize-glb` |
 
-## 1) Neue GLB optimieren
+## 0) Komplette Kette (empfohlen) — Blender weiß + optimize
 
 ```bash
 cd ~/Schreibtisch/platypus-shirt-shop
 
-# Komprimieren / flatten / join (ohne Draco)
-npm run optimize-glb -- ~/Downloads/mein-shorts.glb public/models/shorts-white-v1.glb
+# Input: .glb / .obj / .fbx  →  Shop-GLB (weiß, unit-scale, optimiert, KEIN Simplify)
+npm run make-shop-glb -- .tmp-shorts-sport/extracted/Shorts-Sport/obj/objShorts.obj public/models/shorts-white-v1.glb
+
+# Oder aus Downloads, sobald eine 3D-Datei wieder da ist:
+npm run make-shop-glb -- ~/Downloads/meine_hose.glb public/models/shorts-white-v1.glb
+```
+
+Nur optimieren (ohne Blender-Weiß):
+
+```bash
+npm run optimize-glb -- input.glb public/models/shorts-white-v1.glb
+# Detail behalten (default): simplify aus
+# Kleiner machen: SIMPLIFY=1 npm run optimize-glb -- in out
 ```
 
 Nur prüfen:

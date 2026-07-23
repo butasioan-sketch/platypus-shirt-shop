@@ -9,7 +9,8 @@
     "lint": "eslint",
     "prepare": "husky",
     "test": "echo \"no tests\" && exit 0",
-    "optimize-glb": "bash scripts/optimize-glb.sh"
+    "optimize-glb": "bash scripts/optimize-glb.sh",
+    "make-shop-glb": "bash scripts/make-shop-glb.sh"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

@@ -28,13 +28,21 @@ echo "→ inspect (vorher):"
 gltf-transform inspect "$IN" 2>/dev/null | head -40 || true
 
 echo "→ optimize: $IN → $OUT"
-# compress false: maximale Kompatibilität mit three.js / useGLTF (kein Draco-Decoder nötig)
-# flatten+join: weniger Draw-Calls für Garment-Meshes
+# compress false: max. Kompatibilität mit three.js useGLTF (kein Draco-Decoder nötig)
+# simplify false: Detail eines guten Meshes NICHT halbieren (Claude-Hinweis REPORT-GLB-WORKFLOW)
+# flatten+join: weniger Draw-Calls
+# Optional simplify: SIMPLIFY=1 npm run optimize-glb -- in out
+SIMP_FLAG=(--simplify false)
+if [[ "${SIMPLIFY:-0}" == "1" ]]; then
+  SIMP_FLAG=(--simplify true --simplify-ratio "${SIMPLIFY_RATIO:-0.5}")
+  echo "  (SIMPLIFY=1 aktiv)"
+fi
 gltf-transform optimize "$IN" "$OUT" \
   --compress false \
   --texture-compress false \
   --flatten true \
-  --join true
+  --join true \
+  "${SIMP_FLAG[@]}"
 
 echo "→ inspect (nachher):"
 gltf-transform inspect "$OUT" 2>/dev/null | head -40 || true
