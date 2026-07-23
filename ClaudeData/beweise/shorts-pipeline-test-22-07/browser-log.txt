@@ -1,0 +1,23 @@
+info: %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+log: [HMR] connected
+log: [Fast Refresh] rebuilding
+log: [Fast Refresh] done in 170ms
+clicked: VORDERSEITE
+RÜCKSEITE
+360°
+clicked: 360°
+log: [Fast Refresh] rebuilding
+log: [Fast Refresh] done in 296ms
+warning: THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+warning: [.WebGL-0x3e4c00161c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+warning: [.WebGL-0x3e4c00161c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+warning: [.WebGL-0x3e4c00161c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+warning: [.WebGL-0x3e4c00161c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)
+log: [Shirt3D] product 2 verts 17487 bbox {"min":[-0.4811398684978485,-0.5,-0.28169509768486023],"max":[0.4811398684978485,0.4999999701976776,0.28169509768486023]}
+log: [Shirt3D] product 2 verts 17487 bbox {"min":[-0.4811398684978485,-0.5,-0.28169509768486023],"max":[0.4811398684978485,0.4999999701976776,0.28169509768486023]}
+canvasAfter=1
+info: %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+log: [HMR] connected
+canvas?view=3d=0
+has_canvas_tag=false
+has_webgl=false
