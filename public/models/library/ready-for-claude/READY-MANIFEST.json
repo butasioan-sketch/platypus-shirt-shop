@@ -1,41 +1,59 @@
 {
-  "strategy": "stable_backups_as_primary_white_glb",
+  "strategy": "FROZEN_2026-07-23_proven_tee_plus_sport_shorts",
   "active": {
-    "tee": "shirt-white-v2.glb (from tee-stable-white-v2 / old proven backup)",
-    "shorts": "shorts-white-v1.glb (from kids-pant backup re-white)"
+    "tee": "shirt-white-v2.glb MD5 ab8622e998d7d2a7232971a364f7ffa6 (proven backup, NOT marketplace)",
+    "shorts": "shorts-white-v1.glb MD5 ab97dbfac083ee91472c3996dcc326fc (Shorts-Sport OBJ make-shop-glb, NOT kids-pant, NOT CLO shirt)"
   },
+  "camera_LIVE_in_Shirt3D": {
+    "1": {
+      "cameraPos": [0, 0.58, 0.85],
+      "orbitTarget": [0, 0.53, 0],
+      "minDistance": 0.3,
+      "maxDistance": 2.5,
+      "fov": 40
+    },
+    "2": {
+      "cameraPos": [0, 0.05, 1.9],
+      "orbitTarget": [0, 0, 0],
+      "minDistance": 0.7,
+      "maxDistance": 4.5,
+      "fov": 38
+    }
+  },
+  "do_not_use_camera_recommended_below_for_live": true,
   "camera_recommended": {
     "1": {
       "cameraPos": [
         0,
-        0.0,
-        1.2
+        0.58,
+        0.85
       ],
       "orbitTarget": [
         0,
-        0.0,
+        0.53,
         0
       ],
-      "minDistance": 0.5,
-      "maxDistance": 3.5,
+      "minDistance": 0.3,
+      "maxDistance": 2.5,
       "fov": 40
     },
     "2": {
       "cameraPos": [
         0,
-        0.0,
-        1.6
+        0.05,
+        1.9
       ],
       "orbitTarget": [
         0,
-        0.0,
+        0,
         0
       ],
-      "minDistance": 0.6,
-      "maxDistance": 4.0,
-      "fov": 35
+      "minDistance": 0.7,
+      "maxDistance": 4.5,
+      "fov": 38
     }
   },
+
   "jobs": [
     {
       "name": "tee-stable-white-v2.glb",
