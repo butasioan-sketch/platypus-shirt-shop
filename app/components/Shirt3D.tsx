@@ -173,10 +173,13 @@ function ModelLoadingSkeleton({ productId }: { productId: string }) {
   );
 }
 
-/** Framing: beide Meshes make-shop-glb unit-scale, Origin-Zentrum y≈0. */
+/**
+ * Framing pro Mesh-Generation:
+ * - Tee: ORIGINALES Shop-Mesh (nicht unit-scale) — bewährte Kamera.
+ * - Shorts: make-shop-glb unit-scale, Origin-Zentrum.
+ */
 function getCamera(productId: string) {
   const isShorts = productId === '2';
-  // Beide: bbox ~ [-0.5,-0.5,-0.25]..[0.5,0.5,0.25] → Zentrum [0,0,0]
   if (isShorts) {
     return {
       cameraPos: [0, 0.05, 1.9] as [number, number, number],
@@ -186,11 +189,12 @@ function getCamera(productId: string) {
       fov: 38,
     };
   }
+  // PROVEN tee camera — do NOT unit-center this mesh
   return {
-    cameraPos: [0, 0.05, 1.7] as [number, number, number],
-    orbitTarget: [0, 0, 0] as [number, number, number],
-    minDistance: 0.5,
-    maxDistance: 4.0,
+    cameraPos: [0, 0.58, 0.85] as [number, number, number],
+    orbitTarget: [0, 0.53, 0] as [number, number, number],
+    minDistance: 0.3,
+    maxDistance: 2.5,
     fov: 40,
   };
 }
