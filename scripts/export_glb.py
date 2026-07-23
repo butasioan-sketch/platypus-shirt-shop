@@ -93,10 +93,14 @@ def center_and_unit_scale(mesh_objs):
 
 
 def apply_white_to_all_meshes():
-    mat = make_white_material()
     mesh_objs = [o for o in bpy.context.scene.objects if o.type == "MESH"]
     if not mesh_objs:
         raise SystemExit("No mesh objects after import")
+    # Join + unit-scale FIRST (invalidates old object refs)
+    center_and_unit_scale(mesh_objs)
+    # Re-fetch after join
+    mesh_objs = [o for o in bpy.context.scene.objects if o.type == "MESH"]
+    mat = make_white_material()
     for obj in mesh_objs:
         obj.data.materials.clear()
         obj.data.materials.append(mat)
@@ -113,7 +117,6 @@ def apply_white_to_all_meshes():
                 bpy.ops.object.mode_set(mode="OBJECT")
             except Exception:
                 pass
-    center_and_unit_scale(mesh_objs)
     bpy.ops.object.select_all(action="DESELECT")
     for obj in mesh_objs:
         obj.select_set(True)

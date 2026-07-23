@@ -173,26 +173,24 @@ function ModelLoadingSkeleton({ productId }: { productId: string }) {
   );
 }
 
-/** Framing so both products fill the frame similarly (white blank + orbit). */
+/** Framing: beide Meshes make-shop-glb unit-scale, Origin-Zentrum y≈0. */
 function getCamera(productId: string) {
   const isShorts = productId === '2';
-  // Tee: proven values.
-  // Shorts: make-shop-glb / Blender unit-scale, zentriert auf Origin
-  // (bbox ~ [-0.48,-0.5,-0.28]..[0.48,0.5,0.28] → Zentrum [0,0,0]).
+  // Beide: bbox ~ [-0.5,-0.5,-0.25]..[0.5,0.5,0.25] → Zentrum [0,0,0]
   if (isShorts) {
     return {
-      cameraPos: [0, 0.05, 1.85] as [number, number, number],
+      cameraPos: [0, 0.05, 1.9] as [number, number, number],
       orbitTarget: [0, 0, 0] as [number, number, number],
       minDistance: 0.7,
-      maxDistance: 4.0,
+      maxDistance: 4.5,
       fov: 38,
     };
   }
   return {
-    cameraPos: [0, 0.58, 0.85] as [number, number, number],
-    orbitTarget: [0, 0.53, 0] as [number, number, number],
-    minDistance: 0.3,
-    maxDistance: 2.5,
+    cameraPos: [0, 0.05, 1.7] as [number, number, number],
+    orbitTarget: [0, 0, 0] as [number, number, number],
+    minDistance: 0.5,
+    maxDistance: 4.0,
     fov: 40,
   };
 }
