@@ -176,14 +176,13 @@ function ModelLoadingSkeleton({ productId }: { productId: string }) {
 /** Framing so both products fill the frame similarly (white blank + orbit). */
 function getCamera(productId: string) {
   const isShorts = productId === '2';
-  // Tee: proven values. Shorts: unit-scale adult sport mesh, bbox center vermessen
-  // per gltf-transform inspect (min [-0.482,-0.678,-0.355], max [0.480,0.322,0.208]
-  // -> Zentrum y ~ -0.18, nicht 0). orbitTarget/cameraPos.y darauf ausgerichtet,
-  // gleicher relativer Offset (+0.05) wie beim Tee zwischen Kamera- und Ziel-Y.
+  // Tee: proven values.
+  // Shorts: make-shop-glb / Blender unit-scale, zentriert auf Origin
+  // (bbox ~ [-0.48,-0.5,-0.28]..[0.48,0.5,0.28] → Zentrum [0,0,0]).
   if (isShorts) {
     return {
-      cameraPos: [0, -0.13, 1.85] as [number, number, number],
-      orbitTarget: [0, -0.18, 0] as [number, number, number],
+      cameraPos: [0, 0.05, 1.85] as [number, number, number],
+      orbitTarget: [0, 0, 0] as [number, number, number],
       minDistance: 0.7,
       maxDistance: 4.0,
       fov: 38,
