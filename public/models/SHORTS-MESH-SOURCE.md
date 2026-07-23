@@ -1,13 +1,11 @@
-# Shorts mesh source (live)
-
-## Active 23.07.2026 — make-shop-glb pipeline
+# Shorts mesh (live 23.07.2026)
 
 | | |
 |--|--|
-| File | `public/models/shorts-white-v1.glb` (~615 KB) |
-| Source | Shorts-Sport `objShorts.obj` via `npm run make-shop-glb` |
-| Pipeline | Blender white + unit-scale + gltf-transform (no simplify, no draco) |
-| Camera | orbitTarget [0,0,0], cameraPos [0,0.05,1.85], maxDistance 4 |
-| Architecture | Same as Tee: white MeshStandardMaterial + Decals |
+| File | `shorts-white-v1.glb` (~13 MB) |
+| Source | `~/Downloads/pdf shop/OBJ.rar` → OBJ.obj (CLO high-poly garment) |
+| Pipeline | make-shop-glb (white, unit-scale) + mild simplify ratio 0.28 |
+| Verts | ~294k (from 679k) — Tee-Klasse |
+| Camera | origin center [0,0,0], z=1.9 |
 
-Kids pant: `library/inactive/DEAD-kids-pant-DO-NOT-USE.glb` — NEVER reactivate.
+Kids pant NEVER. Sport OBJ was interim low-poly.
