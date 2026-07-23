@@ -1,11 +1,9 @@
-# Shorts mesh (live 23.07.2026)
+# Shorts mesh (live)
 
 | | |
 |--|--|
-| File | `shorts-white-v1.glb` (~13 MB) |
-| Source | `~/Downloads/pdf shop/OBJ.rar` → OBJ.obj (CLO high-poly garment) |
-| Pipeline | make-shop-glb (white, unit-scale) + mild simplify ratio 0.28 |
-| Verts | ~294k (from 679k) — Tee-Klasse |
-| Camera | origin center [0,0,0], z=1.9 |
-
-Kids pant NEVER. Sport OBJ was interim low-poly.
+| File | `shorts-white-v1.glb` |
+| Source | `pdf shop/Shorts-SportOBJ.rar` → objShorts.obj |
+| Note | CLO high-poly OBJ.obj was a T-SHIRT — NOT used for product 2 |
+| Pipeline | make-shop-glb white unit-scale |
+| Camera | [0,0.05,1.9] target [0,0,0] |
