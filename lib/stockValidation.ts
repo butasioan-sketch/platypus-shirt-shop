@@ -1,4 +1,7 @@
-export function validateStock(items: any[], stock: any[]) {
+interface StockCheckItem { id: string; name: string; size: string; quantity: number }
+interface StockLevel { productId: string; size: string; stock: number }
+
+export function validateStock(items: StockCheckItem[], stock: StockLevel[]) {
   const problems: string[] = [];
 
   items.forEach((item) => {

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import SiteHeader from '@/app/components/SiteHeader';
 import { useLocale } from '@/app/components/LocaleProvider';
 import { trackCheckoutStarted } from '@/lib/analytics';
-import { SHIPPING_OPTIONS, COUNTRIES, DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY, getShipping, type Country, type ShippingOption } from '@/lib/shipping';
+import { SHIPPING_OPTIONS, COUNTRIES, DEFAULT_SHIPPING_ID, DEFAULT_COUNTRY, getShipping, type Country } from '@/lib/shipping';
 import { calcUnitPriceForProduct, calcMerchandiseTotal, isBundleEligible, PRICE_BUNDLE_ESSENTIAL, type MerchandiseItem } from '@/lib/pricing';
 
 interface CartItem {

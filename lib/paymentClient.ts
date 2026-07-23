@@ -1,6 +1,6 @@
 "use client";
 
-export async function createPaymentSession(order: any) {
+export async function createPaymentSession(order: Record<string, unknown>) {
   const response = await fetch("/api/payments/create-checkout", {
     method: "POST",
     headers: {
@@ -16,7 +16,7 @@ export async function createPaymentSession(order: any) {
   return response.json();
 }
 
-export function redirectToPayment(session: any) {
+export function redirectToPayment(session: { redirectUrl?: string }) {
   if (session?.redirectUrl && session.redirectUrl !== "/") {
     window.location.href = session.redirectUrl;
   }

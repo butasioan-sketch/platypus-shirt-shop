@@ -135,7 +135,6 @@ function GarmentModel({
     if (bestMesh) {
       const b = bestMesh as THREE.Mesh;
       b.geometry.computeBoundingBox();
-      // eslint-disable-next-line no-console
       console.log('[Shirt3D] product', productId, 'verts', bestCount,
         'bbox', JSON.stringify(b.geometry.boundingBox));
       setDecalMesh(b);

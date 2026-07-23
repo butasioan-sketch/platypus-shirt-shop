@@ -103,7 +103,7 @@ function looksLikeStripeSecret(value: string | undefined) {
   return Boolean(value && (value.startsWith("sk_test_") || value.startsWith("sk_live_")));
 }
 
-function demoCheckout(body: any, method: any, status: string, amount: number) {
+function demoCheckout(body: { reference?: string }, method: NonNullable<ReturnType<typeof getPaymentMethod>>, status: string, amount: number) {
   return NextResponse.json({
     ok: true,
     provider: method.provider,
@@ -275,9 +275,10 @@ export async function POST(request: Request) {
       redirectUrl: session.url,
       createdAt: new Date().toISOString(),
     });
-  } catch (error: any) {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { ok: false, error: "Payment checkout failed", message: error?.message || "Unknown error" },
+      { ok: false, error: "Payment checkout failed", message },
       { status: 500 }
     );
   }

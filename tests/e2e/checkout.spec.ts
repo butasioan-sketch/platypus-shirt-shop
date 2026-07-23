@@ -19,6 +19,11 @@ async function clearCart(page: Page) {
 }
 
 async function uploadDesign(page: Page, side: 'front' | 'back' = 'front') {
+  // Erst auf die passende Atelier-Seite wechseln, sonst laedt der Upload
+  // immer auf die aktuell aktive Seite (Default: Vorderseite). Positions-
+  // Selektor statt uebersetztem Text (".plt-tab" 0=front, 1=back, 2=360°) —
+  // Text waere locale-abhaengig (Browser-Default hier oft en, nicht de).
+  await page.locator('.plt-tab').nth(side === 'front' ? 0 : 1).click();
   // Wartet auf das Upload-Input und lädt ein Test-PNG hoch
   const input = page.locator(`input[type="file"]`).first();
   await input.setInputFiles({
@@ -41,8 +46,10 @@ test.describe('PLATYPUS — Checkout-Flow', () => {
     await page.goto(`${BASE_URL}/product/1`);
     await clearCart(page);
 
-    // Größe wählen
-    await page.locator('button:has-text("L")').click();
+    // Größe wählen — exakter Match noetig: "L" ist sonst Substring von "XL"/"XXL"
+    // und (Playwright has-text ist case-insensitiv) auch von "Decline"/"Accept all"
+    // im Cookie-Banner, was einen Strict-Mode-Fehler ausloest.
+    await page.getByRole('button', { name: 'L', exact: true }).click();
 
     // Design hochladen
     await uploadDesign(page, 'front');
@@ -53,8 +60,10 @@ test.describe('PLATYPUS — Checkout-Flow', () => {
     // In den Warenkorb
     await page.locator('button:has-text("In den Warenkorb")').click();
 
-    // Warten bis saveDesign abgeschlossen
-    await page.waitForTimeout(3000);
+    // Warten bis saveDesign (echter API-Call gegen Live-DB) abgeschlossen ist —
+    // Button-Text wechselt auf "Im Warenkorb", statt eine feste Wartezeit zu
+    // raten (war Ursache fuer Flakiness bei langsameren Live-Requests).
+    await expect(page.locator('button:has-text("Im Warenkorb")')).toBeVisible({ timeout: 10000 });
 
     // Warenkorb soll Item enthalten
     const cart = await page.evaluate(() =>
@@ -101,7 +110,9 @@ test.describe('PLATYPUS — Checkout-Flow', () => {
   test('Homepage lädt (smoke test)', async ({ page }) => {
     await page.goto(BASE_URL);
     await expect(page).toHaveTitle(/PLATYPUS/);
-    await expect(page.locator('.brand-text').first()).toBeVisible();
+    // Logo statt .brand-text pruefen: der Text-Schriftzug ist unter 640px
+    // absichtlich ausgeblendet (Mobile-Header-Fix), das Logo bleibt immer sichtbar.
+    await expect(page.getByAltText('PLATYPUS').first()).toBeVisible();
   });
 
   test('Tracking-Seite akzeptiert Bestellnummer', async ({ page }) => {

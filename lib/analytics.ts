@@ -17,14 +17,20 @@ function postAnalytics(type: string, data?: Record<string, unknown>) {
   } catch { /* ignore */ }
 }
 
-export function trackEvent(eventName: string, data?: Record<string, any>) {
+interface TrackingWindow extends Window {
+  fbq?: (...args: unknown[]) => void;
+  ttq?: { track: (...args: unknown[]) => void };
+  gtag?: (...args: unknown[]) => void;
+}
+
+export function trackEvent(eventName: string, data?: Record<string, unknown>) {
   if (typeof window === 'undefined') return;
   if (!hasConsent()) return;
 
   postAnalytics(eventName.toLowerCase(), data);
   console.log('[PLATYPUS EVENT]', eventName, data || {});
 
-  const w = window as any;
+  const w = window as TrackingWindow;
   if (w.fbq) w.fbq('trackCustom', eventName, data || {});
   if (w.ttq) w.ttq.track(eventName, data || {});
   if (w.gtag) w.gtag('event', eventName, data || {});
@@ -43,7 +49,7 @@ export function trackUploadDesign(product: { id: string; side: 'front' | 'back' 
   trackEvent('UploadDesign', { product_id: product.id, side: product.side });
 }
 
-export function trackAddToCart(product: any) {
+export function trackAddToCart(product: { id: string; name: string; price: number; color?: string; size?: string; quantity: number }) {
   trackEvent('AddToCart', {
     product_id: product.id,
     product_name: product.name,

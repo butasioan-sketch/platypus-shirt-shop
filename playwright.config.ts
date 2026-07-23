@@ -10,6 +10,10 @@ export default defineConfig({
     headless: true,
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
+    // Tests erwarten deutsche UI-Texte (Shop-Standardsprache) — ohne das faellt
+    // navigator.language im Testbrowser oft auf en-US, lib/locale.ts detectLocale()
+    // wechselt dann auf Englisch und alle deutschen Text-Locators schlagen fehl.
+    locale: 'de-DE',
   },
   projects: [
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
