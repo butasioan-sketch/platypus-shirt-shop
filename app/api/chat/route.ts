@@ -65,6 +65,8 @@ export async function POST(request: NextRequest) {
     });
 
     if (!response.ok) {
+      const errorBody = await response.text().catch(() => '');
+      console.error('[chat] Anthropic API error', response.status, errorBody);
       const fallback = getFallbackResponse(message, locale || 'de');
       return NextResponse.json({ reply: fallback, fallback: true });
     }
@@ -74,7 +76,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ reply, fallback: false });
 
-  } catch {
+  } catch (err) {
+    console.error('[chat] unexpected error', err instanceof Error ? err.message : err);
     return NextResponse.json({
       reply: 'Entschuldigung, ich bin gerade nicht erreichbar. Bitte kontaktiere uns per E-Mail.',
       fallback: true,
