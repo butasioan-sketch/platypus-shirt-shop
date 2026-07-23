@@ -173,28 +173,18 @@ function ModelLoadingSkeleton({ productId }: { productId: string }) {
 }
 
 /**
- * Framing pro Mesh-Generation:
- * - Tee: ORIGINALES Shop-Mesh (nicht unit-scale) — bewährte Kamera.
- * - Shorts: make-shop-glb unit-scale, Origin-Zentrum.
+ * Framing (Jonny 23.07.2026): beide Meshes jetzt über make-shop-glb
+ * unit-scale + Origin-zentriert (siehe scripts/make-shop-glb.sh) — Tee und
+ * Shorts teilen sich deshalb dieselbe Kamera statt Sonderwegen pro Produkt.
  */
 function getCamera(productId: string) {
-  const isShorts = productId === '2';
-  if (isShorts) {
-    return {
-      cameraPos: [0, 0.05, 1.9] as [number, number, number],
-      orbitTarget: [0, 0, 0] as [number, number, number],
-      minDistance: 0.7,
-      maxDistance: 4.5,
-      fov: 38,
-    };
-  }
-  // PROVEN tee camera — do NOT unit-center this mesh
+  void productId;
   return {
-    cameraPos: [0, 0.58, 0.85] as [number, number, number],
-    orbitTarget: [0, 0.53, 0] as [number, number, number],
-    minDistance: 0.3,
-    maxDistance: 2.5,
-    fov: 40,
+    cameraPos: [0, 0.05, 1.9] as [number, number, number],
+    orbitTarget: [0, 0, 0] as [number, number, number],
+    minDistance: 0.7,
+    maxDistance: 4.5,
+    fov: 38,
   };
 }
 
