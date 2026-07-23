@@ -101,17 +101,18 @@ Funktion: `getCamera(productId)` in `Shirt3D.tsx`.
 5. `cameraPos` so wählen, dass Mesh den Frame füllt (z vergrößern = weiter weg)
 6. `maxDistance` mindestens so groß wie Abstand der Kamera
 
-### Tee-Referenz (funktioniert)
+### Tee + Shorts (Stand 23.07.2026 — beide via make-shop-glb, Origin-zentriert)
+
+Seit beide Meshes über dieselbe Blender-Pipeline laufen, teilen sie sich dieselbe Zentrierungs-Konvention (`orbitTarget [0,0,0]`):
 
 ```ts
-cameraPos: [0, 0.58, 0.85], orbitTarget: [0, 0.53, 0], min: 0.3, max: 2.5, fov: 40
+// Tee
+cameraPos: [0, 0.05, 1.7], orbitTarget: [0, 0, 0], min: 0.5, max: 4.0, fov: 40
+// Shorts
+cameraPos: [0, 0.05, 1.9], orbitTarget: [0, 0, 0], min: 0.7, max: 4.5, fov: 38
 ```
 
-### Shorts (unit-scale Sport, Stand)
-
-```ts
-cameraPos: [0, 0.05, 1.85], orbitTarget: [0, 0, 0], min: 0.7, max: 4.0, fov: 38
-```
+**Wichtig:** Diese Werte gelten nur, solange **beide** Meshes über `make-shop-glb` (Blender-Pipeline, Origin-Zentrierung) laufen. Ein Mesh aus der alten Python/trimesh-Pipeline oder ein nicht-zentriertes Downloads-Mesh braucht wieder ein individuell vermessenes `orbitTarget` — nicht blind `[0,0,0]` übernehmen, immer per Konsole-Log (`[Shirt3D] product … bbox: …`) verifizieren.
 
 ## 4) Lokal testen
 
