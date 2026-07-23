@@ -1,0 +1,24 @@
+# Never upload workdirs / local junk (CLI was trying 2.6GB+)
+.tmp-pdfshop-extract/
+.tmp-shorts-sport/
+.tmp*/
+node_modules/
+.next/
+.git/
+.vercel/
+backups/
+backup/
+test-results/
+coverage/
+orders.db
+orders.db-journal
+*.log
+.env*
+.DS_Store
+public/models/library/inactive/
+public/models/library/ready-for-claude/
+ClaudeData/
+scripts/_archive/
+scripts/archive/
+*.bak
+tsconfig.tsbuildinfo
