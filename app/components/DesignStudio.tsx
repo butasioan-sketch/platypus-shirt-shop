@@ -5,7 +5,6 @@ import dynamic from 'next/dynamic';
 import { calcUnitPriceForProduct } from '@/lib/pricing';
 import { PRINT_SPEC, formatSizeMm, getNoPrintNote, getPlacementZone, getGarmentPhotoSrc, getViewerAspect, getGarmentProfile } from '@/lib/print-spec';
 import { defaultPrintTransform, type PrintTransform } from '@/lib/print-position';
-import { renderTextImage, TEXT_COLOR_OPTIONS } from '@/lib/print-text';
 import { useLocale } from '@/app/components/LocaleProvider';
 import ShirtPrintOverlay from './ShirtPrintOverlay';
 
@@ -68,12 +67,6 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
   const containerRef = useRef<HTMLDivElement>(null);
   const dragStart = useRef<{ mx: number; my: number; px: number; py: number; id: string } | null>(null);
 
-  const [inputMode, setInputMode] = useState<'image' | 'text'>('image');
-  const [textDraft, setTextDraft] = useState('');
-  const [textColor, setTextColor] = useState<string>(TEXT_COLOR_OPTIONS[0].hex);
-  const [textFontScale, setTextFontScale] = useState(1);
-  const [textError, setTextError] = useState('');
-
   // onDesignChange darf nie synchron aus einem setState-Updater heraus aufgerufen werden
   // (React wirft "Cannot update a component while rendering a different component") —
   // daher ueber einen Effekt an frontLayers/backLayers gekoppelt, nicht inline in setLayers.
@@ -104,14 +97,6 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
 
   const selectLayer = (id: string) => {
     setSelectedId(id);
-    const layer = currentLayers.find((l) => l.id === id);
-    if (layer?.kind === 'text') {
-      setTextDraft(layer.text || '');
-      setTextColor(layer.color || TEXT_COLOR_OPTIONS[0].hex);
-      setInputMode('text');
-    } else if (layer?.kind === 'image') {
-      setInputMode('image');
-    }
   };
 
   const addImageLayer = (dataUrl: string, w: number, h: number) => {
@@ -147,31 +132,6 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
     };
     reader.readAsDataURL(file);
     e.target.value = '';
-  };
-
-  const applyText = () => {
-    const trimmed = textDraft.trim();
-    if (!trimmed) { setTextError(t.studio.textRequired); return; }
-    if (trimmed.length > 48) { setTextError(t.studio.textTooLong); return; }
-    setTextError('');
-    const { dataUrl } = renderTextImage(trimmed, textFontScale, textColor);
-    if (selectedLayer?.kind === 'text') {
-      const id = selectedLayer.id;
-      setCurrentLayers((prev) => prev.map((l) => (l.id === id ? { ...l, src: dataUrl, text: trimmed, color: textColor } : l)));
-    } else {
-      const layer: DesignLayer = { id: genId(), kind: 'text', src: dataUrl, transform: defaultPrintTransform(), text: trimmed, color: textColor };
-      setCurrentLayers((prev) => [...prev, layer]);
-      setSelectedId(layer.id);
-    }
-  };
-
-  /** Verlässt den "Ebene X bearbeiten"-Modus, damit der nächste Klick auf Anwenden
-   *  eine NEUE Text-Ebene anlegt statt die aktuell ausgewählte zu überschreiben. */
-  const startNewText = () => {
-    setSelectedId(null);
-    setTextDraft('');
-    setTextColor(TEXT_COLOR_OPTIONS[0].hex);
-    setTextError('');
   };
 
   const removeLayer = (id: string) => {
@@ -311,84 +271,12 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
 
       <input ref={fileRef} type="file" accept="image/*" onChange={handleUpload} style={{ display: 'none' }} />
 
-      <div className="plt-tab-group" style={{ marginBottom: '0.75rem' }}>
-        <button type="button" onClick={() => setInputMode('image')} className={`plt-tab${inputMode === 'image' ? ' plt-tab-active' : ''}`}>
-          {t.studio.imageTab}
+      <div style={{ marginBottom: '0.65rem' }}>
+        <button type="button" className="plt-btn-primary" style={{ width: '100%' }} onClick={() => fileRef.current?.click()} disabled={atLimit}>
+          {t.studio.addImage} — {sideLabel}
         </button>
-        <button type="button" onClick={() => setInputMode('text')} className={`plt-tab${inputMode === 'text' ? ' plt-tab-active' : ''}`}>
-          {t.studio.textTab}
-        </button>
+        {atLimit && <p style={{ color: '#666', fontSize: '0.68rem', margin: '0.4rem 0 0', textAlign: 'center' }}>{t.studio.layerLimit}</p>}
       </div>
-
-      {inputMode === 'image' ? (
-        <div style={{ marginBottom: '0.65rem' }}>
-          <button type="button" className="plt-btn-primary" style={{ width: '100%' }} onClick={() => fileRef.current?.click()} disabled={atLimit}>
-            {t.studio.addImage} — {sideLabel}
-          </button>
-          {atLimit && <p style={{ color: '#666', fontSize: '0.68rem', margin: '0.4rem 0 0', textAlign: 'center' }}>{t.studio.layerLimit}</p>}
-        </div>
-      ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', marginBottom: '0.65rem' }}>
-          <input
-            type="text"
-            value={textDraft}
-            maxLength={48}
-            placeholder={t.studio.customTextPlaceholder}
-            onChange={(e) => { setTextDraft(e.target.value); setTextError(''); }}
-            style={{ width: '100%', background: '#111', color: '#fff', border: '1px solid rgba(255,255,255,0.15)', borderRadius: '8px', padding: '0.6rem', fontSize: '0.9rem' }}
-          />
-
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
-              <span className="plt-label">{t.studio.textColor}</span>
-              <span style={{ color: '#666', fontSize: '0.72rem' }}>{textDraft.length}/48</span>
-            </div>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              {TEXT_COLOR_OPTIONS.map((opt) => (
-                <button
-                  key={opt.key}
-                  type="button"
-                  title={opt.label}
-                  onClick={() => setTextColor(opt.hex)}
-                  style={{
-                    width: 28, height: 28, borderRadius: '50%', cursor: 'pointer', background: opt.hex,
-                    border: textColor === opt.hex ? '2px solid #e2001a' : '2px solid rgba(255,255,255,0.25)',
-                    boxShadow: textColor === opt.hex ? '0 0 0 2px rgba(226,0,26,0.3)' : 'none',
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.35rem' }}>
-              <span className="plt-label">{t.studio.fontSize}</span>
-            </div>
-            <input type="range" min={0.6} max={1.6} step="0.05" value={textFontScale}
-              onChange={(e) => setTextFontScale(Number(e.target.value))}
-              style={{ width: '100%', accentColor: '#e2001a', cursor: 'pointer' }} />
-          </div>
-
-          {textError && <p style={{ color: '#f87171', fontSize: '0.72rem', margin: 0 }}>{textError}</p>}
-
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <button
-              type="button"
-              className="plt-btn-primary"
-              style={{ flex: 1 }}
-              onClick={applyText}
-              disabled={!textDraft.trim() || (!selectedLayer && atLimit)}
-            >
-              {selectedLayer?.kind === 'text' ? t.studio.updateText : t.studio.addText} — {sideLabel}
-            </button>
-            {selectedLayer?.kind === 'text' && !atLimit && (
-              <button type="button" className="plt-btn-secondary" onClick={startNewText} title={t.studio.newText}>
-                +
-              </button>
-            )}
-          </div>
-        </div>
-      )}
 
       {currentLayers.length > 0 && (
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '0.65rem' }}>
@@ -402,13 +290,9 @@ export default function DesignStudio({ productId = '1', onDesignChange }: Design
                 border: layer.id === selectedId ? '1px solid #e2001a' : '1px solid rgba(255,255,255,0.1)',
               }}
             >
-              {layer.kind === 'image' ? (
-                <img src={layer.src} alt="" style={{ width: 18, height: 18, objectFit: 'cover', borderRadius: 4 }} />
-              ) : (
-                <span style={{ width: 18, height: 18, borderRadius: 4, background: layer.color, display: 'inline-block' }} />
-              )}
+              <img src={layer.src} alt="" style={{ width: 18, height: 18, objectFit: 'cover', borderRadius: 4 }} />
               <span style={{ fontSize: '0.68rem', color: '#ccc', maxWidth: 70, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                {layer.kind === 'text' ? layer.text : `${t.studio.imageTab} ${idx + 1}`}
+                Bild {idx + 1}
               </span>
               <button type="button" title={t.studio.moveBackward} onClick={(e) => { e.stopPropagation(); moveLayer(layer.id, 'backward'); }} disabled={idx === 0} style={miniBtnStyle}>↓</button>
               <button type="button" title={t.studio.moveForward} onClick={(e) => { e.stopPropagation(); moveLayer(layer.id, 'forward'); }} disabled={idx === currentLayers.length - 1} style={miniBtnStyle}>↑</button>

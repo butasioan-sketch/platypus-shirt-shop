@@ -7,8 +7,13 @@ export const metadata: Metadata = {
 };
 
 const OPERATOR = {
-  brand: 'PLATYPUS · On Me',
+  brand: 'ON ME – Personalisierte Textilien',
+  name: 'Sergiu-Andrei Junc',
+  address: 'Auf den Flachsbeckwiesen 13',
+  postal: '45659 Recklinghausen',
   country: 'Deutschland',
+  email: 's.junc@yahoo.com',
+  phone: '01728224958',
 };
 
 const S = {
@@ -30,30 +35,28 @@ export default function ImpressumPage() {
           <p style={S.label}>Betreiber</p>
           <p style={S.value}>
             <strong>{OPERATOR.brand}</strong><br />
+            {OPERATOR.name}<br />
+            {OPERATOR.address}<br />
+            {OPERATOR.postal}<br />
             {OPERATOR.country}
           </p>
-          <p style={{ color: '#666', fontSize: '0.78rem', marginTop: '0.35rem' }}>Angaben folgen nach Gewerbeanmeldung</p>
         </div>
 
         <div style={S.section}>
           <p style={S.label}>Kontakt</p>
-          <p style={S.value}>E-Mail-Adresse folgt</p>
+          <p style={S.value}>
+            E-Mail: <a href={`mailto:${OPERATOR.email}`} style={{ color: '#e2001a' }}>{OPERATOR.email}</a><br />
+            Telefon: {OPERATOR.phone}
+          </p>
         </div>
 
         <div style={S.section}>
           <p style={S.label}>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</p>
-          <p style={S.value}>{OPERATOR.brand} — Angaben folgen nach Gewerbeanmeldung</p>
+          <p style={S.value}>{OPERATOR.name}, {OPERATOR.address}, {OPERATOR.postal}</p>
         </div>
 
         <div style={{ marginTop: '2.5rem', color: '#555', fontSize: '0.82rem', lineHeight: 1.6 }}>
           <p>
-            Vollständige Anbieterkennzeichnung wird vor Aufnahme des entgeltlichen Angebots ergänzt.
-          </p>
-          <p style={{ marginTop: '0.5rem' }}>
-            Plattform der EU-Kommission zur Online-Streitbeilegung:{' '}
-            <a href="https://ec.europa.eu/consumers/odr" style={{ color: '#666' }}>ec.europa.eu/consumers/odr</a>
-          </p>
-          <p style={{ marginTop: '0.5rem' }}>
             Wir sind nicht bereit und nicht verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
           </p>
         </div>

@@ -13,7 +13,10 @@ export default function SiteHeader() {
     <header className="plt-header site-header">
       <Link href="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
         <Image src="/logo.jpeg" alt="PLATYPUS" width={56} height={56} style={{ borderRadius: '10px', marginRight: '0.75rem' }} priority />
-        <span className="brand-text" style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '0.15em', color: '#fff' }}>PLATYPUS</span>
+        <div className="brand-text" style={{ display: 'flex', flexDirection: 'column', gap: '0.1rem' }}>
+          <span style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '0.05em', color: '#fff' }}>ON ME</span>
+          <span style={{ fontSize: '0.65rem', fontWeight: 500, letterSpacing: '0.08em', color: '#888', textTransform: 'uppercase' }}>im PLATYPUS-Webshop</span>
+        </div>
       </Link>
       <nav className="site-header-nav" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
         <Link href="/product/1" className="plt-nav-link">{t.nav.shirt}</Link>

@@ -71,7 +71,7 @@ export default function Footer() {
         </div>
 
         <p style={{ textAlign: 'center', color: 'var(--plt-text-ghost)', fontSize: '0.78rem', letterSpacing: '0.05em' }}>
-          © {new Date().getFullYear()} PLATYPUS — <span style={{ color: 'var(--plt-text-faint)' }}>On Me. Words are not just words.</span>
+          © {new Date().getFullYear()} PLATYPUS — <span style={{ color: 'var(--plt-text-faint)' }}>ON ME – Personalisierte Textilien</span>
         </p>
 
       </div>

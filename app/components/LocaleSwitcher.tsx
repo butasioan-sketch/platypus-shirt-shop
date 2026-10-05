@@ -8,7 +8,8 @@ import { LOCALE_FLAGS, LOCALE_LABELS } from '@/lib/locale';
 export default function LocaleSwitcher() {
   const { locale, setLocale } = useLocale();
   const [open, setOpen] = useState(false);
-  const locales: Locale[] = ['de', 'ro', 'en'];
+  // Deaktiviert für Deutschland-Fokus, reaktivierbar bei RO-Expansion
+  const locales: Locale[] = ['de', /* 'ro', */ 'en'];
 
   return (
     <div style={{ position: 'relative' }}>

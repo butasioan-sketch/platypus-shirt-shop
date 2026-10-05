@@ -3,7 +3,7 @@ export type Locale = 'de' | 'ro' | 'en';
 export const translations = {
   de: {
     brand: {
-      tagline: 'On Me.',
+      tagline: 'Personalisierte Textilien',
       collection: 'Essential Collection',
     },
     nav: {

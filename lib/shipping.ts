@@ -30,9 +30,10 @@ export const SHIPPING_OPTIONS: ShippingOption[] = [
   },
 ];
 
+// Deaktiviert für Deutschland-Fokus, reaktivierbar bei RO-Expansion
 export const COUNTRIES: { code: Country; label: string }[] = [
   { code: 'DE', label: 'Deutschland' },
-  { code: 'RO', label: 'Rumänien' },
+  // { code: 'RO', label: 'Rumänien' },
 ];
 
 export function getShipping(id: string, country: Country): number {
