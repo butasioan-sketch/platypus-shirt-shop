@@ -187,6 +187,21 @@ export async function generatePrintPdf(order: Order, designs: DesignRecord[], pr
   y -= 15;
   drawText(cover, font, `Epson SC-F100: Papier A4, „Actual size" / 100 % — kein Fit-to-Page`, MARGIN, y, 10);
   y -= 25;
+
+  // Drucker-Specs (Procolored K13 Lite für DTF)
+  drawText(cover, bold, 'Drucker-Spezifikationen', MARGIN, y, 12);
+  y -= 18;
+  drawText(cover, font, 'Procolored K13 Lite (DTF-Drucker)', MARGIN, y, 10);
+  y -= 15;
+  drawText(cover, font, 'Max. Druckfläche: 329 × 483 mm (A3+)', MARGIN, y, 10);
+  y -= 15;
+  drawText(cover, font, 'Auflösung: 1440 dpi', MARGIN, y, 10);
+  y -= 15;
+  drawText(cover, font, 'Farben: CMYK + Weiß', MARGIN, y, 10);
+  y -= 15;
+  drawText(cover, font, 'Empfohlene Upload-Auflösung: mind. 300 dpi', MARGIN, y, 10);
+  y -= 25;
+
   drawText(cover, font, `Eingefroren am: ${new Date(printJob.frozenAt).toLocaleString('de-DE')} (unveränderlicher Produktions-Snapshot)`, MARGIN, y, 9, rgb(0.5, 0.5, 0.5));
 
   if (designs.every((d) => !d.frontImage && !d.backImage)) {
