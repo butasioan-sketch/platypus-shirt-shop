@@ -35,14 +35,14 @@ export interface Product {
 // Shorts-Overlay/Placement (lib/print-spec.ts GARMENT_PROFILES['2']) ist eine ERSTVERSION,
 // visuell aus den Referenzfotos geschätzt — noch nicht durch physischen Testdruck verifiziert.
 // Siehe: ~/Schreibtisch/MeinVault/ClaudeData/BRAND-ESSENTIAL-COLLECTION-2PRODUKTE.md
-// Preis/Blank-Update 21.07.2026: Tee-Blank final auf James & Nicholson JN827 (100% PE, 165 g/m²,
-// EK 16,40€ brutto) umgestellt — siehe FINAL-CLAUDE-LAUNCH-21-07.md + PREISE-REAL-JN827-JN387-21-07.md.
-// Fotos bleiben vorerst die bestehenden (kein JN827-Rückenfoto vorhanden), nur Blank/Preis/Copy aktualisiert.
+// Preis/Blank-Update 05.10.2026: Tee-Blank final auf James & Nicholson JN496 (100% PE, 165 g/m²,
+// EK 10,55€ brutto) umgestellt — siehe Masterplan-2.4-FINAL + FINANZPLANUNG-KOMPLETT.
+// Preise aktualisiert: T-Shirt 46,99€, Shorts 41,99€, Bundle 79,99€.
 export const PRODUCTS: Product[] = [
   {
     id: '1',
     slug: 'essential-polyester',
-    price: 44.99,
+    price: 46.99,
     color: '#f5f5f5',
     textColor: '#000',
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
@@ -60,7 +60,7 @@ export const PRODUCTS: Product[] = [
       ro: 'AirFit Performance Fabric · 165 g/m² · Sublimare integrală 210 × 297 mm · Unisex',
       en: 'AirFit Performance Fabric · 165 gsm · Full-area sublimation 210 × 297 mm · Unisex',
     },
-    tags: ['essential', 'polyester', 'sublimation', 'hell', 'basic', 'tee', 'jn827'],
+    tags: ['essential', 'polyester', 'sublimation', 'hell', 'basic', 'tee', 'jn496'],
     active: true,
     createdAt: '2026-01-01',
   },
@@ -68,7 +68,7 @@ export const PRODUCTS: Product[] = [
   {
     id: '2',
     slug: 'airfit-pro-shorts',
-    price: 39.99,
+    price: 41.99,
     color: '#f5f5f5',
     textColor: '#000',
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
